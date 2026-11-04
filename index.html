@@ -1649,6 +1649,9 @@
     background:rgba(var(--c-amber-rgb),.38);box-shadow:inset 0 0 0 1px rgba(var(--c-amber-rgb),.65);
   }
   .task-item .carry-tag + .del{margin-left:6px;}
+  /* rolled forward: a quiet note in secondary text, no warning colour */
+  .carry-tag.soft{background:var(--muted);box-shadow:none;color:var(--muted-foreground);font-weight:700;letter-spacing:0;}
+  .carry-note{color:var(--muted-foreground);font-size:11px;font-weight:600;white-space:nowrap;}
   .pt-item .carry-tag{margin-left:6px;}
   .pt-item.carried .pt-name{flex:1;min-width:0;}
   /* finished today: calm down to the normal done look, keep the tag faint */
@@ -3605,7 +3608,7 @@ let booted = false;
 function showApp(){
   $('authWrap').style.display = 'none';
   $('app').style.display = '';
-  if(!booted){ booted = true; bootstrap(); }
+  if(!booted){ booted = true; rolloverTasks(true).then(n=>{ if(n) dataChanged(); }); scheduleRollover(); bootstrap(); }
 }
 function showAuth(){
   booted = false;
@@ -4150,12 +4153,90 @@ function withMonthBreaks(items, win){
 const WEEK_TAG = '<span class="wk-tag">This week</span>';
 
 /* ===================================================================
-   TODAY'S TASKS, WITH CARRY-OVER
-   Nothing is rewritten: a task keeps its original date, and "today"
-   simply means due today + anything earlier that isn't finished.
+   TASK ROLLOVER
+   Four separate facts per task, so history is never lost:
+     due_date        the day it was originally scheduled (rollover never changes it)
+     planned_date    the day it is planned for now (null = its due_date)
+     completed_at    when it was actually done
+     created_at      when it was added
+   schedule_policy: 'auto'     one-off tasks roll, long-term + event tasks stay
+                    'flexible' always rolls        'fixed' stays on its date
+   An unfinished task that rolls counts as planned on every day from its
+   due_date up to the day it is done (or today), so Monday keeps 3/5 even
+   after its 2 open tasks move to Tuesday. Recurring tasks and calendar
+   events have their own rules and are not touched here.
+   =================================================================== */
+const todayISO = () => iso(new Date());
+function rollsOver(t){
+  if(!t || !t.due_date) return false;
+  const p = t.schedule_policy || 'auto';
+  if(p === 'fixed') return false;
+  if(p === 'flexible') return true;
+  return (t.kind || 'one-off') === 'one-off';
+}
+const doneDay = t => t.completed && t.completed_at ? iso(new Date(t.completed_at)) : null;
+// the last day the task sits on a day's list (for open rolling tasks: today)
+function taskLastDay(t){
+  if(!t.due_date) return null;
+  if(!rollsOver(t)) return t.due_date;
+  if(t.completed){ const d = doneDay(t) || t.planned_date; return d && d > t.due_date ? d : t.due_date; }
+  const p = t.planned_date && t.planned_date > t.due_date ? t.planned_date : t.due_date, t0 = todayISO();
+  return p < t0 ? t0 : p;
+}
+const planDate = taskLastDay;
+const daysBetween = (a, b) => Math.round((parseISO(b) - parseISO(a)) / 86400000);
+const carriedDays = t => rollsOver(t) ? daysBetween(t.due_date, taskLastDay(t)) : 0;
+const onDay = (t, day) => !!t.due_date && t.due_date <= day && day <= taskLastDay(t);
+const doneOn = (t, day) => !!t.completed && taskLastDay(t) === day;
+const isOverdue = t => !t.completed && !!t.due_date && !rollsOver(t) && t.due_date < todayISO();
+
+/* Reconcile: move every open rolling task that is planned before today onto
+   today. Safe to run any number of times (it only ever sets planned_date to
+   today, on the same rows), from any device, after any number of missed days.
+   Runs at startup, when the app comes back into view, and at local midnight.
+   Screens never depend on it having run: taskLastDay() already places an
+   open rolling task on today, so the write just keeps the stored data honest. */
+let ROLL_DAY = null, ROLL_BUSY = null;
+function rolloverTasks(force){
+  if(!USER) return Promise.resolve(0);
+  const t0 = todayISO();
+  if(!force && ROLL_DAY === t0) return Promise.resolve(0);
+  if(ROLL_BUSY) return ROLL_BUSY;
+  ROLL_BUSY = (async ()=>{
+    const { data, error } = await sb.from('tasks').select('id,kind,due_date,planned_date,schedule_policy,completed')
+      .eq('completed', false).lt('due_date', t0);
+    if(error) throw error;
+    const ids = (data || []).filter(t=>rollsOver(t) && (t.planned_date || t.due_date) < t0).map(t=>t.id);
+    if(ids.length){
+      const { error: e2 } = await sb.from('tasks').update({ planned_date: t0 }).in('id', ids).eq('completed', false);
+      if(e2) throw e2;
+    }
+    ROLL_DAY = t0;
+    return ids.length;
+  })().catch(err=>{ console.error('rollover', err); return 0; }).finally(()=>{ ROLL_BUSY = null; });
+  return ROLL_BUSY;
+}
+let _rollTimer = null;
+function scheduleRollover(){
+  clearTimeout(_rollTimer);
+  const now = new Date(), next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+  _rollTimer = setTimeout(()=>{ rolloverTasks(true).then(n=>{ if(n) dataChanged(); }); scheduleRollover(); }, Math.min(next - now, 2147483000));
+}
+function onAppVisible(){
+  if(document.visibilityState !== 'visible' || !USER) return;
+  rolloverTasks().then(n=>{ if(n) dataChanged(); });
+  scheduleRollover();       // timers can drift or stop while a device sleeps
+}
+document.addEventListener('visibilitychange', onAppVisible);
+window.addEventListener('focus', onAppVisible);
+
+/* ===================================================================
+   TODAY'S TASKS
+   own:     planned for today from the start
+   carried: rolling tasks from earlier days, still open or finished today
+   overdue: fixed-date tasks whose day has passed (they never move)
    A carried task you finish today stays visible (crossed out) for the
    rest of the day, like any other task.
-   Order: carried first, oldest first; then today's own.
    =================================================================== */
 async function fetchTodayTasks(){
   const now = new Date();
@@ -4170,16 +4251,23 @@ async function fetchTodayTasks(){
   if(err) throw err;
 
   const t0 = parseISO(today);
-  const carried = [...(late.data || []), ...(doneToday.data || [])]
-    .map(t=>({ ...t, carried:true, daysLate: Math.round((t0 - parseISO(t.due_date)) / 86400000) }))
+  const old = [...(late.data || []), ...(doneToday.data || [])]
     .sort((a,b)=> a.due_date < b.due_date ? -1 : a.due_date > b.due_date ? 1 : 0);
-  return [...carried, ...(own.data || [])];
+  const carried = old.filter(t=>rollsOver(t) && taskLastDay(t) === today)
+    .map(t=>({ ...t, carried:true, daysLate: carriedDays(t) }));
+  const overdue = old.filter(t=>!rollsOver(t))
+    .map(t=>({ ...t, overdue:true, daysLate: Math.round((t0 - parseISO(t.due_date)) / 86400000) }));
+  return [...overdue, ...carried, ...(own.data || [])];
 }
 
+const carryText = n => n === 1 ? 'Carried over from yesterday' : 'Carried over · ' + n + ' days';
+const fromDay = s => parseISO(s).toLocaleDateString(undefined,{weekday:'short', day:'numeric', month:'short'});
 function carryTag(t){
-  if(!t.carried) return '';
+  if(t.carried && !t.rec)
+    return `<span class="carry-tag soft" title="Originally planned for ${fromDay(t.due_date)}">↗ ${carryText(t.daysLate)}</span>`;
+  if(!t.carried && !t.overdue) return '';
   const when = t.daysLate === 1 ? 'yesterday' : t.daysLate + ' days';
-  return `<span class="carry-tag" title="Originally due ${parseISO(t.due_date).toLocaleDateString(undefined,{weekday:'short', day:'numeric', month:'short'})}">↻ ${when}</span>`;
+  return `<span class="carry-tag" title="Originally due ${fromDay(t.due_date)}">↻ ${when}</span>`;
 }
 
 /* ===================================================================
@@ -5586,7 +5674,7 @@ async function loadTasks(){
 
     const todayEvents = evOn(today);
     const taskRow = t=>`
-        <div class="task-item ${t.carried ? 'acc-amber carried' : kindAcc(t.kind)}${t.completed?' done':''}">
+        <div class="task-item ${t.overdue ? 'acc-amber carried' : kindAcc(t.kind)}${t.completed?' done':''}">
           <div class="task-check" data-toggle="${t.id}" data-state="${t.completed}"></div>
           <div class="task-body">
             <div class="task-name">${esc(t.title)}</div>
@@ -5600,14 +5688,14 @@ async function loadTasks(){
         <div class="task-item ${r.carried ? 'acc-amber carried' : 'acc-sky'} recurring${r.done?' done':''}">
           <div class="task-check" data-rec-toggle="${r.rule.id}|${iso(r.date)}" data-state="${r.done}"></div>
           <div class="task-body"><div class="task-name">${esc(r.rule.title)}</div></div>
-          ${r.carried ? carryTag({ carried:true, daysLate:r.daysLate, due_date: iso(r.date) })
+          ${r.carried ? carryTag({ carried:true, rec:true, daysLate:r.daysLate, due_date: iso(r.date) })
                       : `<span class="rep-tag">${esc(freqLabel(r.rule))}</span>`}
         </div>`;
     // carried one-off tasks and carried recurring ones, oldest first
-    const carriedAll = todays.filter(t=>t.carried).map(t=>({ kind:'task', at: t.due_date, t }))
+    const carriedAll = todays.filter(t=>t.carried || t.overdue).map(t=>({ kind:'task', at: t.due_date, t }))
       .concat(rec.carried.map(r=>({ kind:'rec', at: iso(r.date), r })))
       .sort((a,b)=> a.at < b.at ? -1 : a.at > b.at ? 1 : 0);
-    const ownTasks = todays.filter(t=>!t.carried);
+    const ownTasks = todays.filter(t=>!t.carried && !t.overdue);
 
     const todayHtml =
       carriedAll.map(x=> x.kind === 'task' ? taskRow(x.t) : recRow(x.r)).join('') +
@@ -6374,17 +6462,26 @@ function dataChanged(){
    =================================================================== */
 async function fetchPlan(fromISO, toISO){
   const wsFrom = iso(mondayOf(parseISO(fromISO)));
+  const fromTs = parseISO(fromISO).toISOString();
   const res = await Promise.all([
     sb.from('tasks').select('*').gte('due_date', fromISO).lte('due_date', toISO),
     sb.from('recurring_tasks').select('*').eq('active', true),
     sb.from('recurring_completions').select('*').gte('date', fromISO).lte('date', toISO),
     sb.from('split_days').select('*'),
     sb.from('split_overrides').select('*').gte('week_start', wsFrom).lte('week_start', toISO),
-    sb.from('training_sessions').select('*').gte('date', fromISO).lte('date', toISO)
+    sb.from('training_sessions').select('*').gte('date', fromISO).lte('date', toISO),
+    // tasks from earlier days that rolled into this range
+    sb.from('tasks').select('*').lt('due_date', fromISO).eq('completed', false),
+    sb.from('tasks').select('*').lt('due_date', fromISO).eq('completed', true).gte('completed_at', fromTs)
   ]);
   const bad = res.find(r=>r.error);
   if(bad) throw bad.error;
-  const [tasks, rules, comps, split, ovr, sess] = res.map(r=>r.data || []);
+  const [inRange, rules, comps, split, ovr, sess, openOld, doneOld] = res.map(r=>r.data || []);
+  const seen = new Set(), tasks = [];
+  inRange.concat(openOld, doneOld).forEach(t=>{
+    if(seen.has(t.id)) return; seen.add(t.id);
+    if(t.due_date >= fromISO || (rollsOver(t) && taskLastDay(t) >= fromISO)) tasks.push(t);
+  });
   const doneRec = new Set(comps.map(c=>c.recurring_id + '|' + c.date));
   return { tasks, rules, comps, split, ovr, sess, doneRec };
 }
@@ -6404,9 +6501,12 @@ function splitFor(plan, d){
 // every planned item for one day, in one shape
 function planDay(plan, d){
   const day = iso(d), out = [];
-  plan.tasks.filter(t=>t.due_date === day).forEach(t=>out.push({
-    key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat:taskCat(t), done:!!t.completed,
-    priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t
+  // a rolled task is on every day from its first date to the day it's done (or today);
+  // it only counts as done on that last day, so earlier days keep their real score
+  plan.tasks.filter(t=>onDay(t, day)).forEach(t=>out.push({
+    key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat:taskCat(t), done: doneOn(t, day),
+    priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t,
+    movedOn: taskLastDay(t) > day, carried: t.due_date < day, daysLate: daysBetween(t.due_date, day)
   }));
   plan.rules.filter(r=>occursOn(r, d)).forEach(r=>out.push({
     key:'r:' + r.id + '|' + day, type:'rec', id:r.id, date:day, title:r.title,
@@ -6424,11 +6524,17 @@ function planDay(plan, d){
   return out;
 }
 
+// over several days a rolled task is still one task: counted once, done at most once
 function tally(plan, from, to){
   let planned = 0, done = 0;
+  const tasks = new Map();
   for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)){
-    planDay(plan, d).forEach(it=>{ planned++; if(it.done) done++; });
+    planDay(plan, d).forEach(it=>{
+      if(it.type === 'task'){ tasks.set(it.key, tasks.get(it.key) || it.done); return; }
+      planned++; if(it.done) done++;
+    });
   }
+  tasks.forEach(v=>{ planned++; if(v) done++; });
   return { planned, done };
 }
 
@@ -6441,11 +6547,14 @@ function taskRowHtml(it){
   if(it.priority === 'low') meta.push('<span class="prio low">Low</span>');
   if(it.time) meta.push(`<span class="ttime tclock">${ico('clock','ico-sm')}${esc(it.time)}</span>`);
   if(it.dateLabel) meta.push(`<span class="ttime">${esc(it.dateLabel)}</span>`);
-  if(it.carried) meta.push(`<span class="late">↻ ${it.daysLate === 1 ? 'from yesterday' : it.daysLate + ' days late'}</span>`);
+  const soft = it.type === 'task' && it.carried && !it.overdue;   // rolled forward: a quiet note, not a warning
+  if(soft && !it.movedOn) meta.push(`<span class="carry-note" title="Originally planned for ${fromDay(it.raw.due_date)}">↗ ${carryText(it.daysLate)}</span>`);
+  else if(it.carried || it.overdue) meta.push(`<span class="late">↻ ${it.daysLate === 1 ? 'from yesterday' : it.daysLate + ' days late'}</span>`);
+  if(it.movedOn) meta.push('<span class="carry-note">↗ Carried to the next day</span>');
   if(it.missed) meta.push('<span class="late">Not done</span>');
   if(it.type === 'rec' && !it.carried) meta.push(`<span class="ttime">${ico('repeat','ico-sm')} ${esc(freqLabel(it.raw))}</span>`);
   if(it.type === 'train') meta.push('<span class="ttime">from your split</span>');
-  return `<div class="trow ${c.acc}${it.done ? ' done' : ''}${it.carried || it.missed ? ' is-late' : ''}" data-key="${esc(it.key)}">
+  return `<div class="trow ${c.acc}${it.done ? ' done' : ''}${((it.carried && !soft) || it.overdue || it.missed) ? ' is-late' : ''}" data-key="${esc(it.key)}">
     <button class="tcheck" role="checkbox" aria-checked="${it.done}" data-act="toggle"
       aria-label="${it.done ? 'Mark not done' : 'Mark done'}: ${esc(it.title)}">${ico('check','ico-sm')}</button>
     <button class="tmain" data-act="open" aria-label="Open ${esc(it.title)}">
@@ -6481,6 +6590,7 @@ function renderTaskList(el, groups, emptyHtml){
 }
 
 async function toggleItem(it, row, btn){
+  if(it.movedOn){ toast('This task moved on. Tick it off on the day it is planned now.'); return; }
   const done = !it.done;
   it.done = done;
   row.classList.toggle('done', done);
@@ -6518,7 +6628,7 @@ function bumpCounters(delta, it){
   if(currentPage !== 'dashboard' || !DASH) return;
   if(isTodaySel()) DASH.today.done += delta;
   if(DDATA && DDATA.sel) DDATA.sel.done += delta;
-  const d = it.date || (it.raw && it.raw.due_date);
+  const d = it.date || (it.raw && planDate(it.raw));
   if(d && d >= DASH.weekFrom && d <= DASH.weekTo) DASH.week.done += delta;
   if(d && d >= DASH.monthFrom && d <= DASH.monthTo) DASH.month.done += delta;
   paintSummary();
@@ -6541,6 +6651,9 @@ function openTaskForm(task, defaults){
     cat: task ? taskCat(task) : (defaults.category || 'personal'),
     prio: (task && task.priority) || 'normal',
     noDate: task ? !task.due_date : !!defaults.noDate,
+    // "Keep on this date": on = never roll over. Shown on for long-term and event tasks unless changed.
+    keep: task ? !rollsOver({ ...task, due_date: task.due_date || '1970-01-01' }) : false,
+    keepTouched: false,
     confirmDel: false
   };
   const time = task && task.due_time ? task.due_time.slice(0,5) : (defaults.time || '');
@@ -6552,7 +6665,9 @@ function openTaskForm(task, defaults){
     chips('cat', CAT_ORDER.map(k=>({ value:k, label:CATS[k].label, acc:CATS[k].acc, dot:true })), st.cat) +
     '<div class="fm-label">Priority</div>' +
     chips('prio', [{ value:'high', label:'High' }, { value:'normal', label:'Normal' }, { value:'low', label:'Low' }], st.prio) +
-    chips('nodate', [{ value:'1', label:'No date (someday)' }], st.noDate ? '1' : '');
+    chips('nodate', [{ value:'1', label:'No date (someday)' }], st.noDate ? '1' : '') +
+    '<div class="fm-label">If not done that day</div>' +
+    chips('keep', [{ value:'1', label:'Keep on this date (don\'t carry over)' }], st.keep ? '1' : '');
   const actions = task
     ? [{ label:'Delete', value:'delete', danger:true }, { label:'Tomorrow', value:'tomorrow', secondary:true }, { label:'Save', value:'save' }]
     : [{ label:'Add task', value:'save' }];
@@ -6574,6 +6689,7 @@ function openTaskForm(task, defaults){
       if(!b) return;
       const pick = b.parentNode.dataset.pick;
       if(pick === 'nodate'){ st.noDate = !st.noDate; b.classList.toggle('on', st.noDate); b.setAttribute('aria-pressed', st.noDate); return; }
+      if(pick === 'keep'){ st.keep = !st.keep; st.keepTouched = true; b.classList.toggle('on', st.keep); b.setAttribute('aria-pressed', st.keep); return; }
       b.parentNode.querySelectorAll('button').forEach(x=>{ x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); });
       if(pick === 'cat') st.cat = b.dataset.v; else st.prio = b.dataset.v;
     },
@@ -6603,6 +6719,10 @@ function openTaskForm(task, defaults){
         const base = new Date();
         payload.due_date = iso(addDays(_dayOnly(base), 1));
       }
+      // only an explicit choice is stored; otherwise 'auto' decides by task type
+      if(st.keepTouched) payload.schedule_policy = st.keep ? 'fixed' : 'flexible';
+      // a date you pick by hand is a fresh plan: rollover history starts again from it
+      if(!task || payload.due_date !== task.due_date) payload.planned_date = null;
       const { error } = task
         ? await sb.from('tasks').update(payload).eq('id', task.id)
         : await sb.from('tasks').insert({ user_id: USER.id, ...payload });
@@ -6917,17 +7037,17 @@ function buildDay(d){
   if(sameDay(d, today)){
     const rec = todayRecurring(recState, now);
     const asTask = t => ({ key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat:taskCat(t), done:!!t.completed,
-      priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', carried:t.carried, daysLate:t.daysLate, raw:t });
+      priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', carried:t.carried, overdue:t.overdue, daysLate:t.daysLate, raw:t });
     const asRec = r => ({ key:'r:' + r.rule.id + '|' + iso(r.date), type:'rec', id:r.rule.id, date:iso(r.date), title:r.rule.title,
       cat: CATS[r.rule.category] ? r.rule.category : 'home', done:r.done, carried:r.carried, daysLate:r.daysLate, raw:r.rule });
-    const late = todayTasks.filter(t=>t.carried).map(asTask).concat(rec.carried.map(asRec));
-    const own = todayTasks.filter(t=>!t.carried).map(asTask);
+    const late = todayTasks.filter(t=>t.overdue).map(asTask).concat(rec.carried.map(asRec));
+    const own = todayTasks.filter(t=>!t.overdue).map(asTask);      // includes tasks carried over
     const routine = rec.due.map(asRec).concat(planDay(plan, today).filter(x=>x.type === 'train'));
     return { late, own, routine, all: late.concat(own, routine) };
   }
   const items = planDay(plan, d);
   const past = d < today;
-  items.forEach(x=>{ if(past && !x.done) x.missed = true; });
+  items.forEach(x=>{ if(past && !x.done && !x.movedOn) x.missed = true; if(x.type === 'task' && !past) x.carried = false; });
   const own = items.filter(x=>x.type === 'task'), routine = items.filter(x=>x.type !== 'task');
   return { late: [], own, routine, all: items };
 }
@@ -6948,20 +7068,23 @@ function renderDash(){
   $('dashQuickInput').setAttribute('aria-label', isT ? 'Quick add a task for today' : 'Quick add a task for ' + dayName);
   paintTaskHead();
 
-  const byTime = (a, b)=> ((b.priority === 'high') - (a.priority === 'high')) || (a.time || '99').localeCompare(b.time || '99');
+  const byTime = (a, b)=> ((b.priority === 'high') - (a.priority === 'high')) || ((b.carried ? 1 : 0) - (a.carried ? 1 : 0))
+    || (a.time || '99').localeCompare(b.time || '99');
   const open = x => !x.done;
   const lateOpen = day.late.filter(open).concat(day.own.filter(x=>x.missed && open(x)), day.routine.filter(x=>x.missed && open(x)));
-  const todo = day.own.filter(x=>open(x) && !x.missed).sort(byTime);
+  const todo = day.own.filter(x=>open(x) && !x.missed && !x.movedOn).sort(byTime);
+  const moved = day.own.filter(x=>open(x) && x.movedOn);
   const routine = day.routine.filter(x=>open(x) && !x.missed);
   const doneAll = day.all.filter(x=>x.done);
   const groups = [
     { label: isT ? 'Overdue' : 'Missed', cls:'g-late', items: lateOpen },
     { label: 'To do', items: todo },
+    { label: 'Carried forward', cls:'g-moved', items: moved },
     { label: 'Routine', items: routine },
     { label: 'Completed', cls:'g-done', items: doneAll }
   ];
   groups.forEach(g=> g.count = g.items.length);
-  const allDone = day.all.length && !lateOpen.length && !todo.length && !routine.length;
+  const allDone = day.all.length && !lateOpen.length && !todo.length && !moved.length && !routine.length;
   renderTaskList($('dashTasksList'), groups, `<div class="dz-empty">${doodleSvg('calm')}<span class="dz-cap">Nothing planned</span>
       <b>${isT ? 'Your day is wide open' : relDay(d) + ' is wide open'}</b>
       Add a task above, or plan ahead from any area in the sidebar.</div>`);
@@ -6974,7 +7097,7 @@ function renderDash(){
   const dStart = d, dEnd = addDays(d, 1);
   const evs = DDATA.events.filter(e=>{ const s = new Date(e.starts_at); return s >= dStart && s < dEnd; }).map(e=>({
     kind:'event', start:new Date(e.starts_at), end:new Date(e.ends_at), title:e.title, cat:e.category || 'general', star:e.highlight, ev:e }));
-  const timed = day.own.concat(day.late.filter(x=>x.type === 'task' && x.raw.due_date === iso(d))).filter(t=>t.time).map(t=>{
+  const timed = day.own.filter(x=>x.raw.due_date === iso(d)).filter(t=>t.time).map(t=>{
     const [h, m] = t.time.split(':').map(Number);
     const s = new Date(d); s.setHours(h, m, 0, 0);
     return { kind:'task', start:s, end:null, title:t.title, cat:t.cat, done:t.done, star:t.priority === 'high', task:t.raw };
@@ -7051,16 +7174,18 @@ async function fetchCatData(cat){
 function catGroups(tasks, opts){
   opts = opts || {};
   const t0 = iso(new Date()), wkEnd = iso(addDays(_dayOnly(new Date()), 7));
-  const toItem = t => ({ key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat:taskCat(t), done:!!t.completed, hideCat:true,
-    priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t,
-    dateLabel: t.due_date && t.due_date !== t0 ? relDay(parseISO(t.due_date)) : '' });
+  const toItem = t => { const pd = planDate(t), late = isOverdue(t), cd = pd === t0 ? carriedDays(t) : 0;
+    return { key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat:taskCat(t), done:!!t.completed, hideCat:true,
+      priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t,
+      carried: cd > 0, daysLate: late ? daysBetween(t.due_date, t0) : cd, overdue: late,
+      dateLabel: pd && pd !== t0 && !late ? relDay(parseISO(pd)) : '' }; };
   const open = tasks.filter(t=>!t.completed);
-  const byDate = (a,b)=> (a.due_date || '').localeCompare(b.due_date || '') || ((b.priority === 'high') - (a.priority === 'high'));
+  const byDate = (a,b)=> (planDate(a) || '').localeCompare(planDate(b) || '') || ((b.priority === 'high') - (a.priority === 'high'));
   return [
-    { label:'Overdue',  items: open.filter(t=>t.due_date && t.due_date < t0).sort(byDate).map(toItem) },
-    { label:'Today',    items: tasks.filter(t=>t.due_date === t0 && (!t.completed || opts.todayDone)).sort(byDate).map(toItem) },
-    { label:'Next 7 days', items: open.filter(t=>t.due_date > t0 && t.due_date <= wkEnd).sort(byDate).map(toItem) },
-    { label:'Later',    items: open.filter(t=>t.due_date > wkEnd).sort(byDate).map(toItem) },
+    { label:'Overdue',  items: open.filter(isOverdue).sort(byDate).map(toItem) },
+    { label:'Today',    items: tasks.filter(t=>planDate(t) === t0 && !isOverdue(t) && (!t.completed || opts.todayDone)).sort(byDate).map(toItem) },
+    { label:'Next 7 days', items: open.filter(t=>planDate(t) > t0 && planDate(t) <= wkEnd).sort(byDate).map(toItem) },
+    { label:'Later',    items: open.filter(t=>planDate(t) > wkEnd).sort(byDate).map(toItem) },
     { label:'No date',  items: open.filter(t=>!t.due_date).map(toItem) }
   ];
 }
@@ -7075,8 +7200,8 @@ async function loadCategoryPage(cat){
     const wkEnd = iso(addDays(_dayOnly(now), 7));
     const open = tasks.filter(t=>!t.completed);
     const doneMonth = tasks.filter(t=>t.completed && t.completed_at && iso(new Date(t.completed_at)) >= mStart).length;
-    const overdue = open.filter(t=>t.due_date && t.due_date < t0).length;
-    const dueWeek = open.filter(t=>t.due_date && t.due_date >= t0 && t.due_date <= wkEnd).length;
+    const overdue = open.filter(isOverdue).length;
+    const dueWeek = open.filter(t=>t.due_date && planDate(t) >= t0 && planDate(t) <= wkEnd).length;
     const rules = rec.rules.filter(r=>r.category === cat);
     const recToday = todayRecurring({ rules, completions: rec.completions }, now);
     const projects = open.filter(t=>t.kind === 'long-term').length;
@@ -7283,7 +7408,7 @@ async function computeNotifications(){
       title: 'Deadline: ' + t.title, when: 'Due ' + relDayLc(d) + ' · ' + CATS[taskCat(t)].label, open: ()=> openTaskForm(t) });
   });
   if(P.overdue){
-    late.forEach(t=>{
+    late.filter(isOverdue).forEach(t=>{
       const d = parseISO(t.due_date), days = Math.round((today - d) / 86400000);
       push({ key:`late:${t.id}:${t.due_date}`, group:'attention', icon:'alert', acc:'acc-rose', at:d,
         title: 'Overdue: ' + t.title, when: `Was due ${relDayLc(d)} · ${days} day${days === 1 ? '' : 's'} ago`, open: ()=> openTaskForm(t) });
@@ -7453,7 +7578,12 @@ function periodRange(p){
 
 function catTally(from, to){
   const out = {}; CAT_ORDER.forEach(c=> out[c] = { planned:0, done:0 });
-  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{ out[it.cat].planned++; if(it.done) out[it.cat].done++; });
+  const tasks = new Map();
+  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{
+    if(it.type === 'task'){ const x = tasks.get(it.key); tasks.set(it.key, { cat:it.cat, done:(x && x.done) || it.done }); return; }
+    out[it.cat].planned++; if(it.done) out[it.cat].done++;
+  });
+  tasks.forEach(x=>{ out[x.cat].planned++; if(x.done) out[x.cat].done++; });
   return out;
 }
 
@@ -7465,7 +7595,7 @@ function paintProgress(){
   const ct = catTally(R.from, R.to);
   let activeDays = 0, daysSoFar = 0;
   for(let d = _dayOnly(R.from); d <= R.to && d <= today; d = addDays(d, 1)){ daysSoFar++; if((PROG.actByDay.get(iso(d)) || []).length) activeDays++; }
-  const overdue = PROG.openTasks.filter(t=>t.due_date && t.due_date < t0).length;
+  const overdue = PROG.openTasks.filter(isOverdue).length;
 
   $('progKpis').innerHTML = `
     <div class="card kpi"><span class="card-icon acc-blue">${ico('check')}</span><div><b>${all.done}<small style="font-size:14px;color:var(--on-panel-2)"> / ${all.planned}</small></b><span>completed ${R.label}</span></div></div>

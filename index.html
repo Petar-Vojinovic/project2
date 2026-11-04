@@ -2224,6 +2224,7 @@
     <input type="email" id="authEmail" placeholder="Email" autocomplete="email" />
     <input type="password" id="authPass" placeholder="Password" autocomplete="current-password" />
     <button class="auth-btn" id="authBtn">Sign in</button>
+    <button class="auth-toggle" id="authForgot">Forgot password?</button>
     <button class="auth-toggle" id="authToggle">No account yet? Create one</button>
     <div class="auth-msg" id="authMsg"></div>
   </div>
@@ -2635,6 +2636,8 @@ if(SUPABASE_URL.startsWith('PASTE_') || SUPABASE_ANON_KEY.startsWith('PASTE_')){
     + '(near the top of the script, around line 2156), then deploy again.</div>';
   throw new Error('Supabase credentials not set');
 }
+// read before the client tidies the URL: arriving from a password-reset email
+let RECOVERING = /type=recovery/.test(location.hash);
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let USER = null;
 const loadedPages = new Set();   // pages already rendered this session
@@ -2696,23 +2699,66 @@ const MONTHS_FULL= ['January','February','March','April','May','June','July','Au
    =================================================================== */
 let authMode = 'signin';
 
+const AUTH_TEXT = {
+  signin: { title:'Sign in',            btn:'Sign in',            toggle:'No account yet? Create one' },
+  signup: { title:'Create account',     btn:'Create account',     toggle:'Already have an account? Sign in' },
+  forgot: { title:'Reset password',     btn:'Email me a reset link', toggle:'Back to sign in' },
+  reset:  { title:'Choose a new password', btn:'Save new password', toggle:'' }
+};
 function setAuthMode(mode){
   authMode = mode;
-  $('authTitle').textContent = mode === 'signin' ? 'Sign in' : 'Create account';
-  $('authBtn').textContent   = mode === 'signin' ? 'Sign in' : 'Create account';
-  $('authToggle').textContent= mode === 'signin'
-    ? 'No account yet? Create one' : 'Already have an account? Sign in';
+  const t = AUTH_TEXT[mode];
+  $('authTitle').textContent = t.title;
+  $('authBtn').textContent   = t.btn;
+  $('authToggle').textContent= t.toggle;
+  $('authToggle').style.display = t.toggle ? '' : 'none';
+  $('authForgot').style.display = mode === 'signin' ? '' : 'none';
+  $('authEmail').style.display = mode === 'reset' ? 'none' : '';
+  $('authPass').style.display  = mode === 'forgot' ? 'none' : '';
+  $('authPass').placeholder    = mode === 'reset' ? 'New password' : 'Password';
+  $('authPass').value = mode === 'reset' ? '' : $('authPass').value;
   $('authPass').autocomplete = mode === 'signin' ? 'current-password' : 'new-password';
   $('authMsg').textContent = '';
+  $('authMsg').classList.remove('ok');
 }
 
 $('authToggle').addEventListener('click', ()=> setAuthMode(authMode === 'signin' ? 'signup' : 'signin'));
+$('authForgot').addEventListener('click', ()=> setAuthMode('forgot'));
 
 async function doAuth(){
   const email = $('authEmail').value.trim();
   const pass  = $('authPass').value;
   const msg   = $('authMsg');
   msg.classList.remove('ok');
+
+  if(authMode === 'forgot'){
+    if(!email){ msg.textContent = 'Type the email you signed up with.'; return; }
+    $('authBtn').disabled = true;
+    try{
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+      if(error) throw error;
+      msg.classList.add('ok');
+      msg.textContent = 'Check your email for a reset link. It can take a minute (look in spam too).';
+    }catch(err){ msg.textContent = err.message || 'Could not send the email.'; }
+    finally{ $('authBtn').disabled = false; }
+    return;
+  }
+
+  if(authMode === 'reset'){
+    if(pass.length < 6){ msg.textContent = 'Password needs to be at least 6 characters.'; return; }
+    $('authBtn').disabled = true;
+    try{
+      const { data, error } = await sb.auth.updateUser({ password: pass });
+      if(error) throw error;
+      RECOVERING = false;
+      try{ history.replaceState(null, '', location.pathname); }catch(e){}
+      USER = data.user;
+      toast('New password saved');
+      showApp();
+    }catch(err){ msg.textContent = err.message || 'Could not save the password.'; }
+    finally{ $('authBtn').disabled = false; }
+    return;
+  }
 
   if(!email || !pass){ msg.textContent = 'Email and password are both required.'; return; }
   if(authMode === 'signup' && pass.length < 6){
@@ -2742,7 +2788,7 @@ async function doAuth(){
 }
 $('authBtn').addEventListener('click', doAuth);
 $('authPass').addEventListener('keydown', e=>{ if(e.key === 'Enter') doAuth(); });
-$('authEmail').addEventListener('keydown', e=>{ if(e.key === 'Enter') $('authPass').focus(); });
+$('authEmail').addEventListener('keydown', e=>{ if(e.key === 'Enter'){ if(authMode === 'forgot') doAuth(); else $('authPass').focus(); } });
 
 $('signOut').addEventListener('click', async ()=>{ await sb.auth.signOut(); });
 
@@ -2764,8 +2810,16 @@ function showAuth(){
   setAuthMode('signin');
 }
 
-sb.auth.onAuthStateChange((_event, session)=>{
+sb.auth.onAuthStateChange((event, session)=>{
   USER = session ? session.user : null;
+  // came from a reset email: ask for the new password before opening the app
+  if(event === 'PASSWORD_RECOVERY') RECOVERING = true;
+  if(USER && RECOVERING){
+    $('app').style.display = 'none';
+    $('authWrap').style.display = '';
+    setAuthMode('reset');
+    return;
+  }
   if(USER) showApp(); else showAuth();
 });
 

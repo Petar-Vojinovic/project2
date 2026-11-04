@@ -7,7 +7,7 @@
 <title>Personal App</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Lora:ital,wght@1,400;1,500&display=swap" rel="stylesheet" />
 <style>
   :root{
     --bg:#ffffff;
@@ -2033,7 +2033,67 @@
   .dash-head{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px;}
   .dash-head .dh-text{flex:1;min-width:220px;}
   .dash-head h1{margin:0;font-size:26px;font-weight:800;color:var(--navy-800);letter-spacing:-.01em;}
-  .dh-date{color:var(--muted);font-size:14px;margin-top:4px;font-weight:500;}
+  .dh-date{color:var(--muted);font-size:13px;margin-top:6px;font-weight:500;}
+
+  /* ---------- daily fortune cookie (dashboard header) ---------- */
+  .fc{display:flex;align-items:flex-start;gap:16px;}
+  .fc-main{flex:1;min-width:0;}
+  .fc-cookie{flex:none;width:84px;height:84px;padding:6px;border-radius:24px;cursor:pointer;
+    background:#FFF4E2;border:1.5px solid #F1D8B2;box-shadow:0 2px 0 #F1D8B2;
+    transition:transform .25s ease, box-shadow .25s ease;-webkit-tap-highlight-color:transparent;}
+  .fc-cookie:focus-visible{outline:3px solid #219ebc;outline-offset:3px;}
+  .fc-cookie svg{display:block;overflow:visible;}
+  .fc-cookie .fc-body{transform-origin:50% 70%;transition:transform .3s ease;}
+  .fc-cookie .fc-paper{transition:transform .45s cubic-bezier(.2,.8,.2,1);}
+  .fc-cookie .fc-pupil{transition:transform .3s ease;}
+  .fc-eyes-happy{opacity:0;}
+  .fc:not(.is-open) .fc-cookie:hover{transform:translateY(-2px);box-shadow:0 4px 0 #F1D8B2;}
+  .fc:not(.is-open) .fc-cookie:hover .fc-body{transform:rotate(-4deg);}
+  .fc:not(.is-open) .fc-cookie:hover .fc-paper{transform:translate(3px,1px);}
+  .fc:not(.is-open) .fc-cookie:hover .fc-pupil{transform:translate(-2px,-1px);}
+  .fc.is-open .fc-cookie{cursor:default;background:#FFF8EC;}
+  .fc.is-open .fc-eyes-open{opacity:0;}
+  .fc.is-open .fc-eyes-happy{opacity:1;}
+  .fc.is-open .fc-paper{transform:translate(7px,4px);}
+
+  /* prompt and slip share one spot, so opening never pushes the page around */
+  .fc-zone{display:grid;margin-top:6px;min-height:66px;align-items:center;}
+  .fc-zone > *{grid-area:1/1;}
+  .fc-prompt{margin:0;color:var(--muted);font-size:15px;line-height:1.45;}
+  .fc-prompt b{color:var(--navy-800);font-weight:600;}
+  .fc.is-open .fc-prompt{visibility:hidden;}
+  .fc-slip{margin:0;max-width:640px;padding:10px 16px 10px 18px;border-radius:10px;position:relative;
+    background:#FFFDF6;border:1px solid #EADFC8;box-shadow:0 1px 2px rgba(2,48,71,.06);}
+  .fc-slip::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:0 3px 3px 0;background:#F4C98A;}
+  .fc-q{margin:0;font-family:'Lora',Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;
+    font-size:16.5px;line-height:1.45;color:var(--navy-800);text-wrap:pretty;}
+  .fc-by{margin-top:4px;font-size:12.5px;color:var(--muted);font-weight:500;}
+  .fc-by i{font-style:italic;}
+
+  /* opening: slip slides out of the cookie, quote fades in, then the author (about 0.9s) */
+  .fc.is-animating .fc-cookie .fc-body{animation:fcCrack .42s ease-out;}
+  .fc.is-animating .fc-slip{animation:fcSlide .45s cubic-bezier(.2,.8,.2,1) both;}
+  .fc.is-animating .fc-q{animation:fcFade .4s ease-out .3s both;}
+  .fc.is-animating .fc-by{animation:fcFade .35s ease-out .55s both;}
+  @keyframes fcCrack{0%{transform:none}35%{transform:rotate(-6deg) scale(1.06)}70%{transform:rotate(2deg)}100%{transform:none}}
+  @keyframes fcSlide{from{opacity:0;transform:translateX(-14px);clip-path:inset(0 100% 0 0 round 10px)}
+    to{opacity:1;transform:none;clip-path:inset(0 0 0 0 round 10px)}}
+  @keyframes fcFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){
+    .fc .fc-cookie, .fc .fc-cookie *{transition:none !important;}
+    .fc:not(.is-open) .fc-cookie:hover, .fc:not(.is-open) .fc-cookie:hover *{transform:none;}
+    .fc.is-animating .fc-cookie .fc-body{animation:none;}
+    .fc.is-animating .fc-slip, .fc.is-animating .fc-q, .fc.is-animating .fc-by{animation:fcFadeOnly .2s ease-out both;}
+    @keyframes fcFadeOnly{from{opacity:0}to{opacity:1}}
+  }
+  @media (max-width:640px){
+    .fc{gap:12px;}
+    .fc-cookie{width:64px;height:64px;border-radius:18px;padding:4px;}
+    .dash-head h1{font-size:22px;}
+    .fc-prompt{font-size:14px;}
+    .fc-q{font-size:15.5px;}
+    .fc-slip{padding:9px 12px 9px 14px;}
+  }
   .ring-mini{display:flex;align-items:center;gap:10px;background:rgba(2,48,71,.06);padding:6px 14px 6px 6px;border-radius:30px;}
   .ring-mini svg{display:block;}
   .ring-mini b{color:var(--navy-800);font-size:14px;}
@@ -2274,9 +2334,44 @@
     <!-- ---------- DASHBOARD ---------- -->
     <section class="page active is-loading" id="page-dashboard">
       <div class="dash-head">
-        <div class="dh-text">
-          <h1 id="dashGreeting">Welcome, Katarina</h1>
-          <div class="dh-date"><span id="dtDay">—</span><span id="dtWeather"></span></div>
+        <div class="dh-text fc" id="fortune">
+          <button type="button" class="fc-cookie" id="fcCookie" aria-expanded="false" aria-controls="fcSlip"
+            aria-label="Open today's fortune cookie">
+            <svg viewBox="4 10 92 76" width="100%" height="100%" aria-hidden="true" focusable="false">
+              <g class="fc-paper"><g transform="rotate(18 70 62)"><rect x="68" y="57" width="28" height="10" rx="2" fill="#FFFDF6" stroke="#D9CBB0" stroke-width="1.5"/>
+                <path d="M80 62h11" stroke="#E7A9A9" stroke-width="1.6" stroke-linecap="round"/></g></g>
+              <g class="fc-body">
+                <path d="M10 64C8 38 27 18 50 18S92 38 90 64c-.6 6.5-7 9.5-13.5 7C68.5 68 60 62.5 50 62.5S31.5 68 23.5 71C17 73.5 10.6 70.5 10 64Z"
+                  fill="#FFD9A0" stroke="#E2A75B" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M50 62.5c-.6-2.4-.2-4.4 1-6" fill="none" stroke="#E2A75B" stroke-width="2" stroke-linecap="round"/>
+                <ellipse cx="22.5" cy="53" rx="5.5" ry="3.4" fill="#F7A9A0" opacity=".6"/>
+                <ellipse cx="77.5" cy="53" rx="5.5" ry="3.4" fill="#F7A9A0" opacity=".6"/>
+                <g class="fc-eyes-open">
+                  <circle cx="36" cy="40" r="11" fill="#fff" stroke="#2B3A42" stroke-width="1.8"/>
+                  <circle cx="64" cy="40" r="11" fill="#fff" stroke="#2B3A42" stroke-width="1.8"/>
+                  <circle class="fc-pupil" cx="37.5" cy="42" r="5.8" fill="#1F5F9E"/>
+                  <circle class="fc-pupil" cx="65.5" cy="42" r="5.8" fill="#1F5F9E"/>
+                  <circle cx="39.6" cy="39.6" r="1.9" fill="#fff"/><circle cx="67.6" cy="39.6" r="1.9" fill="#fff"/>
+                  <path d="M26.5 32l-3.4-2.6M30 29.4l-1.8-3.6M73.5 32l3.4-2.6M70 29.4l1.8-3.6" stroke="#2B3A42" stroke-width="1.8" stroke-linecap="round"/>
+                </g>
+                <g class="fc-eyes-happy" fill="none" stroke="#2B3A42" stroke-width="2.8" stroke-linecap="round">
+                  <path d="M27 43q9-11 18 0"/><path d="M55 43q9-11 18 0"/>
+                </g>
+                <path class="fc-mouth" d="M46 52.5q4 3.4 8 0" fill="none" stroke="#2B3A42" stroke-width="2.1" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </button>
+          <div class="fc-main">
+            <h1 id="dashGreeting">Good morning, Katarina</h1>
+            <div class="fc-zone">
+              <p class="fc-prompt" id="fcPrompt"><b>Ready to check in?</b> Tap the cookie for today's fortune.</p>
+              <figure class="fc-slip" id="fcSlip" aria-live="polite" hidden>
+                <blockquote class="fc-q" id="fcQ"></blockquote>
+                <figcaption class="fc-by" id="fcBy"></figcaption>
+              </figure>
+            </div>
+            <div class="dh-date"><span id="dtDay">—</span><span id="dtWeather"></span></div>
+          </div>
         </div>
         <div class="ring-mini" id="dashRing" aria-live="polite"></div>
         <button class="btn btn-primary" id="dashAddTask"><i data-ico="plus"></i>Add task</button>
@@ -2621,6 +2716,193 @@
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* ===================================================================
+   DAILY FORTUNES — content only, no UI logic.
+   type 'quote'    : verified short quotation → shown in quotation marks
+                     with author and work.
+   type 'inspired' : original line written for this app, inspired by a
+                     work → shown without quotation marks, labelled
+                     "Inspired by <work> — <author>".
+   type 'original' : original fortune, no attribution.
+   To add more, append to the end; the daily order adapts on its own.
+   =================================================================== */
+const FORTUNES = [
+  /* ---- verified quotations (public domain or very short) ---- */
+  { type:'quote', text:'I can resist everything except temptation.', author:'Oscar Wilde', work:"Lady Windermere's Fan" },
+  { type:'quote', text:'There is only one thing in the world worse than being talked about, and that is not being talked about.', author:'Oscar Wilde', work:'The Picture of Dorian Gray' },
+  { type:'quote', text:'To love oneself is the beginning of a lifelong romance.', author:'Oscar Wilde', work:'An Ideal Husband' },
+  { type:'quote', text:'We are all in the gutter, but some of us are looking at the stars.', author:'Oscar Wilde', work:"Lady Windermere's Fan" },
+  { type:'quote', text:'Experience is the name every one gives to their mistakes.', author:'Oscar Wilde', work:"Lady Windermere's Fan" },
+  { type:'quote', text:'The truth is rarely pure and never simple.', author:'Oscar Wilde', work:'The Importance of Being Earnest' },
+  { type:'quote', text:'I never travel without my diary. One should always have something sensational to read in the train.', author:'Oscar Wilde', work:'The Importance of Being Earnest' },
+  { type:'quote', text:'The only way to get rid of a temptation is to yield to it.', author:'Oscar Wilde', work:'The Picture of Dorian Gray' },
+  { type:'quote', text:'Nowadays people know the price of everything and the value of nothing.', author:'Oscar Wilde', work:'The Picture of Dorian Gray' },
+  { type:'quote', text:'I always pass on good advice. It is the only thing to do with it.', author:'Oscar Wilde', work:'An Ideal Husband' },
+  { type:'quote', text:'Life is far too important a thing ever to talk seriously about it.', author:'Oscar Wilde', work:"Lady Windermere's Fan" },
+  { type:'quote', text:'Punctuality is the thief of time.', author:'Oscar Wilde', work:'The Picture of Dorian Gray' },
+  { type:'quote', text:"I am so clever that sometimes I don't understand a single word of what I am saying.", author:'Oscar Wilde', work:'The Remarkable Rocket' },
+
+  { type:'quote', text:'For what do we live, but to make sport for our neighbours, and laugh at them in our turn?', author:'Jane Austen', work:'Pride and Prejudice' },
+  { type:'quote', text:'I declare after all there is no enjoyment like reading!', author:'Jane Austen', work:'Pride and Prejudice' },
+  { type:'quote', text:'I am not romantic, you know; I never was.', author:'Jane Austen', work:'Pride and Prejudice' },
+  { type:'quote', text:'There is no charm equal to tenderness of heart.', author:'Jane Austen', work:'Emma' },
+  { type:'quote', text:'Silly things do cease to be silly if they are done by sensible people in an impudent way.', author:'Jane Austen', work:'Emma' },
+  { type:'quote', text:'One half of the world cannot understand the pleasures of the other.', author:'Jane Austen', work:'Emma' },
+  { type:'quote', text:'The person, be it gentleman or lady, who has not pleasure in a good novel, must be intolerably stupid.', author:'Jane Austen', work:'Northanger Abbey' },
+
+  { type:'quote', text:'Few things are harder to put up with than the annoyance of a good example.', author:'Mark Twain', work:"Pudd'nhead Wilson" },
+  { type:'quote', text:'Let us endeavor so to live that when we come to die even the undertaker will be sorry.', author:'Mark Twain', work:"Pudd'nhead Wilson" },
+  { type:'quote', text:'Habit is habit, and not to be flung out of the window by any man, but coaxed down-stairs a step at a time.', author:'Mark Twain', work:"Pudd'nhead Wilson" },
+  { type:'quote', text:'Put all your eggs in the one basket and—WATCH THAT BASKET.', author:'Mark Twain', work:"Pudd'nhead Wilson" },
+  { type:'quote', text:"Nothing so needs reforming as other people's habits.", author:'Mark Twain', work:"Pudd'nhead Wilson" },
+  { type:'quote', text:'When angry, count four; when very angry, swear.', author:'Mark Twain', work:"Pudd'nhead Wilson" },
+  { type:'quote', text:'Man is the only animal that blushes. Or needs to.', author:'Mark Twain', work:'Following the Equator' },
+  { type:'quote', text:"Truth is stranger than fiction, but it is because Fiction is obliged to stick to possibilities; Truth isn't.", author:'Mark Twain', work:'Following the Equator' },
+  { type:'quote', text:'There are several good protections against temptations, but the surest is cowardice.', author:'Mark Twain', work:'Following the Equator' },
+  { type:'quote', text:'Grief can take care of itself, but to get the full value of a joy you must have somebody to divide it with.', author:'Mark Twain', work:'Following the Equator' },
+  { type:'quote', text:'Work consists of whatever a body is obliged to do, and Play consists of whatever a body is not obliged to do.', author:'Mark Twain', work:'The Adventures of Tom Sawyer' },
+
+  { type:'quote', text:'I like work: it fascinates me. I can sit and look at it for hours.', author:'Jerome K. Jerome', work:'Three Men in a Boat' },
+  { type:'quote', text:'Let your boat of life be light, packed with only what you need.', author:'Jerome K. Jerome', work:'Three Men in a Boat' },
+  { type:'quote', text:"I can't sit still and see another man slaving and working. I want to get up and superintend.", author:'Jerome K. Jerome', work:'Three Men in a Boat' },
+  { type:'quote', text:'It is impossible to enjoy idling thoroughly unless one has plenty of work to do.', author:'Jerome K. Jerome', work:'Idle Thoughts of an Idle Fellow' },
+
+  { type:'quote', text:"Don't Panic.", author:'Douglas Adams', work:"The Hitchhiker's Guide to the Galaxy" },
+  { type:'quote', text:'Time is an illusion. Lunchtime doubly so.', author:'Douglas Adams', work:"The Hitchhiker's Guide to the Galaxy" },
+  { type:'quote', text:"The ships hung in the sky in much the same way that bricks don't.", author:'Douglas Adams', work:"The Hitchhiker's Guide to the Galaxy" },
+  { type:'quote', text:'I love deadlines. I love the whooshing noise they make as they go by.', author:'Douglas Adams', work:'The Salmon of Doubt' },
+  { type:'quote', text:'So it goes.', author:'Kurt Vonnegut', work:'Slaughterhouse-Five' },
+  { type:'quote', text:'We are what we pretend to be, so we must be careful about what we pretend to be.', author:'Kurt Vonnegut', work:'Mother Night' },
+  { type:'quote', text:'The trouble with having an open mind, of course, is that people will insist on coming along and trying to put things in it.', author:'Terry Pratchett', work:'Diggers' },
+  { type:'quote', text:'It is never difficult to distinguish between a Scotsman with a grievance and a ray of sunshine.', author:'P. G. Wodehouse', work:'Blandings Castle' },
+
+  { type:'quote', text:"Why, sometimes I've believed as many as six impossible things before breakfast.", author:'Lewis Carroll', work:'Through the Looking-Glass' },
+  { type:'quote', text:"It's no use going back to yesterday, because I was a different person then.", author:'Lewis Carroll', work:"Alice's Adventures in Wonderland" },
+  { type:'quote', text:'Curiouser and curiouser!', author:'Lewis Carroll', work:"Alice's Adventures in Wonderland" },
+  { type:'quote', text:'Our life is frittered away by detail. Simplify, simplify.', author:'Henry David Thoreau', work:'Walden' },
+  { type:'quote', text:'Well done is better than well said.', author:'Benjamin Franklin', work:"Poor Richard's Almanack" },
+  { type:'quote', text:'Lost time is never found again.', author:'Benjamin Franklin', work:"Poor Richard's Almanack" },
+  { type:'quote', text:'Annual income twenty pounds, annual expenditure nineteen nineteen and six, result happiness.', author:'Charles Dickens', work:'David Copperfield' },
+  { type:'quote', text:'An adventure is only an inconvenience rightly considered.', author:'G. K. Chesterton', work:'All Things Considered' },
+  { type:'quote', text:'The cook was a good cook, as cooks go; and as cooks go, she went.', author:'Saki', work:'Reginald' },
+  { type:'quote', text:'There is nothing either good or bad, but thinking makes it so.', author:'William Shakespeare', work:'Hamlet' },
+  { type:'quote', text:'Brevity is the soul of wit.', author:'William Shakespeare', work:'Hamlet' },
+  { type:'quote', text:'We must cultivate our garden.', author:'Voltaire', work:'Candide' },
+
+  /* ---- original lines, inspired by a book (not quotations) ---- */
+  { type:'inspired', text:'Make the good habit easy and the bad one annoying. Then let laziness do the work.', author:'James Clear', work:'Atomic Habits' },
+  { type:'inspired', text:'Tiny daily improvements are boring to watch and impressive to look back on.', author:'James Clear', work:'Atomic Habits' },
+  { type:'inspired', text:'Protect one quiet hour today. Your best ideas hate open-plan offices.', author:'Cal Newport', work:'Deep Work' },
+  { type:'inspired', text:'Saying no to a good thing is how you make room for a great one.', author:'Greg McKeown', work:'Essentialism' },
+  { type:'inspired', text:'The more you avoid a task, the more it probably matters.', author:'Steven Pressfield', work:'The War of Art' },
+  { type:'inspired', text:"You will never finish everything. That's not failure, that's arithmetic.", author:'Oliver Burkeman', work:'Four Thousand Weeks' },
+  { type:'inspired', text:'Do the next right thing, then the one after. Emperors managed it; so can you.', author:'Marcus Aurelius', work:'Meditations' },
+  { type:'inspired', text:'Time is the one thing people give away freely and want back desperately.', author:'Seneca', work:'On the Shortness of Life' },
+  { type:'inspired', text:'Owning fewer things means fewer things owning you.', author:'Henry David Thoreau', work:'Walden' },
+  { type:'inspired', text:"Packing is the art of bringing everything except the thing you'll actually need.", author:'Jerome K. Jerome', work:'Three Men in a Boat' },
+  { type:'inspired', text:'Always know where your towel is. Metaphorically. Also literally.', author:'Douglas Adams', work:"The Hitchhiker's Guide to the Galaxy" },
+  { type:'inspired', text:"Common sense is mostly noticing what's in front of you before it trips you up.", author:'Terry Pratchett', work:'Wee Free Men' },
+  { type:'inspired', text:'First impressions are loud. Second impressions are usually right.', author:'Jane Austen', work:'Pride and Prejudice' },
+  { type:'inspired', text:"Arranging other people's lives is much easier than running your own.", author:'Jane Austen', work:'Emma' },
+  { type:'inspired', text:'Feel things deeply. Decide things calmly.', author:'Jane Austen', work:'Sense and Sensibility' },
+  { type:'inspired', text:"It's never too late for a second draft.", author:'Jane Austen', work:'Persuasion' },
+  { type:'inspired', text:"Your face isn't the portrait. Your habits are.", author:'Oscar Wilde', work:'The Picture of Dorian Gray' },
+  { type:'inspired', text:'Every crisis looks smaller after tea and a capable friend.', author:'P. G. Wodehouse', work:'The Jeeves stories' },
+  { type:'inspired', text:"If you're lost, at least pick an interesting direction.", author:'Lewis Carroll', work:"Alice's Adventures in Wonderland" },
+  { type:'inspired', text:'Some windmills are just windmills. Pick your battles.', author:'Miguel de Cervantes', work:'Don Quixote' },
+  { type:'inspired', text:'Stop theorising about the perfect world. Water the plants.', author:'Voltaire', work:'Candide' },
+  { type:'inspired', text:'Make a list of what you have, not only what you lack.', author:'Daniel Defoe', work:'Robinson Crusoe' },
+  { type:'inspired', text:'Win the argument before the meeting starts: prepare.', author:'Sun Tzu', work:'The Art of War' },
+  { type:'inspired', text:"Share the messy middle. Nobody's impressed by perfect silence.", author:'Austin Kleon', work:'Show Your Work!' },
+  { type:'inspired', text:'Copy your heroes until you accidentally become yourself.', author:'Austin Kleon', work:'Steal Like an Artist' },
+  { type:'inspired', text:"Your first answer is fast. That doesn't make it right.", author:'Daniel Kahneman', work:'Thinking, Fast and Slow' },
+  { type:'inspired', text:'Your brain is for having ideas, not for storing them. Write it down.', author:'David Allen', work:'Getting Things Done' },
+  { type:'inspired', text:'Getting rich is about earning. Staying rich is about not showing off.', author:'Morgan Housel', work:'The Psychology of Money' },
+  { type:'inspired', text:'"Not good at it yet" is a perfectly respectable place to be.', author:'Carol Dweck', work:'Mindset' },
+  { type:'inspired', text:'Wandering counts as research if you take notes.', author:'David Epstein', work:'Range' },
+  { type:'inspired', text:'Do the ugliest task first. The rest of the day will taste like dessert.', author:'Brian Tracy', work:'Eat That Frog!' },
+  { type:'inspired', text:'Done and imperfect beats perfect and imaginary.', author:'Elizabeth Gilbert', work:'Big Magic' },
+  { type:'inspired', text:'Big projects get finished the same way as small ones: one bird at a time.', author:'Anne Lamott', work:'Bird by Bird' },
+  { type:'inspired', text:'Grown-ups love numbers. Remember to count the things that matter, too.', author:'Antoine de Saint-Exupéry', work:'The Little Prince' },
+  { type:'inspired', text:'Doing nothing, done properly, can be surprisingly productive.', author:'A. A. Milne', work:'Winnie-the-Pooh' },
+  { type:'inspired', text:'Overthinking is a fine hobby but a poor strategy.', author:'William Shakespeare', work:'Hamlet' },
+  { type:'inspired', text:'Obsession makes a great story and a terrible project plan.', author:'Herman Melville', work:'Moby-Dick' },
+  { type:'inspired', text:'Observe before you conclude. It saves a lot of apologising.', author:'Arthur Conan Doyle', work:'The Adventures of Sherlock Holmes' },
+  { type:'inspired', text:'The long way home still counts as going home.', author:'Homer', work:'The Odyssey' },
+  { type:'inspired', text:'Before you build it, ask who is going to look after it.', author:'Mary Shelley', work:'Frankenstein' },
+  { type:'inspired', text:'Whether you feel huge or tiny depends mostly on the room.', author:'Jonathan Swift', work:"Gulliver's Travels" },
+  { type:'inspired', text:'Some days just happen to you. Eat something nice and try again tomorrow.', author:'Kurt Vonnegut', work:'Slaughterhouse-Five' },
+  { type:'inspired', text:'Advice is easiest to follow when it is meant for someone else.', author:'Mark Twain', work:"Pudd'nhead Wilson" },
+
+  /* ---- original fortunes ---- */
+  { type:'original', text:"Today's forecast: a 90% chance of improvising." },
+  { type:'original', text:'Some problems require solutions. Others require a snack.' },
+  { type:'original', text:'The universe has a plan. It forgot to send the calendar invite.' },
+  { type:'original', text:'Being an adult is mostly guessing with confidence.' },
+  { type:'original', text:'Not every day needs a character development arc.' },
+  { type:'original', text:"Life is short. The to-do list, unfortunately, isn't." },
+  { type:'original', text:"You can't control everything. How inconvenient." },
+  { type:'original', text:'Your life is a work in progress. The editor is on vacation.' },
+  { type:'original', text:'A little chaos keeps the plot interesting.' },
+  { type:'original', text:'You are the main character. Unfortunately, so is everyone else.' },
+  { type:'original', text:'Your inbox is not a to-do list. It just wants to be one.' },
+  { type:'original', text:"The task you're avoiding is smaller than the dread around it." },
+  { type:'original', text:"Coffee is not a plan, but it's a very good start." },
+  { type:'original', text:'Today, aim for done. Brilliant can come on Thursday.' },
+  { type:'original', text:'A good nap has solved more problems than most meetings.' },
+  { type:'original', text:'You are allowed to finish things badly. Then fix them.' },
+  { type:'original', text:'The perfect moment is fictional. The okay moment is now.' },
+  { type:'original', text:"Nobody else knows exactly what they're doing either. Proceed." },
+  { type:'original', text:'Your future self is watching. Give them something to thank you for.' },
+  { type:'original', text:'Somewhere, a sock you lost is living its best life. Be like the sock.' },
+  { type:'original', text:'Plans are lovely. Reality reads them as suggestions.' },
+  { type:'original', text:"Rest is not a reward. It's maintenance." },
+  { type:'original', text:'You can do anything, but not everything, and definitely not before lunch.' },
+  { type:'original', text:'Small steps still leave footprints.' },
+  { type:'original', text:"Today's mission: one thing properly, the rest cheerfully." },
+  { type:'original', text:"If it takes two minutes, you've already spent longer thinking about it." },
+  { type:'original', text:'Fortune says: drink some water. Fortune is very practical.' },
+  { type:'original', text:'Your to-do list called. It said, "Pick three."' },
+  { type:'original', text:'Progress is quiet. Panic is loud. Listen for the quiet one.' },
+  { type:'original', text:'Every expert was once confused in exactly this way.' },
+  { type:'original', text:"You've survived every bad day so far. Excellent track record." },
+  { type:'original', text:'The deadline is closer than it appears.' },
+  { type:'original', text:'Kindness is cheap, quick, and suspiciously effective.' },
+  { type:'original', text:'Leave one thing a little better than you found it.' },
+  { type:'original', text:'Sometimes the shortcut is just doing the thing.' },
+  { type:'original', text:"Even the moon has phases. You're allowed an off day." },
+  { type:'original', text:'A walk outside is a meeting with your best ideas.' },
+  { type:'original', text:'A budget is just future you asking present you very nicely.' },
+  { type:'original', text:'Done is a feature. Perfect is a rumour.' },
+  { type:'original', text:'Laugh at one thing today. Preferably yourself, gently.' },
+  { type:'original', text:'The plot thickens. Bring snacks.' },
+  { type:'original', text:'One honest no saves ten resentful yeses.' },
+  { type:'original', text:"Your phone can wait. It's very patient and slightly needy." },
+  { type:'original', text:'Motivation is fickle. Routines show up anyway.' },
+  { type:'original', text:'Write it down before it escapes.' },
+  { type:'original', text:'Asking for help is a strength wearing a modest coat.' },
+  { type:'original', text:'If plan A fails, the alphabet has 25 more letters.' },
+  { type:'original', text:'Breakfast first. Existential questions after.' },
+  { type:'original', text:'Good things take time. Annoying things take longer. Pace yourself.' },
+  { type:'original', text:'Celebrate small wins. Big wins are just small ones in a trench coat.' },
+  { type:'original', text:'The best time to start was yesterday. The second best is right after this cookie.' },
+  { type:'original', text:"Today's lucky number is however many things you actually finish." },
+  { type:'original', text:'Not all who wander are lost. Some are just looking for their keys.' },
+  { type:'original', text:"Be patient with yourself. You're new at today too." },
+  { type:'original', text:'"I don\'t know yet" is the start of every good answer.' },
+  { type:'original', text:'Clean one drawer. Feel unreasonably powerful.' },
+  { type:'original', text:"Tomorrow's problems are not today's job." },
+  { type:'original', text:'Your energy is a budget too. Spend it on purpose.' },
+  { type:'original', text:'This cookie believes in you, and it is notoriously hard to impress.' },
+  { type:'original', text:'You do not have to be busy to be doing well.' },
+  { type:'original', text:'Today is a great day to reply to that one message.' },
+  { type:'original', text:'The mountain looks smaller once you stop staring and start walking.' },
+  { type:'original', text:'You are one decision away from a tidier afternoon.' },
+  { type:'original', text:'Optimism is a skill. Today counts as practice.' },
+  { type:'original', text:'The secret ingredient is usually just showing up again.' }
+];
+</script>
 <script>
 /* ===================================================================
    Personal tracker — application logic
@@ -5479,7 +5761,9 @@ async function savePrefs(patch){
   applyPrefs();
 }
 function applyPrefs(){
-  $('dashGreeting').textContent = 'Welcome, ' + (PREFS.name || 'Katarina');
+  const h = new Date().getHours();
+  const hello = h < 5 ? 'Good evening' : h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  $('dashGreeting').textContent = hello + ', ' + (PREFS.name || 'Katarina');
 }
 
 /* ---------- router + sidebar ---------- */
@@ -5809,7 +6093,107 @@ let DASH = null;
 function tick(){
   const now = new Date();
   $('dtDay').textContent = now.toLocaleDateString(undefined,{ weekday:'long', day:'numeric', month:'long' });
+  applyPrefs();
+  Fortune.refresh();
 }
+/* ===================================================================
+   DAILY FORTUNE COOKIE — one fortune per local calendar day.
+   Content lives in FORTUNES (separate script block above).
+   Fortune.mount(rootEl) can be reused anywhere with the same markup.
+   =================================================================== */
+const Fortune = (()=>{
+  const KEY = 'pa_fortune', HIST = 'pa_fortune_hist', NO_REPEAT_DAYS = 90;
+  const mem = {};                                   // used when localStorage is blocked
+  const read = k => { try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; }catch(e){ return mem[k] || null; } };
+  const write = (k, v) => { mem[k] = v; try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
+
+  const localISO = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  const dayNum = iso => { const [y,m,d] = iso.split('-').map(Number); return Math.round(Date.UTC(y,m-1,d) / 864e5); };
+
+  // fixed shuffled order, the same on every device
+  let ORDER = null;
+  function order(){
+    if(ORDER && ORDER.length === FORTUNES.length) return ORDER;
+    let a = 2026 >>> 0;
+    const rnd = () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+    ORDER = FORTUNES.map((_, i) => i);
+    for(let i = ORDER.length - 1; i > 0; i--){ const j = Math.floor(rnd() * (i + 1)); [ORDER[i], ORDER[j]] = [ORDER[j], ORDER[i]]; }
+    return ORDER;
+  }
+
+  function pickFor(iso){
+    const P = order(), n = P.length, start = ((dayNum(iso) % n) + n) % n;
+    const today = dayNum(iso);
+    const recent = new Set((read(HIST) || []).filter(h => h.date !== iso && today - dayNum(h.date) < NO_REPEAT_DAYS).map(h => h.text));
+    for(let k = 0; k < n; k++){ const f = FORTUNES[P[(start + k) % n]]; if(!recent.has(f.text)) return f; }
+    return FORTUNES[P[start]];
+  }
+
+  function today(){
+    const iso = localISO(new Date());
+    let st = read(KEY);
+    if(!st || st.date !== iso || !st.q || !st.q.text){
+      st = { date: iso, q: pickFor(iso), opened: false };
+      write(KEY, st);
+      const today = dayNum(iso);
+      const hist = (read(HIST) || []).filter(h => h.date !== iso && today - dayNum(h.date) < NO_REPEAT_DAYS);
+      hist.push({ date: iso, text: st.q.text });
+      write(HIST, hist);
+    }
+    return st;
+  }
+
+  let root = null, shown = null;
+  function paint(st, animate){
+    const btn = root.querySelector('.fc-cookie'), slip = root.querySelector('.fc-slip');
+    const q = root.querySelector('.fc-q'), by = root.querySelector('.fc-by');
+    const f = st.q;
+    root.classList.toggle('is-open', !!st.opened);
+    btn.setAttribute('aria-expanded', st.opened ? 'true' : 'false');
+    btn.setAttribute('aria-label', st.opened ? "Today's fortune cookie (already opened)" : "Open today's fortune cookie");
+    if(!st.opened){ slip.hidden = true; root.classList.remove('is-animating'); return; }
+    q.textContent = f.type === 'quote' ? '“' + f.text + '”' : f.text;
+    by.textContent = '';
+    if(f.type === 'quote'){
+      by.append('— ' + f.author + ', '); const i = document.createElement('i'); i.textContent = f.work; by.append(i);
+    } else if(f.type === 'inspired'){
+      by.append('Inspired by '); const i = document.createElement('i'); i.textContent = f.work; by.append(i, ' — ' + f.author);
+    } else {
+      by.textContent = "Today's fortune";
+    }
+    slip.hidden = false;
+    if(animate){
+      root.classList.remove('is-animating'); void root.offsetWidth; root.classList.add('is-animating');
+      setTimeout(()=> root && root.classList.remove('is-animating'), 1000);
+    }
+  }
+
+  function open(){
+    const st = today();
+    if(st.opened) return;                           // no replaying the animation
+    st.opened = true; write(KEY, st);
+    paint(st, true);
+  }
+
+  function mount(el){
+    root = el;
+    root.querySelector('.fc-cookie').addEventListener('click', open);
+    refresh();
+  }
+
+  // called every tick: swaps in a fresh, unopened cookie after local midnight
+  function refresh(){
+    if(!root) return;
+    const st = today();
+    const sig = st.date + '|' + st.opened;
+    if(sig === shown) return;
+    shown = sig; paint(st, false);
+  }
+
+  return { mount, refresh, open, today };
+})();
+Fortune.mount($('fortune'));
 tick(); setInterval(()=>{ tick(); updateDayNight(); }, 20000);
 
 function ringSvg(p, size){

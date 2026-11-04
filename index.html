@@ -70,6 +70,7 @@
     --cat-home:#D48C80;     --cat-home-rgb:212,140,128;
     --cat-personal:#A9B4BB; --cat-personal-rgb:169,180,187;
     --cat-amber:#D9A066;    --cat-amber-rgb:217,160,102;
+    --cat-learning:#7DB5AE; --cat-learning-rgb:125,181,174;
   }
 
   /* ===================================================================
@@ -109,7 +110,7 @@
     --sand-ink:#D9C6A4;
 
     --cat-side:#C9B28F; --cat-money:#8FB89A; --cat-training:#E3B76B;
-    --cat-home:#D48C80; --cat-personal:#A9B4BB; --cat-amber:#D9A066;
+    --cat-home:#D48C80; --cat-personal:#A9B4BB; --cat-amber:#D9A066; --cat-learning:#86C0B8; --cat-learning-rgb:134,192,184;
 
     --doodle-ink:#F4F1ED; --doodle-paper:#2D323D; --doodle-tint:#4C6C80; --doodle-tint-2:#33495A; --doodle-mug:#404651;
   }
@@ -1976,6 +1977,7 @@
     --focus:0 0 0 3px rgba(134,189,217,.6);
   }
   .acc-violet{--acc:var(--c-violet);--acc-rgb:var(--c-violet-rgb);}
+  .acc-learn{--acc:var(--cat-learning);--acc-rgb:var(--cat-learning-rgb);}
   .acc-green {--acc:var(--c-green); --acc-rgb:var(--c-green-rgb);}
   .acc-rose  {--acc:var(--c-rose);  --acc-rgb:var(--c-rose-rgb);}
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
@@ -2397,6 +2399,7 @@
   /* category pastels on the dashboard: --cs strong, --cp pastel, --ct text on pastel */
   #page-dashboard .acc-blue  {--cs:var(--acc);--cp:rgba(var(--acc-rgb),.24);--ct:var(--foreground);}
   #page-dashboard .acc-violet{--cs:var(--acc);--cp:rgba(var(--acc-rgb),.24);--ct:var(--foreground);}
+  #page-dashboard .acc-learn{--cs:var(--acc);--cp:rgba(var(--acc-rgb),.24);--ct:var(--foreground);}
   #page-dashboard .acc-green {--cs:var(--acc);--cp:rgba(var(--acc-rgb),.24);--ct:var(--foreground);}
   #page-dashboard .acc-sun   {--cs:var(--acc);--cp:rgba(var(--acc-rgb),.24);--ct:var(--foreground);}
   #page-dashboard .acc-rose  {--cs:var(--acc);--cp:rgba(var(--acc-rgb),.24);--ct:var(--foreground);}
@@ -2774,6 +2777,137 @@
   .theme-desc{font-size:11.5px;color:var(--muted-foreground);line-height:1.3;}
   @media (max-width:520px){ .theme-opt{padding:8px 8px 10px;} .theme-desc{display:none;} }
 
+  /* ===================================================================
+     LEARNING — built only from the shared tokens, so both themes work
+     =================================================================== */
+  #page-learning .card{margin-bottom:16px;}
+  .ln-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;}
+  .ln-head .page-title{margin:0;}
+  .ln-intro{display:flex;align-items:center;gap:18px;min-width:0;}
+  .ln-intro .doodle{width:150px;height:auto;flex-shrink:0;}
+  .ln-sub{margin:6px 0 0;color:var(--muted-foreground);font-size:14px;line-height:1.45;max-width:60ch;}
+  .ln-cap{margin:6px 0 0;font-family:Lora,Georgia,serif;font-style:italic;font-size:14.5px;color:var(--muted-foreground);}
+  .ln-hint{margin:0 0 8px;color:var(--muted-foreground);font-size:13px;}
+  .ln-plain{all:unset;box-sizing:border-box;cursor:pointer;display:block;}
+  .ln-plain:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(var(--cat-work-rgb),.6);border-radius:8px;}
+
+  .ln-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px;}
+  #page-learning .ln-stat{margin:0;padding:14px 16px;display:flex;flex-direction:column;gap:4px;}
+  .ln-stat > span{color:var(--muted-foreground);font-size:12.5px;}
+  .ln-stat b{font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--foreground);}
+  .ln-stat b small{font-size:13px;font-weight:600;color:var(--muted-foreground);}
+  .ln-week{display:flex;align-items:flex-end;gap:4px;height:30px;margin-top:4px;}
+  .ln-week i{flex:1;border-radius:4px;background:var(--muted);}
+  .ln-week i.on{background:var(--ring);}
+  .ln-week i.today{box-shadow:inset 0 0 0 1.5px var(--foreground);}
+
+  .ln-paths{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+  .ln-path{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:16px;
+    background:var(--background);box-shadow:inset 0 0 0 1px var(--border);color:var(--foreground);transition:background .15s;}
+  .ln-path:hover{background:var(--muted);}
+  .ln-path:focus-visible{box-shadow:inset 0 0 0 2px var(--ring);}
+  .ln-path h3{margin:0;font-size:16px;font-weight:700;line-height:1.3;}
+  .ln-path p{margin:0;color:var(--muted-foreground);font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .ln-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted-foreground);}
+  .ln-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;background:var(--muted);color:var(--muted-foreground);font-size:11.5px;font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ln-pill.st-active{background:var(--primary);color:var(--primary-foreground);}
+  .ln-pill.st-completed{background:var(--success-soft);color:var(--success);}
+  .ln-prog{display:flex;align-items:center;gap:10px;}
+  .ln-prog .ln-bar{flex:1;}
+  .ln-bar{height:6px;border-radius:6px;background:var(--muted);overflow:hidden;}
+  .ln-bar i{display:block;height:100%;background:var(--ring);border-radius:6px;}
+  .ln-pct{font-size:12px;font-weight:700;color:var(--foreground);white-space:nowrap;}
+
+  .ln-cols{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start;}
+  .ln-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);}
+  .ln-row:first-of-type{border-top:none;}
+  .card-head + .ln-row{border-top:none;}
+  .ln-kind{width:34px;height:34px;flex-shrink:0;border-radius:10px;display:grid;place-items:center;background:var(--muted);color:var(--foreground);}
+  .ln-row-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .ln-row-title{font-weight:600;font-size:14px;color:var(--foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ln-row-sub{font-size:12px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;}
+  .ln-row-sub a{color:var(--primary-ink);}
+  #page-learning a.btn{text-decoration:none;}
+  .ln-links{display:flex;flex-wrap:wrap;gap:8px;}
+  .ln-link{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:10px;background:var(--background);box-shadow:inset 0 0 0 1px var(--border);
+    color:var(--foreground);text-decoration:none;font-size:13px;font-weight:600;max-width:100%;}
+  .ln-link span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ln-link:hover{background:var(--muted);}
+
+  #page-learning .ln-timer{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;}
+  #page-learning .ln-timer.on{background:var(--primary) !important;box-shadow:inset 0 0 0 1.5px var(--ring) !important;}
+  .ln-timer-txt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .ln-timer-txt b{font-size:14px;}
+  .ln-clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:22px;letter-spacing:.01em;}
+  .ln-timer-sel{min-width:190px;}
+
+  .ln-back{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--muted-foreground);font-size:13px;font-weight:600;margin-bottom:12px;padding:4px 2px;border-radius:6px;}
+  .ln-back:hover{color:var(--foreground);}
+  .ln-back:focus-visible{box-shadow:0 0 0 3px rgba(var(--cat-work-rgb),.6);}
+  .ln-head-path .ln-meta{margin-bottom:8px;}
+  #page-learning .ln-summary{display:grid;grid-template-columns:auto 1fr;gap:12px 24px;align-items:center;}
+  .ln-summary .ln-bar{grid-column:1 / -1;}
+  .ln-big{display:flex;flex-direction:column;font-size:34px;font-weight:800;line-height:1;}
+  .ln-big span{font-size:12.5px;font-weight:600;color:var(--muted-foreground);margin-top:6px;}
+  .ln-sumgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+  .ln-sumgrid div{display:flex;flex-direction:column;gap:2px;}
+  .ln-sumgrid b{font-size:16px;}
+  .ln-sumgrid span{font-size:12px;color:var(--muted-foreground);}
+  .ln-tabs{margin-bottom:14px;max-width:100%;overflow-x:auto;}
+  .ln-n{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--muted);font-size:11px;margin-left:4px;}
+  .ln-tabs button.on .ln-n{background:var(--primary);}
+
+  .ln-res{padding:14px 16px;border-radius:16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--border);margin-bottom:10px;display:flex;flex-direction:column;gap:10px;}
+  .ln-res-head{display:flex;align-items:center;gap:12px;}
+  .ln-res-notes{margin:0;font-size:13px;color:var(--muted-foreground);white-space:pre-wrap;}
+  .ln-status{display:inline-flex;background:var(--muted);border-radius:10px;padding:3px;gap:2px;flex-shrink:0;}
+  .ln-status button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:700;color:var(--muted-foreground);padding:6px 9px;border-radius:8px;cursor:pointer;white-space:nowrap;}
+  .ln-status button:hover{color:var(--foreground);}
+  .ln-status button.on{background:var(--card);color:var(--foreground);box-shadow:inset 0 0 0 1px var(--border);}
+  .ln-status button.on.s-in_progress{background:var(--primary);color:var(--primary-foreground);box-shadow:none;}
+  .ln-status button.on.s-completed{background:var(--success-soft);color:var(--success);box-shadow:none;}
+  .ln-fold summary{font-size:12.5px;font-weight:700;color:var(--muted-foreground);cursor:pointer;}
+  .ln-check{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:14px;}
+  .ln-box{width:22px;height:22px;border-radius:7px;border:0;background:var(--card);box-shadow:inset 0 0 0 1.5px var(--border);cursor:pointer;
+    display:grid;place-items:center;color:transparent;flex-shrink:0;padding:0;}
+  .ln-box:hover{box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .ln-check.done .ln-box{background:var(--foreground);color:var(--card);box-shadow:none;}
+  .ln-ct{flex:1;min-width:0;}
+  .ln-check.done .ln-ct{color:var(--muted-foreground-2);text-decoration:line-through;}
+  .ln-x{border:0;background:transparent;color:var(--muted-foreground-2);cursor:pointer;padding:6px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;}
+  .ln-x:hover{color:var(--foreground);background:var(--muted);}
+  .ln-x[data-l^="del"]:hover, .ln-x.confirming{color:var(--danger);background:var(--danger-soft);}
+  .ln-add{display:flex;gap:8px;margin-top:8px;}
+  .ln-add input{flex:1;min-width:0;padding:9px 12px;border-radius:10px;font:inherit;font-size:13.5px;}
+  #page-learning input[type="url"], .modal input[type="url"]{background:var(--card) !important;color:var(--foreground) !important;box-shadow:inset 0 0 0 1px var(--input) !important;border:none;}
+
+  .ln-notes-bar{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;}
+  .ln-filter{margin:0;}
+  .ln-filter button{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #page-learning .ln-note{padding:14px 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+  .ln-note-head{display:flex;align-items:center;gap:8px;min-width:0;}
+  .ln-note-head b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ln-note-body{white-space:pre-wrap;font-size:14px;line-height:1.55;margin:0;color:var(--foreground);}
+  .ln-note .ln-link{align-self:flex-start;}
+
+  #page-learning .ln-empty-hero{text-align:center;padding:30px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+  .ln-empty-hero b{font-size:16px;}
+  .ln-empty-hero p{margin:0 0 6px;color:var(--muted-foreground);font-size:14px;max-width:52ch;line-height:1.5;}
+
+  /* study tasks on the calendar: a task, not an event */
+  .event.ev-task{background:var(--card) !important;color:var(--foreground) !important;box-shadow:inset 0 0 0 1.5px rgba(var(--acc-rgb),.95) !important;
+    display:flex;align-items:flex-start;gap:4px;}
+  .event.ev-task.done{opacity:.6;text-decoration:line-through;}
+
+  @media (max-width:980px){ .ln-stats{grid-template-columns:repeat(2,minmax(0,1fr));} .ln-cols{grid-template-columns:1fr;} }
+  @media (max-width:600px){
+    .ln-intro{gap:12px;} .ln-intro .doodle{width:96px;}
+    .ln-res-head{flex-wrap:wrap;} .ln-res-head .ln-row-body{flex-basis:calc(100% - 100px);}
+    .ln-status{width:100%;order:3;} .ln-status button{flex:1;padding:7px 4px;}
+    .ln-sumgrid{grid-template-columns:repeat(3,minmax(0,1fr));} #page-learning .ln-summary{grid-template-columns:1fr;}
+    .ln-timer-sel{min-width:0;flex:1 1 100%;}
+  }
+
   /* line-art illustrations follow the theme: light lines on charcoal in dark mode */
   svg.doodle{stroke:var(--doodle-ink);}
   svg.doodle [fill="#242424"]{fill:var(--doodle-ink);}
@@ -2826,6 +2960,7 @@
         <button class="sb-item" data-page="budget" title="Money &amp; Budgeting"><i data-ico="wallet"></i><span class="sb-text">Money &amp; Budgeting</span></button>
         <button class="sb-item" data-page="training" title="Training &amp; Food"><i data-ico="dumbbell"></i><span class="sb-text">Training &amp; Food</span></button>
         <button class="sb-item" data-page="home" title="Home Tasks"><i data-ico="house"></i><span class="sb-text">Home Tasks</span></button>
+        <button class="sb-item" data-page="learning" title="Learning"><i data-ico="book"></i><span class="sb-text">Learning</span></button>
       </div>
       <div class="sb-group">
         <div class="sb-label">Insights</div>
@@ -2974,6 +3109,7 @@
         <span class="acc-violet"><i></i>Side Hustle</span>
         <span class="acc-green"><i></i>Money</span>
         <span class="acc-rose"><i></i>Home</span>
+        <span class="acc-learn"><i></i>Learning</span>
         <span class="acc-sky"><i></i>Personal &amp; General</span>
         <span class="lg-bday"><i></i>Birthday</span>
       </div>
@@ -3149,6 +3285,11 @@
       <div class="page-head"><h1 class="page-title">Home Tasks</h1>
         <div class="ph-actions"><button class="btn btn-primary" data-cat-add="home"><i data-ico="plus"></i>Add task</button></div></div>
       <div id="catBody-home"><div class="skel"></div><div class="skel"></div></div>
+    </section>
+
+    <!-- ---------- LEARNING ---------- -->
+    <section class="page" id="page-learning">
+      <div id="learnBody"><div class="skel"></div><div class="skel"></div></div>
     </section>
 
     <!-- ---------- NOTIFICATIONS ---------- -->
@@ -3502,7 +3643,28 @@ const DOODLES = {
     <path d="M97 68c4 10 2 18-6 21"/>
     <path d="M77 82h16v10c0 3-2 5-5 5h-6c-3 0-5-2-5-5z" fill="#EAE5DF"/>
     <path d="M93 84.5c3.6 0 5.4 1.6 5.4 3.6s-1.8 3.6-5.4 3.6" stroke-width="2"/>
-    <path d="M81 76q-2.6-3.6 0-7.2M86 76q2.6-3.6 0-7.2M91 76q-2.6-3.6 0-7.2" stroke-width="1.7"/>` }
+    <path d="M81 76q-2.6-3.6 0-7.2M86 76q2.6-3.6 0-7.2M91 76q-2.6-3.6 0-7.2" stroke-width="1.7"/>` },
+
+  /* studying on a tower of books, thinking slightly too hard about it */
+  study: { vb:'0 0 200 140', svg:`
+    <path d="M14 131c56-1.4 116-1.4 172 0" stroke-width="2"/>
+    <rect x="58" y="112" width="84" height="18" rx="3" fill="#C7E3F3"/><path d="M66 118.5h44M66 123.5h28" stroke-width="1.6"/>
+    <rect x="66" y="96" width="70" height="16" rx="3" fill="#FBF9F6"/><path d="M128 96v16" stroke-width="1.8"/>
+    <rect x="62" y="82" width="76" height="14" rx="3" fill="#EAE5DF"/><path d="M70 89h22" stroke-width="1.6"/>
+    <path d="M90 82c-4-10-4-20 0-28h20c4 8 4 18 0 28" fill="#E2EFF6"/>
+    <path d="M93 82c-3 6-5 10-9 13M107 82c3 6 5 10 9 13"/>
+    <path d="M82 66l18 4 18-4v13l-18 4-18-4z" fill="#FBF9F6"/><path d="M100 70v13" stroke-width="1.8"/>
+    <path d="M91 58c-5 3-8 6-9 9M109 58c5 3 8 6 9 9"/>
+    <circle cx="100" cy="40" r="13" fill="#FBF9F6"/>
+    <path d="M94 43q2.2 1.6 4.4 0M101.6 43q2.2 1.6 4.4 0" stroke-width="1.8"/>
+    <circle cx="100.6" cy="48.4" r="1.5" fill="${DOODLE_INK}" stroke="none"/>
+    <path d="M92 31.5l4 1.6M108 31.5l-4 1.6" stroke-width="1.7"/>
+    <circle cx="120" cy="26" r="2"/><circle cx="127" cy="19" r="3"/>
+    <path d="M138 16c-2-8 8-13 16-9 4-6 16-6 20 0 9-1 13 9 7 14 3 7-5 13-13 10-5 6-17 6-21 0-9 1-14-9-9-15z" fill="#FBF9F6"/>
+    <path d="M147 15c4-4 7 4 11 0s7 4 11 0M146 23c3.6-3.6 6.6 3.6 10 0s6.6 3.6 10 0" stroke-width="1.6"/>
+    <path d="M183 42q0-5.4 5-5.4t5 4.6c0 3.6-4.6 4-4.6 7.6M188.4 54.4v.2" stroke-width="2"/>
+    <g transform="rotate(-16 36 82)"><rect x="26" y="70" width="20" height="24" rx="2" fill="#FBF9F6"/><path d="M30.5 77h11M30.5 82h11M30.5 87h7" stroke-width="1.5"/></g>
+    <path d="M44 62l4-3M50 70l5-1" stroke-width="1.7"/>` }
 };
 function doodleSvg(name, cls){
   const d = DOODLES[name] || DOODLES.calm;
@@ -3577,7 +3739,7 @@ const DAY_SHORT  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 /* Colour carries meaning, the same way it does on Training.
    Each maps to a CSS class that sets --acc for whatever uses it. */
 const KIND_ACC = { 'one-off':'acc-sky', 'long-term':'acc-amber', 'event':'acc-blue' };
-const CAT_ACC  = { work:'acc-blue', training:'acc-sun', personal:'acc-sky', general:'acc-sky', side:'acc-violet', money:'acc-green', home:'acc-rose' };
+const CAT_ACC  = { work:'acc-blue', training:'acc-sun', personal:'acc-sky', general:'acc-sky', side:'acc-violet', money:'acc-green', home:'acc-rose', learning:'acc-learn' };
 const kindAcc = k => KIND_ACC[k] || 'acc-sky';
 const catAcc  = c => CAT_ACC[c]  || 'acc-sky';
 const MONTHS_SH  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -4864,6 +5026,7 @@ async function renderCalendar(){
   if(calMode === 'week') await renderWeek(); else await renderMonth();
 }
 
+let CAL_LTASKS = [];
 async function renderWeek(){
   const monday = mondayOf(calRef);
   const dates  = Array.from({length:7},(_,i)=>addDays(monday,i));
@@ -4876,8 +5039,10 @@ async function renderWeek(){
       .gte('starts_at', iso(monday) + 'T00:00:00')
       .lte('starts_at', iso(dates[6]) + 'T23:59:59')
       .order('starts_at'),
-    sb.from('birthdays').select('*')
-  ]);
+    sb.from('birthdays').select('*'),
+    // study tasks are tasks, not events: read them from the task list, so nothing is copied
+    sb.from('tasks').select('*').eq('category', 'learning').gte('due_date', iso(monday)).lte('due_date', iso(dates[6]))
+  ]).then(r=>{ CAL_LTASKS = (r[2] && r[2].data) || []; return r; });
   if(error){ fail(error, 'Could not load events'); return; }
   const weekBdays = birthdaysInRange(bdRes.data || [], monday, dates[6]);
 
@@ -4905,6 +5070,12 @@ async function renderWeek(){
       html += `<div class="event ${catAcc(e.category)}" style="top:${top}px;height:${h}px;"
                     title="Click to edit" data-ev="${e.id}">${e.highlight ? '<span class="ev-star">★</span>' : ''}${esc(e.title)}</div>`;
     });
+    CAL_LTASKS.filter(t=>t.due_date === iso(dates[i]) && t.due_time).forEach(t=>{
+      const [hh, mm] = t.due_time.split(':').map(Number), startH = hh + mm / 60;
+      if(startH < HOURS[0]) return;
+      html += `<div class="event acc-learn ev-task${t.completed ? ' done' : ''}" style="top:${(startH - HOURS[0]) * ROW_H}px;height:${ROW_H - 6}px;"
+                    title="Study task: click to edit" data-ltask="${t.id}">${ico(t.completed ? 'check' : 'book', 'ico-sm')}${esc(t.title)}</div>`;
+    });
     html += '</div>';
   }
   html += '</div>';
@@ -4914,6 +5085,9 @@ async function renderWeek(){
   (data||[]).forEach(e=>{ byId[e.id] = e; });
   $('weekView').querySelectorAll('[data-ev]').forEach(el=>{
     el.addEventListener('click', ()=> openEditEvent(byId[el.dataset.ev]));
+  });
+  $('weekView').querySelectorAll('[data-ltask]').forEach(el=>{
+    el.addEventListener('click', ()=> openTaskForm(CAL_LTASKS.find(t=>t.id === el.dataset.ltask)));
   });
 }
 
@@ -4925,17 +5099,19 @@ async function renderMonth(){
   const days = new Date(y, m+1, 0).getDate();
   const today = new Date();
 
-  const [{ data }, bdRes] = await Promise.all([
+  const [{ data }, bdRes, ltRes] = await Promise.all([
     sb.from('schedule_events').select('starts_at,category')
       .gte('starts_at', iso(first) + 'T00:00:00')
       .lte('starts_at', iso(new Date(y, m, days)) + 'T23:59:59'),
-    sb.from('birthdays').select('*').eq('month', m+1)
+    sb.from('birthdays').select('*').eq('month', m+1),
+    sb.from('tasks').select('due_date').eq('category', 'learning').gte('due_date', iso(first)).lte('due_date', iso(new Date(y, m, days)))
   ]);
   const catsOn = {};
   (data||[]).forEach(e=>{
     const k = iso(new Date(e.starts_at));
     (catsOn[k] = catsOn[k] || new Set()).add(e.category || 'general');
   });
+  ((ltRes && ltRes.data) || []).forEach(t=>{ (catsOn[t.due_date] = catsOn[t.due_date] || new Set()).add('learning'); });
   const bdayDays = new Set((bdRes.data||[]).map(b=>b.day));
 
   let html = '<div class="month-grid">' + DAY_SHORT.map(d=>`<div class="head-cell">${d}</div>`).join('');
@@ -6305,7 +6481,11 @@ const ICONS = {
   user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
   trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',
   eye:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
-  moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>'
+  moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  book:'<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M9 7.5h7"/>',
+  play:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10.5 9.5v5l4.2-2.5z"/>',
+  link:'<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
+  note:'<path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h5"/>'
 };
 function ico(name, cls){
   return `<svg class="ico ${cls || ''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
@@ -6322,12 +6502,13 @@ const CATS = {
   money:    { label:'Money',       acc:'acc-green',  icon:'wallet',    page:'budget' },
   training: { label:'Training',    acc:'acc-sun',    icon:'dumbbell',  page:'training' },
   home:     { label:'Home',        acc:'acc-rose',   icon:'house',     page:'home' },
-  personal: { label:'Personal',    acc:'acc-sky',    icon:'user',      page:'tasks' }
+  personal: { label:'Personal',    acc:'acc-sky',    icon:'user',      page:'tasks' },
+  learning: { label:'Learning',    acc:'acc-learn',  icon:'book',      page:'learning' }
 };
-const CAT_ORDER = ['work','side','money','training','home','personal'];
+const CAT_ORDER = ['work','side','money','training','home','learning','personal'];
 const taskCat = t => (t && CATS[t.category]) ? t.category : 'personal';
 const catChip = c => `<span class="chip ${CATS[c].acc}"><i></i>${CATS[c].label}</span>`;
-const EVENT_CAT_LABEL = { work:'Work', side:'Side Hustle', money:'Money', training:'Training', home:'Home', personal:'Personal', general:'General' };
+const EVENT_CAT_LABEL = { work:'Work', side:'Side Hustle', money:'Money', training:'Training', home:'Home', learning:'Learning', personal:'Personal', general:'General' };
 const fmtT = d => d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
 function relDay(d){
   const diff = Math.round((_dayOnly(d) - _dayOnly(new Date())) / 86400000);
@@ -6410,7 +6591,7 @@ function applyPrefs(){
 const PAGE_TITLES = {
   dashboard:'Dashboard', schedule:'Calendar', notifications:'Notifications', tasks:'All tasks',
   work:'Work', side:'Side Hustle', budget:'Money & Budgeting', training:'Training & Food',
-  home:'Home Tasks', progress:'Progress', settings:'Settings'
+  home:'Home Tasks', learning:'Learning', progress:'Progress', settings:'Settings'
 };
 let currentPage = 'dashboard';
 
@@ -6470,6 +6651,7 @@ const LOADERS = {
   work:          ()=>loadCategoryPage('work'),
   side:          ()=>loadCategoryPage('side'),
   home:          ()=>loadCategoryPage('home'),
+  learning:      ()=>loadLearning(),
   notifications: ()=>loadNotifications(),
   progress:      ()=>loadProgress(),
   settings:      ()=>loadSettings()
@@ -6657,6 +6839,7 @@ function openTaskForm(task, defaults){
     cat: task ? taskCat(task) : (defaults.category || 'personal'),
     prio: (task && task.priority) || 'normal',
     noDate: task ? !task.due_date : !!defaults.noDate,
+    lp: (task && task.learning_path_id) || defaults.learningPathId || null,
     confirmDel: false
   };
   const time = task && task.due_time ? task.due_time.slice(0,5) : (defaults.time || '');
@@ -6666,6 +6849,9 @@ function openTaskForm(task, defaults){
   const html =
     '<div class="fm-label">Area</div>' +
     chips('cat', CAT_ORDER.map(k=>({ value:k, label:CATS[k].label, acc:CATS[k].acc, dot:true })), st.cat) +
+    (LEARN && LEARN.paths.length ? '<div class="fm-label">Learning path (optional)</div>' +
+      chips('lp', [{ value:'', label:'None' }].concat(LEARN.paths.filter(p=>p.status !== 'completed' || p.id === st.lp)
+        .map(p=>({ value:p.id, label:p.title }))), st.lp || '') : '') +
     '<div class="fm-label">Priority</div>' +
     chips('prio', [{ value:'high', label:'High' }, { value:'normal', label:'Normal' }, { value:'low', label:'Low' }], st.prio) +
     chips('nodate', [{ value:'1', label:'No date (someday)' }], st.noDate ? '1' : '');
@@ -6691,7 +6877,10 @@ function openTaskForm(task, defaults){
       const pick = b.parentNode.dataset.pick;
       if(pick === 'nodate'){ st.noDate = !st.noDate; b.classList.toggle('on', st.noDate); b.setAttribute('aria-pressed', st.noDate); return; }
       b.parentNode.querySelectorAll('button').forEach(x=>{ x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); });
-      if(pick === 'cat') st.cat = b.dataset.v; else st.prio = b.dataset.v;
+      const pickOnly = (name, v)=> $('fmBody').querySelectorAll(`[data-pick="${name}"] button`).forEach(x=>{ const on = x.dataset.v === v; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+      if(pick === 'lp'){ st.lp = b.dataset.v || null; if(st.lp){ st.cat = 'learning'; pickOnly('cat', 'learning'); } return; }
+      if(pick === 'cat'){ st.cat = b.dataset.v; if(st.cat !== 'learning' && st.lp){ st.lp = null; pickOnly('lp', ''); } }
+      else st.prio = b.dataset.v;
     },
     onSubmit: async (v, act)=>{
       if(act === 'delete'){
@@ -6713,7 +6902,8 @@ function openTaskForm(task, defaults){
         kind: v.fmKind || 'one-off',
         category: st.cat,
         priority: st.prio === 'normal' ? null : st.prio,
-        notes: v.fmNotes || null
+        notes: v.fmNotes || null,
+        learning_path_id: st.cat === 'learning' ? st.lp : null
       };
       if(act === 'tomorrow'){
         const base = new Date();
@@ -7780,6 +7970,666 @@ function paintMoney(M){
 /* ===================================================================
    SETTINGS
    =================================================================== */
+/* ===================================================================
+   LEARNING — paths, materials (with lessons), goals, notes, study time.
+   Data: learning_paths, learning_resources, learning_sessions,
+   learning_notes. Study tasks are ordinary rows in `tasks`
+   (category 'learning' + learning_path_id), so they show on the
+   dashboard, in All tasks and on the calendar with no copies, and
+   follow the same date and carry-over rules as every other task.
+   Progress is only ever counted from what is stored: lessons ticked,
+   materials marked done, goals reached, minutes logged.
+   =================================================================== */
+let LEARN = null, LSEL = null, LTAB = 'materials', LNOTE_FILTER = 'all';
+const LKINDS = {
+  course:   { label:'Online course',  icon:'grid' },
+  video:    { label:'YouTube / video', icon:'play' },
+  book:     { label:'Book',           icon:'book' },
+  article:  { label:'Article',        icon:'note' },
+  website:  { label:'Website',        icon:'link' },
+  material: { label:'My own material', icon:'pencil' }
+};
+const LSTATUS = { not_started:'Not started', in_progress:'In progress', completed:'Completed' };
+const PSTATUS = { active:'Active', paused:'Paused', completed:'Completed' };
+const LTIMER_KEY = 'pa_study_timer';
+const lid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+function fmtMins(m){
+  m = Math.round(m || 0);
+  if(m < 60) return m + ' min';
+  const h = Math.floor(m / 60), r = m % 60;
+  return h + ' h' + (r ? ' ' + r + ' min' : '');
+}
+function safeUrl(u){
+  u = (u || '').trim();
+  if(!u) return '';
+  if(/^https?:\/\//i.test(u)) return u;
+  if(/^[\w-]+(\.[\w-]+)+(\/|$)/.test(u)) return 'https://' + u;
+  return '';
+}
+const urlHost = u => { try{ return new URL(u).hostname.replace(/^www\./, ''); }catch(e){ return u; } };
+
+async function fetchLearning(){
+  const res = await Promise.all([
+    sb.from('learning_paths').select('*').order('created_at'),
+    sb.from('learning_resources').select('*').order('created_at'),
+    sb.from('learning_sessions').select('*').order('started_at', { ascending:false }),
+    sb.from('learning_notes').select('*').order('updated_at', { ascending:false }),
+    sb.from('tasks').select('*').eq('category', 'learning')
+  ]);
+  const bad = res.find(r=>r.error);
+  if(bad) throw bad.error;
+  const [paths, rs, sess, notes, tasks] = res.map(r=>r.data || []);
+  LEARN = { paths, res: rs, sess, notes, tasks };
+  return LEARN;
+}
+
+/* ---------- progress, all from stored data ---------- */
+// a material with lessons counts each lesson; without lessons it is one unit, done when marked Completed
+function resUnits(r){
+  const L = r.lessons || [];
+  return L.length ? { total:L.length, done:L.filter(l=>l.done).length } : { total:1, done: r.status === 'completed' ? 1 : 0 };
+}
+function resPct(r){
+  const L = r.lessons || [];
+  if(L.length) return Math.round(L.filter(l=>l.done).length / L.length * 100);
+  return r.status === 'completed' ? 100 : null;      // no lessons, not finished: no made-up percentage
+}
+function pathStats(p){
+  const rs = LEARN.res.filter(r=>r.path_id === p.id);
+  let total = 0, done = 0;
+  rs.forEach(r=>{ const u = resUnits(r); total += u.total; done += u.done; });
+  const goals = p.goals || [];
+  const sess = LEARN.sess.filter(s=>s.path_id === p.id);
+  const last = sess[0] ? new Date(sess[0].started_at) : null;
+  return { rs, total, done, pct: total ? Math.round(done / total * 100) : null,
+    goals: goals.length, goalsDone: goals.filter(g=>g.done).length,
+    mins: sess.reduce((a, s)=>a + (s.minutes || 0), 0), sess, last };
+}
+function weekStudy(){
+  const mon = mondayOf(new Date());
+  const days = Array.from({ length:7 }, (_, i)=>({ d: addDays(mon, i), mins:0 }));
+  LEARN.sess.forEach(s=>{
+    const d = _dayOnly(new Date(s.started_at)), i = Math.round((d - mon) / 86400000);
+    if(i >= 0 && i < 7) days[i].mins += s.minutes || 0;
+  });
+  return { days, total: days.reduce((a, x)=>a + x.mins, 0) };
+}
+function lessonsDone(){
+  const mon = mondayOf(new Date()).toISOString();
+  let all = 0, week = 0;
+  LEARN.res.forEach(r=>(r.lessons || []).forEach(l=>{ if(l.done){ all++; if(l.done_at && l.done_at >= mon) week++; } }));
+  return { all, week };
+}
+const pathOf = id => LEARN && LEARN.paths.find(p=>p.id === id);
+const resOf = id => LEARN && LEARN.res.find(r=>r.id === id);
+
+/* ---------- study timer: survives reloads, never required ---------- */
+function readTimer(){ try{ return JSON.parse(localStorage.getItem(LTIMER_KEY) || 'null'); }catch(e){ return null; } }
+function writeTimer(t){ try{ t ? localStorage.setItem(LTIMER_KEY, JSON.stringify(t)) : localStorage.removeItem(LTIMER_KEY); }catch(e){} }
+function clockText(ms){
+  const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
+  return (h ? h + ':' + pad2(m) : m) + ':' + pad2(sec);
+}
+setInterval(()=>{
+  const t = readTimer();
+  if(!t) return;
+  document.querySelectorAll('[data-timer-clock]').forEach(el=>{ el.textContent = clockText(Date.now() - t.startedAt); });
+}, 1000);
+function startTimer(pathId){
+  if(readTimer()){ toast('A timer is already running', true); return; }
+  writeTimer({ pathId: pathId || null, startedAt: Date.now() });
+  toast('Timer started. Have a good session');
+  renderLearn();
+}
+async function stopTimer(save){
+  const t = readTimer();
+  if(!t) return;
+  const mins = Math.round((Date.now() - t.startedAt) / 60000);
+  writeTimer(null);
+  if(!save){ toast('Timer discarded'); renderLearn(); return; }
+  if(mins < 1){ toast('Under a minute, so nothing was logged'); renderLearn(); return; }
+  const { error } = await sb.from('learning_sessions').insert({ user_id: USER.id, path_id: t.pathId, started_at: new Date(t.startedAt).toISOString(), minutes: Math.min(mins, 1440) });
+  if(error){ writeTimer(t); fail(error, 'Could not save the session'); return; }
+  toast('Logged ' + fmtMins(mins) + ' of study');
+  loadLearning();
+}
+
+/* ---------- page ---------- */
+async function loadLearning(){
+  if(!USER) return;
+  const body = $('learnBody');
+  try{ await fetchLearning(); renderLearn(); }
+  catch(err){ showError(body, err, loadLearning); }
+}
+function renderLearn(){
+  if(!LEARN) return;
+  const p = LSEL && pathOf(LSEL);
+  if(!p) LSEL = null;
+  const body = $('learnBody');
+  body.innerHTML = p ? learnPathHtml(p) : learnHomeHtml();
+  enhanceSelects(body);
+  paintTimer();
+  if(p) renderPathTasks(p);
+  else renderLearnTasks();
+}
+function paintTimer(){
+  const t = readTimer();
+  document.querySelectorAll('[data-timer-clock]').forEach(el=>{ el.textContent = t ? clockText(Date.now() - t.startedAt) : '0:00'; });
+}
+
+function timerCardHtml(pathId){
+  const t = readTimer();
+  if(t){
+    const tp = t.pathId && pathOf(t.pathId);
+    return `<div class="card ln-timer on" role="status">
+      <span class="card-icon">${ico('clock')}</span>
+      <div class="ln-timer-txt"><span class="ln-clock" data-timer-clock>0:00</span><span class="ln-row-sub">Studying${tp ? ' · ' + esc(tp.title) : ''}</span></div>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-sm" data-l="timer-discard">Discard</button>
+      <button class="btn btn-primary btn-sm" data-l="timer-stop">${ico('check','ico-sm')}Stop and save</button>
+    </div>`;
+  }
+  const active = LEARN.paths.filter(p=>p.status !== 'completed');
+  return `<div class="card ln-timer">
+    <span class="card-icon">${ico('clock')}</span>
+    <div class="ln-timer-txt"><b>Study timer</b><span class="ln-row-sub">Optional. Start it when you sit down, stop it when you're done.</span></div>
+    <span class="spacer"></span>
+    ${pathId ? '' : `<div class="sel-wrap ln-timer-sel"><select id="lTimerPath" aria-label="Learning path for this session">
+      <option value="">No specific path</option>${active.map(p=>`<option value="${p.id}">${esc(p.title)}</option>`).join('')}</select></div>`}
+    <button class="btn btn-ghost btn-sm" data-l="log"${pathId ? ` data-path="${pathId}"` : ''}>${ico('pencil','ico-sm')}Log manually</button>
+    <button class="btn btn-primary btn-sm" data-l="timer-start"${pathId ? ` data-path="${pathId}"` : ''}>${ico('clock','ico-sm')}Start</button>
+  </div>`;
+}
+
+function progressBar(pctV){
+  return pctV == null ? '<div class="ln-bar is-empty" aria-hidden="true"><i style="width:0"></i></div>'
+    : `<div class="ln-bar" role="progressbar" aria-valuenow="${pctV}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pctV}%"></i></div>`;
+}
+function pathCardHtml(p){
+  const s = pathStats(p);
+  const due = p.target_date ? 'Target ' + parseISO(p.target_date).toLocaleDateString(undefined,{ day:'numeric', month:'short', year:'numeric' }) : '';
+  return `<button class="ln-path" data-l="open-path" data-path="${p.id}" aria-label="Open ${esc(p.title)}">
+    <div class="ln-meta">${p.category ? `<span class="ln-pill">${esc(p.category)}</span>` : ''}<span class="ln-pill st-${p.status}">${PSTATUS[p.status] || 'Active'}</span></div>
+    <h3>${esc(p.title)}</h3>
+    ${p.description ? `<p>${esc(p.description)}</p>` : ''}
+    <div class="ln-prog">${progressBar(s.pct)}<span class="ln-pct">${s.pct == null ? 'No materials yet' : s.pct + '%'}</span></div>
+    <div class="ln-meta">
+      <span>${s.rs.length} material${s.rs.length === 1 ? '' : 's'}</span>
+      ${s.goals ? `<span>· ${s.goalsDone}/${s.goals} goals</span>` : ''}
+      ${s.mins ? `<span>· ${fmtMins(s.mins)} studied</span>` : ''}
+      ${due ? `<span>· ${due}</span>` : ''}
+    </div>
+  </button>`;
+}
+
+// "what should I study next": materials you've started, then the next untouched one per active path
+function nextUp(){
+  const activePaths = LEARN.paths.filter(p=>p.status === 'active');
+  const ids = new Set(activePaths.map(p=>p.id));
+  const started = LEARN.res.filter(r=>ids.has(r.path_id) && r.status !== 'completed' &&
+    (r.status === 'in_progress' || (r.lessons || []).some(l=>l.done)))
+    .sort((a, b)=>(b.updated_at || '').localeCompare(a.updated_at || ''));
+  const out = started.map(r=>({ r, why:'In progress' }));
+  activePaths.forEach(p=>{
+    if(out.some(x=>x.r.path_id === p.id)) return;
+    const r = LEARN.res.find(x=>x.path_id === p.id && x.status === 'not_started');
+    if(r) out.push({ r, why:'Up next' });
+  });
+  return out.slice(0, 6);
+}
+function resRowHtml(x){
+  const r = x.r, p = pathOf(r.path_id), k = LKINDS[r.kind] || LKINDS.course, pc = resPct(r);
+  const next = (r.lessons || []).find(l=>!l.done);
+  const url = safeUrl(r.url);
+  return `<div class="ln-row">
+    <span class="ln-kind" title="${k.label}">${ico(k.icon)}</span>
+    <button class="ln-row-body ln-plain" data-l="open-path" data-path="${r.path_id}" data-tab="materials">
+      <span class="ln-row-title">${esc(r.title)}</span>
+      <span class="ln-row-sub">${esc(p ? p.title : '')} · ${x.why}${next ? ' · Next: ' + esc(next.title) : ''}</span>
+    </button>
+    ${pc != null ? `<span class="ln-pct">${pc}%</span>` : ''}
+    ${url ? `<a class="btn btn-ghost btn-sm" href="${esc(url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(r.title)} in a new tab">${ico('link','ico-sm')}Open</a>` : ''}
+  </div>`;
+}
+
+function learnHomeHtml(){
+  const L = LEARN, wk = weekStudy(), ls = lessonsDone();
+  const goalsAll = L.paths.reduce((a, p)=>a + (p.goals || []).length, 0);
+  const goalsDone = L.paths.reduce((a, p)=>a + (p.goals || []).filter(g=>g.done).length, 0);
+  const active = L.paths.filter(p=>p.status !== 'completed'), finished = L.paths.filter(p=>p.status === 'completed');
+  const maxD = Math.max(1, ...wk.days.map(x=>x.mins));
+  const tIso = iso(new Date());
+  const head = `<div class="ln-head">
+      <div class="ln-intro">${doodleSvg('study', 'ln-doodle')}
+        <div><h1 class="page-title">Learning</h1>
+          <p class="ln-sub">Your paths, courses and study time, all in one place.</p>
+          <p class="ln-cap">Collecting knowledge. Occasionally using it.</p></div></div>
+      <div class="ph-actions"><button class="btn btn-primary" data-l="add-path">${ico('plus')}Add learning path</button></div>
+    </div>`;
+  if(!L.paths.length){
+    return head + `<div class="card ln-empty-hero">
+      <b>Nothing on the reading list yet</b>
+      <p>Make a learning path for anything you want to get better at, like Figma, English or brand strategy.
+        Then add the courses, videos and books that go with it.</p>
+      <button class="btn btn-primary" data-l="add-path">${ico('plus')}Add your first learning path</button>
+    </div>` + (L.sess.length ? `<div class="card"><div class="empty">You've logged ${fmtMins(L.sess.reduce((a, s)=>a + s.minutes, 0))} of study so far.</div></div>` : '');
+  }
+  const up = nextUp();
+  const links = L.res.filter(r=>safeUrl(r.url)).sort((a, b)=>(b.updated_at || '').localeCompare(a.updated_at || '')).slice(0, 8);
+  return head + timerCardHtml() + `
+    <div class="ln-stats">
+      <div class="card ln-stat"><span>Studied this week</span><b>${fmtMins(wk.total)}</b>
+        <div class="ln-week" aria-label="Minutes per day this week">${wk.days.map((x, i)=>`<i class="${x.mins ? 'on' : ''}${iso(x.d) === tIso ? ' today' : ''}" style="height:${x.mins ? Math.max(18, x.mins / maxD * 100) : 12}%" title="${DAY_SHORT[i]}: ${fmtMins(x.mins)}"></i>`).join('')}</div></div>
+      <div class="card ln-stat"><span>Lessons done</span><b>${ls.week} <small>this week</small></b><span>${ls.all} in total</span></div>
+      <div class="card ln-stat"><span>Goals reached</span><b>${goalsDone}<small> / ${goalsAll}</small></b><span>${goalsAll ? pct(goalsDone, goalsAll) + '% of your goals' : 'Add goals inside a path'}</span></div>
+      <div class="card ln-stat"><span>Learning paths</span><b>${active.length} <small>active</small></b><span>${finished.length} completed</span></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-icon acc-learn">${ico('book')}</span><h2 class="card-title">What you're learning</h2>
+        <span class="card-count">${L.paths.length}</span></div>
+      <div class="ln-paths">${active.concat(finished).map(pathCardHtml).join('')}</div>
+    </div>
+    <div class="ln-cols">
+      <div>
+        <div class="card">
+          <div class="card-head"><span class="card-icon acc-learn">${ico('play')}</span><h2 class="card-title">Continue learning</h2></div>
+          ${up.length ? up.map(resRowHtml).join('') : '<div class="empty">Add a course or video to a path, and it will show up here when you start it.</div>'}
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-icon acc-learn">${ico('calendar')}</span><h2 class="card-title">Planned study</h2>
+            <span class="spacer"></span><button class="btn btn-ghost btn-sm" data-l="add-task">${ico('plus','ico-sm')}Study task</button></div>
+          <div class="ln-tasks"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div class="card-head"><span class="card-icon acc-learn">${ico('link')}</span><h2 class="card-title">Quick access</h2></div>
+          ${links.length ? `<div class="ln-links">${links.map(r=>`<a class="ln-link" href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener noreferrer" title="${esc(r.title)}">${ico((LKINDS[r.kind] || LKINDS.course).icon, 'ico-sm')}<span>${esc(r.title)}</span></a>`).join('')}</div>`
+            : '<div class="empty">Materials with a link land here for one-tap access.</div>'}
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-icon acc-learn">${ico('clock')}</span><h2 class="card-title">Recent sessions</h2>
+            <span class="spacer"></span><button class="btn btn-ghost btn-sm" data-l="log">${ico('plus','ico-sm')}Log</button></div>
+          ${L.sess.length ? L.sess.slice(0, 5).map(sessRowHtml).join('') : '<div class="empty">No study sessions yet. The timer and manual log are both optional.</div>'}
+        </div>
+      </div>
+    </div>`;
+}
+function sessRowHtml(s){
+  const p = s.path_id && pathOf(s.path_id), d = new Date(s.started_at);
+  return `<div class="ln-row"><span class="ln-kind">${ico('clock','ico-sm')}</span>
+    <span class="ln-row-body"><span class="ln-row-title">${fmtMins(s.minutes)}${p ? ' · ' + esc(p.title) : ''}</span>
+      <span class="ln-row-sub">${relDay(d)} · ${fmtT(d)}${s.note ? ' · ' + esc(s.note) : ''}</span></span>
+    <button class="ln-x" data-l="del-session" data-id="${s.id}" aria-label="Delete this session">${ico('x','ico-sm')}</button></div>`;
+}
+
+// study tasks reuse the shared task rows, so ticking them off works the same everywhere
+function learnTaskItems(tasks){
+  const t0 = iso(new Date());
+  const toItem = t => ({ key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat:'learning', done:!!t.completed, hideCat:true,
+    priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t,
+    dateLabel: t.due_date ? (t.due_date === t0 ? 'Today' : relDay(parseISO(t.due_date))) : 'No date',
+    missed: !t.completed && t.due_date && t.due_date < t0 });
+  const open = tasks.filter(t=>!t.completed).sort((a, b)=>(a.due_date || '9999').localeCompare(b.due_date || '9999') || (a.due_time || '').localeCompare(b.due_time || ''));
+  const done = tasks.filter(t=>t.completed).sort((a, b)=>(b.completed_at || '').localeCompare(a.completed_at || '')).slice(0, 5);
+  return [{ label:'To do', items: open.map(toItem) }, { label:'Done', cls:'g-done', items: done.map(toItem) }];
+}
+function renderLearnTasks(){
+  const el = $('learnBody').querySelector('.ln-tasks');
+  if(!el) return;
+  const tasks = LEARN.tasks.filter(t=>!t.completed || (t.completed_at && new Date(t.completed_at) >= addDays(_dayOnly(new Date()), -7)));
+  renderTaskList(el, learnTaskItems(tasks).map(g=>({ ...g, items: g.items.map(it=>{ const p = pathOf(it.raw.learning_path_id);
+    return p ? { ...it, dateLabel: it.dateLabel + ' · ' + p.title } : it; }) })),
+    '<div class="empty">Plan a session, like "Auto Layout tutorial, Thursday 4 PM". It will also show on your dashboard and calendar.</div>');
+}
+function renderPathTasks(p){
+  const el = $('learnBody').querySelector('.ln-tasks');
+  if(!el) return;
+  renderTaskList(el, learnTaskItems(LEARN.tasks.filter(t=>t.learning_path_id === p.id)),
+    '<div class="empty">No study tasks for this path yet.</div>');
+}
+
+/* ---------- one path, opened ---------- */
+function learnPathHtml(p){
+  const s = pathStats(p);
+  const tabs = [['materials', 'Materials', s.rs.length], ['goals', 'Goals', s.goals], ['notes', 'Notes', LEARN.notes.filter(n=>n.path_id === p.id).length], ['study', 'Study', s.sess.length]];
+  const due = p.target_date ? parseISO(p.target_date).toLocaleDateString(undefined,{ day:'numeric', month:'long', year:'numeric' }) : '';
+  return `<button class="ln-back" data-l="home">${ico('chevL','ico-sm')}All learning paths</button>
+    <div class="ln-head ln-head-path">
+      <div><div class="ln-meta">${p.category ? `<span class="ln-pill">${esc(p.category)}</span>` : ''}<span class="ln-pill st-${p.status}">${PSTATUS[p.status] || 'Active'}</span>${due ? `<span>Target: ${due}</span>` : ''}</div>
+        <h1 class="page-title">${esc(p.title)}</h1>
+        ${p.description ? `<p class="ln-sub">${esc(p.description)}</p>` : ''}</div>
+      <div class="ph-actions"><button class="btn btn-ghost" data-l="edit-path" data-path="${p.id}">${ico('pencil')}Edit</button>
+        <button class="btn btn-primary" data-l="add-res" data-path="${p.id}">${ico('plus')}Add material</button></div>
+    </div>
+    <div class="card ln-summary">
+      <div class="ln-big">${s.pct == null ? '—' : s.pct + '%'}<span>${s.total ? `${s.done} of ${s.total} lessons and materials done` : 'Add materials to see progress'}</span></div>
+      <div class="ln-sumgrid">
+        <div><b>${s.goalsDone}/${s.goals}</b><span>goals reached</span></div>
+        <div><b>${fmtMins(s.mins)}</b><span>studied in total</span></div>
+        <div><b>${s.last ? relDay(s.last) : '—'}</b><span>last session</span></div>
+      </div>
+      ${progressBar(s.pct)}
+    </div>
+    ${timerCardHtml(p.id)}
+    <div class="seg ln-tabs" role="tablist" aria-label="Path sections">${tabs.map(([k, l, n])=>
+      `<button role="tab" aria-selected="${LTAB === k}" class="${LTAB === k ? 'on' : ''}" data-l="tab" data-tab="${k}">${l}${n ? ` <span class="ln-n">${n}</span>` : ''}</button>`).join('')}</div>
+    <div class="ln-tab">${LTAB === 'goals' ? goalsHtml(p) : LTAB === 'notes' ? notesHtml(p) : LTAB === 'study' ? studyHtml(p, s) : materialsHtml(p, s)}</div>`;
+}
+
+function materialsHtml(p, s){
+  if(!s.rs.length) return `<div class="card ln-empty-hero"><b>No materials yet</b>
+    <p>Add the course, playlist, book or article you're working through. Break it into lessons if you'd like to tick them off one by one.</p>
+    <button class="btn btn-primary" data-l="add-res" data-path="${p.id}">${ico('plus')}Add material</button></div>`;
+  const order = { in_progress:0, not_started:1, completed:2 };
+  return s.rs.slice().sort((a, b)=>order[a.status] - order[b.status]).map(r=>{
+    const k = LKINDS[r.kind] || LKINDS.course, L = r.lessons || [], pc = resPct(r), url = safeUrl(r.url);
+    const dn = L.filter(l=>l.done).length;
+    return `<div class="ln-res" data-res="${r.id}">
+      <div class="ln-res-head">
+        <span class="ln-kind" title="${k.label}">${ico(k.icon)}</span>
+        <div class="ln-row-body"><span class="ln-row-title">${esc(r.title)}</span>
+          <span class="ln-row-sub">${k.label}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(urlHost(url))}</a>` : ''}${L.length ? ` · ${dn}/${L.length} lessons` : ''}</span></div>
+        <div class="ln-status" role="radiogroup" aria-label="Status of ${esc(r.title)}">${Object.entries(LSTATUS).map(([v, l])=>
+          `<button role="radio" aria-checked="${r.status === v}" class="s-${v}${r.status === v ? ' on' : ''}" data-l="res-status" data-id="${r.id}" data-v="${v}">${l}</button>`).join('')}</div>
+        <button class="ln-x" data-l="edit-res" data-id="${r.id}" aria-label="Edit ${esc(r.title)}">${ico('pencil','ico-sm')}</button>
+      </div>
+      ${pc != null ? `<div class="ln-prog">${progressBar(pc)}<span class="ln-pct">${pc}%</span></div>` : ''}
+      ${r.notes ? `<p class="ln-res-notes">${esc(r.notes)}</p>` : ''}
+      <details class="fold ln-fold"${L.length && r.status !== 'completed' ? ' open' : ''}><summary>${L.length ? `Lessons (${dn}/${L.length})` : 'Lessons or modules (optional)'}</summary>
+        ${L.map(l=>`<div class="ln-check${l.done ? ' done' : ''}">
+          <button class="ln-box" role="checkbox" aria-checked="${!!l.done}" data-l="lesson" data-id="${r.id}" data-lesson="${l.id}" aria-label="${l.done ? 'Mark not done' : 'Mark done'}: ${esc(l.title)}">${ico('check','ico-sm')}</button>
+          <span class="ln-ct">${esc(l.title)}</span>
+          <button class="ln-x" data-l="del-lesson" data-id="${r.id}" data-lesson="${l.id}" aria-label="Remove lesson ${esc(l.title)}">${ico('x','ico-sm')}</button></div>`).join('')}
+        <form class="ln-add" data-l-form="lesson" data-id="${r.id}" autocomplete="off"><input type="text" placeholder="Add a lesson or module…" aria-label="New lesson for ${esc(r.title)}" maxlength="140" />
+          <button class="btn btn-ghost btn-sm" type="submit">Add</button></form>
+      </details>
+    </div>`;
+  }).join('');
+}
+
+function goalsHtml(p){
+  const G = p.goals || [];
+  return `<div class="card">
+    <p class="ln-hint">What do you want to be able to do? Tick each one off when you get there.</p>
+    ${G.map(g=>`<div class="ln-check${g.done ? ' done' : ''}">
+      <button class="ln-box" role="checkbox" aria-checked="${!!g.done}" data-l="goal" data-id="${g.id}" aria-label="${g.done ? 'Mark not reached' : 'Mark reached'}: ${esc(g.text)}">${ico('check','ico-sm')}</button>
+      <span class="ln-ct">${esc(g.text)}${g.done && g.done_at ? ` <span class="ln-row-sub">· reached ${relDayLc(new Date(g.done_at))}</span>` : ''}</span>
+      <button class="ln-x" data-l="del-goal" data-id="${g.id}" aria-label="Remove goal">${ico('x','ico-sm')}</button></div>`).join('') || '<div class="empty">No goals yet.</div>'}
+    <form class="ln-add" data-l-form="goal" autocomplete="off"><input type="text" placeholder="e.g. Build a responsive card with Auto Layout" aria-label="New goal" maxlength="200" />
+      <button class="btn btn-ghost btn-sm" type="submit">Add goal</button></form>
+  </div>`;
+}
+
+function notesHtml(p){
+  const rs = LEARN.res.filter(r=>r.path_id === p.id);
+  let notes = LEARN.notes.filter(n=>n.path_id === p.id);
+  if(LNOTE_FILTER === 'general') notes = notes.filter(n=>!n.resource_id);
+  else if(LNOTE_FILTER !== 'all') notes = notes.filter(n=>n.resource_id === LNOTE_FILTER);
+  const f = (v, l) => `<button class="${LNOTE_FILTER === v ? 'on' : ''}" data-l="note-filter" data-v="${v}" aria-pressed="${LNOTE_FILTER === v}">${esc(l)}</button>`;
+  return `<div class="ln-notes-bar">
+      <div class="chip-pick ln-filter">${f('all', 'All')}${f('general', 'General')}${rs.map(r=>f(r.id, r.title)).join('')}</div>
+      <button class="btn btn-primary btn-sm" data-l="add-note">${ico('plus','ico-sm')}New note</button></div>
+    ${notes.length ? notes.map(n=>{ const r = n.resource_id && resOf(n.resource_id), url = safeUrl(n.url);
+      return `<div class="card ln-note">
+        <div class="ln-note-head"><b>${esc(n.title || 'Untitled note')}</b>${r ? `<span class="ln-pill">${esc(r.title)}</span>` : ''}
+          <span class="spacer"></span><span class="ln-row-sub">${relDay(new Date(n.updated_at || n.created_at))}</span>
+          <button class="ln-x" data-l="edit-note" data-id="${n.id}" aria-label="Edit note">${ico('pencil','ico-sm')}</button></div>
+        ${n.body ? `<p class="ln-note-body">${esc(n.body)}</p>` : ''}
+        ${url ? `<a class="ln-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${ico('link','ico-sm')}<span>${esc(urlHost(url))}</span></a>` : ''}
+      </div>`; }).join('')
+      : `<div class="card"><div class="empty">${LNOTE_FILTER === 'all' ? 'Jot down what clicked, shortcuts worth remembering, or links to come back to.' : 'No notes here yet.'}</div></div>`}`;
+}
+
+function studyHtml(p, s){
+  return `<div class="ln-cols">
+    <div class="card">
+      <div class="card-head"><span class="card-icon acc-learn">${ico('calendar')}</span><h2 class="card-title">Study tasks</h2>
+        <span class="spacer"></span><button class="btn btn-ghost btn-sm" data-l="add-task" data-path="${p.id}">${ico('plus','ico-sm')}Study task</button></div>
+      <div class="ln-tasks"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-icon acc-learn">${ico('clock')}</span><h2 class="card-title">Sessions</h2>
+        <span class="card-count">${fmtMins(s.mins)}</span><span class="spacer"></span>
+        <button class="btn btn-ghost btn-sm" data-l="log" data-path="${p.id}">${ico('plus','ico-sm')}Log</button></div>
+      ${s.sess.length ? s.sess.map(sessRowHtml).join('') : '<div class="empty">No sessions logged for this path yet.</div>'}
+    </div>
+  </div>`;
+}
+
+/* ---------- forms ---------- */
+function openPathForm(p){
+  const st = { confirmDel:false };
+  openForm({
+    title: p ? 'Edit learning path' : 'New learning path',
+    wide: true,
+    rows: [
+      [{ id:'lpTitle', placeholder:'What are you learning? e.g. Figma & UI/UX', value: p ? p.title : '' }],
+      [{ id:'lpDesc', type:'textarea', rows:2, placeholder:'Why, or what for (optional)', value: (p && p.description) || '' }],
+      [{ id:'lpCat', placeholder:'Category, e.g. Design, Language (optional)', value: (p && p.category) || '' },
+       { id:'lpDate', type:'date', value: (p && p.target_date) || '' }],
+      p ? [{ id:'lpStatus', type:'select', value: p.status, options: Object.entries(PSTATUS).map(([value, label])=>({ value, label })) }]
+        : [{ id:'lpGoals', type:'textarea', rows:3, placeholder:'Learning goals, one per line (optional)' }],
+      [{ type:'note', text:'Target date is optional. Leave it as "No date" if there\'s no deadline.' }]
+    ],
+    actions: p ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Create path', value:'save' }],
+    onSubmit: async (v, act)=>{
+      if(act === 'delete'){
+        if(!st.confirmDel){
+          st.confirmDel = true;
+          const b = $('fmActions').querySelector('.modal-danger');
+          b.textContent = 'Tap again: deletes its materials and notes'; b.classList.add('confirming');
+          return false;
+        }
+        const { error } = await sb.from('learning_paths').delete().eq('id', p.id);
+        if(error){ fail(error, 'Could not delete'); return false; }
+        LSEL = null; toast('Learning path deleted'); loadLearning(); return;
+      }
+      if(!v.lpTitle){ toast('Give the path a name', true); return false; }
+      const payload = { title: v.lpTitle, description: v.lpDesc || null, category: v.lpCat || null, target_date: v.lpDate || null };
+      if(p){
+        payload.status = v.lpStatus || 'active';
+        payload.completed_at = payload.status === 'completed' ? (p.completed_at || new Date().toISOString()) : null;
+        const { error } = await sb.from('learning_paths').update(payload).eq('id', p.id);
+        if(error){ fail(error, 'Could not save'); return false; }
+        toast('Saved');
+      } else {
+        payload.goals = (v.lpGoals || '').split('\n').map(x=>x.trim()).filter(Boolean).map(text=>({ id: lid(), text, done:false }));
+        const { data, error } = await sb.from('learning_paths').insert({ user_id: USER.id, ...payload }).select().single();
+        if(error){ fail(error, 'Could not create the path'); return false; }
+        LSEL = data && data.id; LTAB = 'materials'; toast('Learning path created');
+      }
+      loadLearning();
+    }
+  });
+}
+
+function openResForm(r, pathId){
+  const st = { kind: r ? r.kind : 'course', confirmDel:false };
+  const kinds = `<div class="fm-label">Type</div><div class="chip-pick" data-pick="kind">${Object.entries(LKINDS).map(([v, k])=>
+    `<button type="button" class="${v === st.kind ? 'on' : ''}" data-v="${v}" aria-pressed="${v === st.kind}">${k.label}</button>`).join('')}</div>`;
+  openForm({
+    title: r ? 'Edit material' : 'Add material',
+    wide: true,
+    rows: [
+      [{ id:'lrTitle', placeholder:'Title, e.g. Auto Layout masterclass', value: r ? r.title : '' }],
+      [{ type:'html', html: kinds }],
+      [{ id:'lrUrl', type:'url', placeholder:'Link (optional)', value: (r && r.url) || '' }],
+      r ? [{ type:'note', text:'Add or tick off lessons right on the material card.' }]
+        : [{ id:'lrLessons', type:'textarea', rows:3, placeholder:'Lessons or modules, one per line (optional)' }],
+      [{ id:'lrNotes', type:'textarea', rows:2, placeholder:'Notes (optional)', value: (r && r.notes) || '' }]
+    ],
+    actions: r ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add material', value:'save' }],
+    onBodyClick: e=>{
+      const b = e.target.closest('.chip-pick button'); if(!b) return;
+      b.parentNode.querySelectorAll('button').forEach(x=>{ x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); });
+      st.kind = b.dataset.v;
+    },
+    onSubmit: async (v, act)=>{
+      if(act === 'delete'){
+        if(!st.confirmDel){ st.confirmDel = true; const b = $('fmActions').querySelector('.modal-danger'); b.textContent = 'Tap again to delete'; b.classList.add('confirming'); return false; }
+        const { error } = await sb.from('learning_resources').delete().eq('id', r.id);
+        if(error){ fail(error, 'Could not delete'); return false; }
+        toast('Material deleted'); loadLearning(); return;
+      }
+      if(!v.lrTitle){ toast('Give it a title', true); return false; }
+      if(v.lrUrl && !safeUrl(v.lrUrl)){ toast('That link doesn\'t look right. Start it with https://', true); return false; }
+      const payload = { title: v.lrTitle, kind: st.kind, url: safeUrl(v.lrUrl) || null, notes: v.lrNotes || null, updated_at: new Date().toISOString() };
+      if(r){
+        const { error } = await sb.from('learning_resources').update(payload).eq('id', r.id);
+        if(error){ fail(error, 'Could not save'); return false; }
+      } else {
+        payload.lessons = (v.lrLessons || '').split('\n').map(x=>x.trim()).filter(Boolean).map(title=>({ id: lid(), title, done:false }));
+        const { error } = await sb.from('learning_resources').insert({ user_id: USER.id, path_id: pathId, status:'not_started', ...payload });
+        if(error){ fail(error, 'Could not add'); return false; }
+      }
+      toast(r ? 'Saved' : 'Material added'); LTAB = 'materials'; loadLearning();
+    }
+  });
+}
+
+function openNoteForm(n, pathId){
+  const rs = LEARN.res.filter(r=>r.path_id === pathId);
+  const st = { confirmDel:false };
+  const def = n ? (n.resource_id || '') : (LNOTE_FILTER !== 'all' && LNOTE_FILTER !== 'general' ? LNOTE_FILTER : '');
+  openForm({
+    title: n ? 'Edit note' : 'New note',
+    wide: true,
+    rows: [
+      [{ id:'lnTitle', placeholder:'Title (optional)', value: (n && n.title) || '' }],
+      [{ id:'lnBody', type:'textarea', rows:7, placeholder:'Write anything…', value: (n && n.body) || '' }],
+      [{ id:'lnUrl', type:'url', placeholder:'Useful link (optional)', value: (n && n.url) || '' }],
+      [{ id:'lnRes', type:'select', value: def, options: [{ value:'', label:'General (whole path)' }].concat(rs.map(r=>({ value:r.id, label:r.title }))) }]
+    ],
+    actions: n ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Save note', value:'save' }],
+    onSubmit: async (v, act)=>{
+      if(act === 'delete'){
+        if(!st.confirmDel){ st.confirmDel = true; const b = $('fmActions').querySelector('.modal-danger'); b.textContent = 'Tap again to delete'; b.classList.add('confirming'); return false; }
+        const { error } = await sb.from('learning_notes').delete().eq('id', n.id);
+        if(error){ fail(error, 'Could not delete'); return false; }
+        toast('Note deleted'); loadLearning(); return;
+      }
+      if(!v.lnTitle && !v.lnBody && !v.lnUrl){ toast('Write something first', true); return false; }
+      if(v.lnUrl && !safeUrl(v.lnUrl)){ toast('That link doesn\'t look right. Start it with https://', true); return false; }
+      const payload = { title: v.lnTitle || null, body: v.lnBody || null, url: safeUrl(v.lnUrl) || null, resource_id: v.lnRes || null, updated_at: new Date().toISOString() };
+      const { error } = n ? await sb.from('learning_notes').update(payload).eq('id', n.id)
+                          : await sb.from('learning_notes').insert({ user_id: USER.id, path_id: pathId, ...payload });
+      if(error){ fail(error, 'Could not save the note'); return false; }
+      toast('Note saved'); loadLearning();
+    }
+  });
+}
+
+function openSessionForm(pathId){
+  const active = LEARN.paths.filter(p=>p.status !== 'completed' || p.id === pathId);
+  const now = new Date();
+  openForm({
+    title: 'Log study time',
+    rows: [
+      [{ id:'lsPath', type:'select', value: pathId || '', options: [{ value:'', label:'No specific path' }].concat(active.map(p=>({ value:p.id, label:p.title }))) }],
+      [{ id:'lsDate', type:'date', value: iso(now) }, { id:'lsMin', type:'number', step:'5', placeholder:'Minutes', value:'30' }],
+      [{ id:'lsNote', placeholder:'What did you cover? (optional)' }]
+    ],
+    actions: [{ label:'Log session', value:'save' }],
+    onSubmit: async v=>{
+      const mins = Math.round(Number(v.lsMin));
+      if(!(mins > 0 && mins <= 1440)){ toast('Enter the minutes you studied (1 to 1440)', true); return false; }
+      if(!v.lsDate){ toast('Pick a day', true); return false; }
+      const d = parseISO(v.lsDate);
+      if(d > now){ toast('That day hasn\'t happened yet', true); return false; }
+      const at = iso(d) === iso(now) ? new Date(now.getTime() - mins * 60000) : new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0);
+      const { error } = await sb.from('learning_sessions').insert({ user_id: USER.id, path_id: v.lsPath || null, started_at: at.toISOString(), minutes: mins, note: v.lsNote || null });
+      if(error){ fail(error, 'Could not log the session'); return false; }
+      toast('Logged ' + fmtMins(mins)); loadLearning();
+    }
+  });
+}
+
+/* ---------- saving checklists (lessons, goals) ---------- */
+async function saveLessons(r, lessons){
+  const allDone = lessons.length && lessons.every(l=>l.done), any = lessons.some(l=>l.done);
+  const status = allDone ? 'completed' : (any || r.status === 'in_progress') ? 'in_progress' : r.status === 'completed' ? 'in_progress' : 'not_started';
+  const patch = { lessons, status, completed_at: status === 'completed' ? (r.completed_at || new Date().toISOString()) : null, updated_at: new Date().toISOString() };
+  Object.assign(r, patch); renderLearn();                    // instant
+  const { error } = await sb.from('learning_resources').update(patch).eq('id', r.id);
+  if(error){ fail(error, 'Could not save'); loadLearning(); }
+  else if(status === 'completed' && allDone) toast('Material finished. Nice work');
+}
+async function saveGoals(p, goals){
+  p.goals = goals; renderLearn();
+  const { error } = await sb.from('learning_paths').update({ goals }).eq('id', p.id);
+  if(error){ fail(error, 'Could not save'); loadLearning(); }
+}
+
+/* ---------- one listener for the whole page ---------- */
+$('learnBody').addEventListener('click', async e=>{
+  const b = e.target.closest('[data-l]');
+  if(!b || !LEARN) return;
+  const act = b.dataset.l, p = LSEL && pathOf(LSEL);
+  if(act === 'open-path'){ LSEL = b.dataset.path; LTAB = b.dataset.tab || 'materials'; LNOTE_FILTER = 'all'; renderLearn(); window.scrollTo(0, 0); return; }
+  if(act === 'home'){ LSEL = null; renderLearn(); window.scrollTo(0, 0); return; }
+  if(act === 'tab'){ LTAB = b.dataset.tab; renderLearn(); return; }
+  if(act === 'add-path') return openPathForm(null);
+  if(act === 'edit-path') return openPathForm(pathOf(b.dataset.path));
+  if(act === 'add-res') return openResForm(null, b.dataset.path);
+  if(act === 'edit-res') return openResForm(resOf(b.dataset.id));
+  if(act === 'add-note') return p && openNoteForm(null, p.id);
+  if(act === 'edit-note') return p && openNoteForm(LEARN.notes.find(n=>n.id === b.dataset.id), p.id);
+  if(act === 'note-filter'){ LNOTE_FILTER = b.dataset.v; renderLearn(); return; }
+  if(act === 'log') return openSessionForm(b.dataset.path || (p && p.id) || '');
+  if(act === 'add-task') return openTaskForm(null, { category:'learning', learningPathId: b.dataset.path || (p && p.id) || null, date: iso(new Date()) });
+  if(act === 'timer-start'){ const sel = $('lTimerPath'); return startTimer(b.dataset.path || (sel && sel.value) || null); }
+  if(act === 'timer-stop') return stopTimer(true);
+  if(act === 'timer-discard') return stopTimer(false);
+  if(act === 'del-session'){
+    if(b.dataset.confirm !== '1'){ b.dataset.confirm = '1'; b.classList.add('confirming'); b.setAttribute('aria-label', 'Tap again to delete'); toast('Tap the × again to delete this session'); return; }
+    const { error } = await sb.from('learning_sessions').delete().eq('id', b.dataset.id);
+    if(error) return fail(error, 'Could not delete');
+    toast('Session deleted'); return loadLearning();
+  }
+  if(act === 'res-status'){
+    const r = resOf(b.dataset.id), v = b.dataset.v;
+    if(!r || r.status === v) return;
+    const lessons = v === 'completed' ? (r.lessons || []).map(l=>l.done ? l : { ...l, done:true, done_at: new Date().toISOString() }) : r.lessons || [];
+    const patch = { status: v, lessons, completed_at: v === 'completed' ? new Date().toISOString() : null, updated_at: new Date().toISOString() };
+    Object.assign(r, patch); renderLearn();
+    const { error } = await sb.from('learning_resources').update(patch).eq('id', r.id);
+    if(error){ fail(error, 'Could not save'); loadLearning(); }
+    return;
+  }
+  if(act === 'lesson' || act === 'del-lesson'){
+    const r = resOf(b.dataset.id); if(!r) return;
+    const lessons = act === 'lesson'
+      ? (r.lessons || []).map(l=>l.id === b.dataset.lesson ? { ...l, done: !l.done, done_at: !l.done ? new Date().toISOString() : null } : l)
+      : (r.lessons || []).filter(l=>l.id !== b.dataset.lesson);
+    return saveLessons(r, lessons);
+  }
+  if((act === 'goal' || act === 'del-goal') && p){
+    const goals = act === 'goal'
+      ? (p.goals || []).map(g=>g.id === b.dataset.id ? { ...g, done: !g.done, done_at: !g.done ? new Date().toISOString() : null } : g)
+      : (p.goals || []).filter(g=>g.id !== b.dataset.id);
+    return saveGoals(p, goals);
+  }
+});
+$('learnBody').addEventListener('submit', e=>{
+  const f = e.target.closest('[data-l-form]');
+  if(!f) return;
+  e.preventDefault();
+  const inp = f.querySelector('input'), text = inp.value.trim();
+  if(!text) return inp.focus();
+  if(f.dataset.lForm === 'lesson'){
+    const r = resOf(f.dataset.id); if(!r) return;
+    saveLessons(r, (r.lessons || []).concat({ id: lid(), title: text, done:false }));
+  } else {
+    const p = LSEL && pathOf(LSEL); if(!p) return;
+    saveGoals(p, (p.goals || []).concat({ id: lid(), text, done:false }));
+  }
+  // keep typing: put the cursor back in the same box after the redraw
+  const sel = f.dataset.lForm === 'lesson' ? `[data-l-form="lesson"][data-id="${f.dataset.id}"] input` : '[data-l-form="goal"] input';
+  setTimeout(()=>{ const x = $('learnBody').querySelector(sel); if(x) x.focus(); }, 0);
+});
+
 function loadSettings(){
   const P = PREFS;
   const sel = (id, v, opts) => `<select id="${id}">${opts.map(o=>`<option value="${o[0]}"${String(o[0]) === String(v) ? ' selected' : ''}>${o[1]}</option>`).join('')}</select>`;

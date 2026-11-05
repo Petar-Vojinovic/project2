@@ -3434,6 +3434,7 @@
       <button type="button" class="cat-chip acc-green" data-cat="money"><i></i>Money</button>
       <button type="button" class="cat-chip acc-rose" data-cat="home"><i></i>Home</button>
       <button type="button" class="cat-chip acc-sky" data-cat="personal"><i></i>Personal</button>
+      <button type="button" class="cat-chip acc-learn" data-cat="learning"><i></i>Learning</button>
       <button type="button" class="cat-chip acc-sky"   data-cat="general"><i></i>General</button>
     </div>
     <input type="hidden" id="evCat" value="general" />
@@ -4532,7 +4533,10 @@ function freqLabel(r){
 
 function _dayOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
 
-function occursOn(rule, d){
+// one occurrence removed with "Delete this occurrence only"
+function isSkipped(rule, d){ return (rule.skip_dates || []).includes(iso(d)); }
+function occursOn(rule, d, { withSkipped } = {}){
+  if(!withSkipped && rule.skip_dates && rule.skip_dates.length && isSkipped(rule, d)) return false;
   const start = _dayOnly(new Date(rule.created_at || 0));
   if(d < start) return false;                              // nothing before the rule existed
   if(rule.repeat === 'weekly')  return (rule.weekdays || []).includes((d.getDay() + 6) % 7);
@@ -4562,6 +4566,7 @@ function todayRecurring({ rules, completions }, now){
 
   const due = [], carried = [];
   rules.forEach(rule=>{
+    if(isSkipped(rule, today)) return;              // today's was removed, so nothing older comes back either
     if(occursOn(rule, today)){
       due.push({ rule, date: today, done: !!doneMap[rule.id + '|' + iso(today)] });
       return;
@@ -4569,7 +4574,8 @@ function todayRecurring({ rules, completions }, now){
     // not due today: look back for the most recent occurrence
     for(let k = 1; k <= 31; k++){
       const d = addDays(today, -k);
-      if(!occursOn(rule, d)) continue;
+      if(!occursOn(rule, d, { withSkipped:true })) continue;
+      if(isSkipped(rule, d)) break;                 // removed on purpose: nothing to carry
       const c = doneMap[rule.id + '|' + iso(d)];
       // unfinished -> carried; finished today -> stays visible, crossed out
       if(!c || new Date(c.created_at) >= today) carried.push({ rule, date: d, carried: true, daysLate: k, done: !!c });
@@ -4596,8 +4602,64 @@ async function toggleRecurring(el, reload){
   setTimeout(reload, 420);
 }
 
+let TASKS_REC = null;
+/* ---------- delete: one occurrence, or the whole series ---------- */
+// the occurrence to remove: the one picked (a row on a list), else the next one still to do
+function nextOccurrence(rule, done){
+  const today = _dayOnly(new Date());
+  for(let k = 0; k <= 400; k++){
+    const d = addDays(today, k);
+    if(occursOn(rule, d) && !(done && done.has(iso(d)))) return d;
+  }
+  return null;
+}
+function askRecDelete(rule, occ){
+  const when = occ ? (sameDay(occ, new Date()) ? 'today' : `${DAY_SHORT[(occ.getDay() + 6) % 7]} ${occ.getDate()} ${MONTHS_SH[occ.getMonth()]}`) : '';
+  return new Promise(resolve=>{
+    openForm({
+      title: 'Delete recurring task?',
+      rows: [[{ type:'note', text: occ
+        ? `"${rule.title}" (${freqLabel(rule)}). Remove only ${when === 'today' ? "today's" : 'the ' + when} one, or the whole series?`
+        : `"${rule.title}" has no upcoming occurrence. You can delete the whole series.` }]],
+      actions: [
+        ...(occ ? [{ label: `Only ${when === 'today' ? 'today' : when}`, value:'one', secondary:true }] : []),
+        { label:'Entire series', value:'series', danger:true }
+      ],
+      onSubmit: async (_, v)=>{ resolve(v); },
+      onDismiss: ()=> resolve(null)
+    });
+  });
+}
+async function deleteRecurring(rule, occISO){
+  let done = null;
+  if(!occISO){
+    const { data } = await sb.from('recurring_completions').select('date').eq('recurring_id', rule.id).gte('date', iso(new Date()));
+    done = new Set((data || []).map(c=>c.date));
+  }
+  const occ = occISO ? parseISO(occISO) : nextOccurrence(rule, done);
+  const choice = await askRecDelete(rule, occ);
+  if(!choice) return;
+  await new Promise(r=>setTimeout(r, 0));             // let the first popup close
+  if(choice === 'one'){
+    const skip = [...new Set([...(rule.skip_dates || []), iso(occ)])].sort();
+    const { error } = await sb.from('recurring_tasks').update({ skip_dates: skip }).eq('id', rule.id);
+    if(!error && occISO) await sb.from('recurring_completions').delete().eq('recurring_id', rule.id).eq('date', iso(occ));
+    if(error){ fail(error, 'Could not delete'); return; }
+    rule.skip_dates = skip;
+    toast('Removed that one. The rest still repeat');
+    dataChanged();
+    return;
+  }
+  const yes = await askConfirm({ title:'Delete the entire series?', message:`"${rule.title}" will stop repeating and disappear from all lists and schedules. Its history is removed too. This can't be undone.`, ok:'Delete series' });
+  if(!yes) return;
+  const { error } = await sb.from('recurring_tasks').delete().eq('id', rule.id);
+  if(error){ fail(error, 'Could not delete'); return; }
+  toast('Recurring task deleted');
+  dataChanged();
+}
+
 /* ---------- add / edit popup ---------- */
-function openRecurringForm(rule, defCat){
+function openRecurringForm(rule, defCat, occISO){
   const st = {
     repeat:   (rule && rule.repeat) || 'daily',
     weekdays: new Set((rule && rule.weekdays) || [(new Date().getDay() + 6) % 7]),
@@ -4634,7 +4696,7 @@ function openRecurringForm(rule, defCat){
       [{ id:'fmRec', placeholder:'Task (e.g. 20 minute walk)', value: rule ? rule.title : '' }],
       [{ type:'html', html }]
     ],
-    actions: [{ label: rule ? 'Save' : 'Add' }],
+    actions: rule ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add' }],
     onBodyClick: e=>{
       const body = $('fmBody');
       const rc = e.target.closest('[data-rcat]');
@@ -4665,7 +4727,8 @@ function openRecurringForm(rule, defCat){
         md.classList.toggle('on', st.monthDays.has(n));
       }
     },
-    onSubmit: async v=>{
+    onSubmit: async (v, act)=>{
+      if(act === 'delete'){ setTimeout(()=>deleteRecurring(rule, occISO), 0); return; }
       if(!v.fmRec){ toast('Give it a name', true); return false; }
       if(st.repeat === 'weekly'  && st.weekdays.size === 0){ toast('Pick at least one day', true); return false; }
       if(st.repeat === 'monthly' && st.monthDays.size === 0){ toast('Pick at least one date', true); return false; }
@@ -6005,6 +6068,7 @@ async function loadTasks(){
     });
 
     const rules = recState.rules;
+    TASKS_REC = rules;
     $('tasksRecurringList').innerHTML = rules.length
       ? rules.map(r=>`
           <div class="recurring-item acc-sky" data-rec-edit="${r.id}" title="Click to edit">
@@ -6070,11 +6134,8 @@ function wireTaskActions(){
   document.querySelectorAll('[data-del-rec]').forEach(el=>{
     el.addEventListener('click', async e=>{
       e.stopPropagation();
-      const yes = await askConfirm({ title:'Delete this recurring task?', message:'It stops appearing from now on, and its history is removed.' });
-      if(!yes) return;
-      const { error } = await sb.from('recurring_tasks').delete().eq('id', el.dataset.delRec);
-      if(error){ fail(error, 'Could not delete'); return; }
-      toast('Deleted'); loadTasks();
+      const rule = (TASKS_REC || []).find(r=>r.id === el.dataset.delRec);
+      if(rule) deleteRecurring(rule);
     });
   });
 }
@@ -6894,7 +6955,7 @@ function bumpCounters(delta, it){
 
 function openItem(it){
   if(it.type === 'task') openTaskForm(it.raw);
-  else if(it.type === 'rec') openRecurringForm(it.raw);
+  else if(it.type === 'rec') openRecurringForm(it.raw, null, typeof it.date === 'string' ? it.date : (it.date ? iso(it.date) : null));
   else go('training');
 }
 

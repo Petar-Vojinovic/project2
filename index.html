@@ -2158,10 +2158,24 @@
   .fc:not(.is-open) .fc-cookie:hover .fc-body{transform:rotate(-4deg);}
   .fc:not(.is-open) .fc-cookie:hover .fc-paper{transform:translate(3px,1px);}
   .fc:not(.is-open) .fc-cookie:hover .fc-pupil{transform:translate(-2px,-1px);}
-  .fc.is-open .fc-cookie{cursor:default;background:var(--card);}
+  .fc.is-open .fc-cookie{background:var(--card);}
   .fc.is-open .fc-eyes-open{opacity:0;}
   .fc.is-open .fc-eyes-happy{opacity:1;}
-  .fc.is-open .fc-paper{transform:translate(7px,4px);}
+  /* breaking open: the two halves hinge apart at the bottom, the paper pops up out of the crack */
+  .fc-half{transform-box:view-box;transform-origin:50px 68px;transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
+  .fc.is-open .fc-l{transform:translate(-5px,1px) rotate(-17deg);}
+  .fc.is-open .fc-r{transform:translate(5px,1px) rotate(17deg);}
+  .fc-cookie .fc-paper{transform-box:view-box;transform-origin:82px 62px;}
+  .fc.is-open .fc-paper{transform:translate(-32px,-24px) rotate(-18deg);transition:transform .55s cubic-bezier(.34,1.56,.64,1) .08s;}
+  .fc-crack{opacity:0;transition:opacity .15s;}
+  .fc.is-cracking .fc-crack{opacity:1;}
+  .fc-sparks{opacity:0;}
+  .fc.is-animating .fc-sparks{animation:fcSpark .6s ease-out .15s both;}
+  .fc.is-cracking .fc-cookie .fc-body{animation:fcWobble .38s ease-in-out;}
+  @keyframes fcWobble{0%{transform:none}20%{transform:rotate(-7deg)}45%{transform:rotate(6deg)}70%{transform:rotate(-4deg) scale(1.04)}100%{transform:scale(1.06)}}
+  @keyframes fcSpark{0%{opacity:0;transform:translateY(4px)}40%{opacity:1}100%{opacity:0;transform:translateY(-4px)}}
+  .fc.is-closing .fc-slip{animation:fcOut .2s ease-in both;}
+  @keyframes fcOut{to{opacity:0;transform:translateY(-4px)}}
 
   /* prompt and slip share one spot, so opening never pushes the page around */
   .fc-zone{display:grid;margin-top:6px;min-height:66px;align-items:center;}
@@ -2178,18 +2192,16 @@
   .fc-by i{font-style:italic;}
 
   /* opening: slip slides out of the cookie, quote fades in, then the author (about 0.9s) */
-  .fc.is-animating .fc-cookie .fc-body{animation:fcCrack .42s ease-out;}
-  .fc.is-animating .fc-slip{animation:fcSlide .45s cubic-bezier(.2,.8,.2,1) both;}
-  .fc.is-animating .fc-q{animation:fcFade .4s ease-out .3s both;}
-  .fc.is-animating .fc-by{animation:fcFade .35s ease-out .55s both;}
-  @keyframes fcCrack{0%{transform:none}35%{transform:rotate(-6deg) scale(1.06)}70%{transform:rotate(2deg)}100%{transform:none}}
+  .fc.is-animating .fc-slip{animation:fcSlide .45s cubic-bezier(.2,.8,.2,1) .12s both;}
+  .fc.is-animating .fc-q{animation:fcFade .4s ease-out .42s both;}
+  .fc.is-animating .fc-by{animation:fcFade .35s ease-out .66s both;}
   @keyframes fcSlide{from{opacity:0;transform:translateX(-14px);clip-path:inset(0 100% 0 0 round 10px)}
     to{opacity:1;transform:none;clip-path:inset(0 0 0 0 round 10px)}}
   @keyframes fcFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
   @media (prefers-reduced-motion: reduce){
     .fc .fc-cookie, .fc .fc-cookie *{transition:none !important;}
     .fc:not(.is-open) .fc-cookie:hover, .fc:not(.is-open) .fc-cookie:hover *{transform:none;}
-    .fc.is-animating .fc-cookie .fc-body{animation:none;}
+    .fc.is-cracking .fc-cookie .fc-body, .fc.is-animating .fc-sparks{animation:none;}
     .fc.is-animating .fc-slip, .fc.is-animating .fc-q, .fc.is-animating .fc-by{animation:fcFadeOnly .2s ease-out both;}
     @keyframes fcFadeOnly{from{opacity:0}to{opacity:1}}
   }
@@ -2419,8 +2431,28 @@
   #page-dashboard .btn-primary .ico{color:var(--dz-mint);}
 
 
-  /* ---- C: progress widgets ---- */
-  .dz-progress{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:14px;margin-bottom:26px;}
+  /* ---- streak: small flame pill next to today's ring ---- */
+  .dz-streak{display:inline-flex;align-items:center;gap:6px;height:48px;padding:0 14px 0 10px;border:0;border-radius:30px;cursor:pointer;font:inherit;
+    background:var(--dz-card);box-shadow:inset 0 0 0 1px var(--dz-line);color:var(--dz-ink);transition:transform .18s ease;}
+  .dz-streak:hover{transform:translateY(-1px);}
+  .dz-streak .ico{width:20px;height:20px;color:var(--muted-foreground-2);transition:color .3s;}
+  .dz-streak.lit .ico{color:var(--cat-training);fill:rgba(var(--cat-training-rgb),.35);}
+  .dz-streak b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .dz-streak span{font-size:12px;color:var(--dz-ink-3);line-height:1.15;}
+  .dz-streak.bump .ico{animation:dzFlame .7s ease-out;}
+  @keyframes dzFlame{0%{transform:scale(1)}35%{transform:scale(1.35) rotate(-8deg)}65%{transform:scale(.95) rotate(4deg)}100%{transform:none}}
+
+  /* ---- C: progress widgets (second in line, after the day's plan) ---- */
+  .dz-stats{margin-top:24px;}
+  .dz-sec-title{margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--dz-ink-3);}
+  .dz-progress{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:12px;margin-bottom:8px;}
+  #page-dashboard .dz-progress .pw{min-height:0;padding:12px 16px;row-gap:4px;}
+  #page-dashboard .dz-progress .pw-num{font-size:26px;}
+  #page-dashboard .dz-progress .pw-num em{margin-top:4px;}
+  #page-dashboard .dz-progress .pw-seg i{width:11px;height:17px;border-radius:4px;}
+  #page-dashboard .dz-progress .pw-bar{height:17px;}
+  #page-dashboard .dz-progress .pw-day .tr{height:32px;}
+  #page-dashboard .dz-progress .pw-gauge{width:96px;height:52px;}
   .pw{border:none;font:inherit;text-align:left;cursor:pointer;color:var(--dz-ink);border-radius:var(--dz-r);
     padding:16px 18px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto 1fr;column-gap:14px;row-gap:6px;
     min-height:118px;position:relative;transition:transform .18s ease, box-shadow .18s ease;}
@@ -2636,7 +2668,10 @@
   @media (max-width:760px){
     .dz-head{flex-direction:column;gap:12px;}
     .dz-head-actions{width:100%;padding-top:0;}
-    .dz-head-actions .ring-mini{display:none;}
+    .dz-head-actions .ring-mini{padding:4px 10px 4px 4px;}
+    .dz-head-actions .ring-mini span{display:none;}
+    .dz-streak{height:44px;padding:0 12px 0 8px;}
+    .dz-streak span{display:none;}
     .dz-head-actions .dz-add{margin-left:auto;}
     .dz-progress{grid-template-columns:1fr 1fr;}
     .pw-today{grid-column:1/-1;grid-template-columns:auto 1fr;}
@@ -2655,7 +2690,8 @@
     .dz-minibar{width:70px;}
   }
   @media (prefers-reduced-motion: reduce){
-    .pw, .ds-day, .tl-card, #page-dashboard .trow{transition:none;}
+    .pw, .ds-day, .tl-card, #page-dashboard .trow, .dz-streak{transition:none;}
+    .dz-streak.bump .ico{animation:none;}
     .pw:hover, .tl-card:hover{transform:none;}
     .ds-day.is-sel{transform:none;}
     #page-dashboard .trow.just-done{animation:none;}
@@ -2993,7 +3029,12 @@
             <svg viewBox="4 10 92 76" width="100%" height="100%" aria-hidden="true" focusable="false">
               <g class="fc-paper"><g transform="rotate(18 70 62)"><rect x="68" y="57" width="28" height="10" rx="2" fill="#FFFDF6" stroke="#D9CBB0" stroke-width="1.5"/>
                 <path d="M80 62h11" stroke="#E7A9A9" stroke-width="1.6" stroke-linecap="round"/></g></g>
+              <defs>
+                <clipPath id="fcClipL"><path d="M-20 0H50.6L48 20 52 31 47.6 42 52 52.6 49.4 64V100H-20Z"/></clipPath>
+                <clipPath id="fcClipR"><path d="M120 0H50.6L48 20 52 31 47.6 42 52 52.6 49.4 64V100H120Z"/></clipPath>
+              </defs>
               <g class="fc-body">
+                <g class="fc-half fc-l" clip-path="url(#fcClipL)">
                 <path d="M10 64C8 38 27 18 50 18S92 38 90 64c-.6 6.5-7 9.5-13.5 7C68.5 68 60 62.5 50 62.5S31.5 68 23.5 71C17 73.5 10.6 70.5 10 64Z"
                   fill="#FFD9A0" stroke="#E2A75B" stroke-width="2.4" stroke-linejoin="round"/>
                 <path d="M50 62.5c-.6-2.4-.2-4.4 1-6" fill="none" stroke="#E2A75B" stroke-width="2" stroke-linecap="round"/>
@@ -3011,6 +3052,30 @@
                   <path d="M27 43q9-11 18 0"/><path d="M55 43q9-11 18 0"/>
                 </g>
                 <path class="fc-mouth" d="M46 52.5q4 3.4 8 0" fill="none" stroke="#2B3A42" stroke-width="2.1" stroke-linecap="round"/>
+                              </g>
+                <g class="fc-half fc-r" clip-path="url(#fcClipR)">
+                <path d="M10 64C8 38 27 18 50 18S92 38 90 64c-.6 6.5-7 9.5-13.5 7C68.5 68 60 62.5 50 62.5S31.5 68 23.5 71C17 73.5 10.6 70.5 10 64Z"
+                  fill="#FFD9A0" stroke="#E2A75B" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M50 62.5c-.6-2.4-.2-4.4 1-6" fill="none" stroke="#E2A75B" stroke-width="2" stroke-linecap="round"/>
+                <ellipse cx="22.5" cy="53" rx="5.5" ry="3.4" fill="#F7A9A0" opacity=".6"/>
+                <ellipse cx="77.5" cy="53" rx="5.5" ry="3.4" fill="#F7A9A0" opacity=".6"/>
+                <g class="fc-eyes-open">
+                  <circle cx="36" cy="40" r="11" fill="#fff" stroke="#2B3A42" stroke-width="1.8"/>
+                  <circle cx="64" cy="40" r="11" fill="#fff" stroke="#2B3A42" stroke-width="1.8"/>
+                  <circle class="fc-pupil" cx="37.5" cy="42" r="5.8" fill="#1F5F9E"/>
+                  <circle class="fc-pupil" cx="65.5" cy="42" r="5.8" fill="#1F5F9E"/>
+                  <circle cx="39.6" cy="39.6" r="1.9" fill="#fff"/><circle cx="67.6" cy="39.6" r="1.9" fill="#fff"/>
+                  <path d="M26.5 32l-3.4-2.6M30 29.4l-1.8-3.6M73.5 32l3.4-2.6M70 29.4l1.8-3.6" stroke="#2B3A42" stroke-width="1.8" stroke-linecap="round"/>
+                </g>
+                <g class="fc-eyes-happy" fill="none" stroke="#2B3A42" stroke-width="2.8" stroke-linecap="round">
+                  <path d="M27 43q9-11 18 0"/><path d="M55 43q9-11 18 0"/>
+                </g>
+                <path class="fc-mouth" d="M46 52.5q4 3.4 8 0" fill="none" stroke="#2B3A42" stroke-width="2.1" stroke-linecap="round"/>
+                              </g>
+                <path class="fc-crack" d="M50.6 17L48 20 52 31 47.6 42 52 52.6 49.4 64" fill="none" stroke="#C98A3E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+              </g>
+              <g class="fc-sparks" fill="none" stroke="#E2A75B" stroke-width="2" stroke-linecap="round">
+                <path d="M50 8v-6M38 11l-3-5M62 11l3-5"/>
               </g>
             </svg>
           </button>
@@ -3028,14 +3093,9 @@
         </div>
         <div class="dz-head-actions">
           <div class="ring-mini" id="dashRing" aria-live="polite"></div>
+          <button type="button" class="dz-streak" id="dashStreak" aria-live="polite" hidden></button>
           <button class="btn btn-primary dz-add" id="dashAddTask"><i data-ico="plus"></i>Add task</button>
         </div>
-      </div>
-
-      <div class="dz-progress" id="sumGrid">
-        <button class="pw pw-today" data-sum="today"></button>
-        <button class="pw pw-week" data-sum="week"></button>
-        <button class="pw pw-month" data-sum="month"></button>
       </div>
 
       <section class="dz-strip" id="dzStrip" aria-label="Choose a day">
@@ -3080,6 +3140,15 @@
           </div>
         </section>
       </div>
+
+      <section class="dz-stats" aria-labelledby="dzStatsTitle">
+        <h2 class="dz-sec-title" id="dzStatsTitle">Your progress</h2>
+        <div class="dz-progress" id="sumGrid">
+          <button class="pw pw-today" data-sum="today"></button>
+          <button class="pw pw-week" data-sum="week"></button>
+          <button class="pw pw-month" data-sum="month"></button>
+        </div>
+      </section>
     </section>
 
     <!-- ---------- SCHEDULE ---------- -->
@@ -6598,6 +6667,7 @@ let currentPage = 'dashboard';
 function go(page, opts){
   opts = opts || {};
   if(!PAGE_TITLES[page]) page = 'dashboard';
+  if(page !== 'dashboard' && typeof Fortune !== 'undefined') Fortune.close(false);
   currentPage = page;
   document.querySelectorAll('.sb-item[data-page]').forEach(b=>{
     const on = b.dataset.page === page;
@@ -6978,15 +7048,23 @@ const Fortune = (()=>{
     return st;
   }
 
-  let root = null, shown = null;
+  /* The cookie starts closed on every visit and only opens when tapped.
+     Tap again (or leave the dashboard) and it closes. Same fortune all day, a new one tomorrow. */
+  let root = null, shownDay = null, isOpen = false, busy = false, timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function setState(on){
+    isOpen = on;
+    const btn = root.querySelector('.fc-cookie');
+    root.classList.toggle('is-open', on);
+    btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+    btn.setAttribute('aria-label', on ? "Close today's fortune" : "Open today's fortune cookie");
+  }
   function paint(st, animate){
-    const btn = root.querySelector('.fc-cookie'), slip = root.querySelector('.fc-slip');
+    const slip = root.querySelector('.fc-slip');
     const q = root.querySelector('.fc-q'), by = root.querySelector('.fc-by');
     const f = st.q;
-    root.classList.toggle('is-open', !!st.opened);
-    btn.setAttribute('aria-expanded', st.opened ? 'true' : 'false');
-    btn.setAttribute('aria-label', st.opened ? "Today's fortune cookie (already opened)" : "Open today's fortune cookie");
-    if(!st.opened){ slip.hidden = true; root.classList.remove('is-animating'); return; }
+    setState(true);
     q.textContent = f.type === 'quote' ? '“' + f.text + '”' : f.text;
     by.textContent = '';
     if(f.type === 'quote'){
@@ -7004,10 +7082,26 @@ const Fortune = (()=>{
   }
 
   function open(){
+    if(busy || !root) return;
+    if(isOpen) return close(true);
     const st = today();
-    if(st.opened) return;                           // no replaying the animation
-    st.opened = true; write(KEY, st);
-    paint(st, true);
+    st.opened = true; write(KEY, st);               // only remembered for history, never to show it
+    if(reduced()){ paint(st, true); return; }
+    busy = true;
+    root.classList.add('is-cracking');              // a little wobble, the crack shows...
+    later(()=>{ root.classList.remove('is-cracking'); paint(st, true); busy = false; }, 380);   // ...then it breaks
+  }
+  function close(animate){
+    if(!root) return;
+    timers.forEach(clearTimeout); timers = []; busy = false;
+    root.classList.remove('is-cracking', 'is-animating');
+    if(!isOpen) return;
+    const slip = root.querySelector('.fc-slip');
+    setState(false);
+    if(animate && !reduced()){
+      root.classList.add('is-closing');
+      later(()=>{ root.classList.remove('is-closing'); if(!isOpen) slip.hidden = true; }, 200);
+    } else slip.hidden = true;
   }
 
   function mount(el){
@@ -7016,16 +7110,15 @@ const Fortune = (()=>{
     refresh();
   }
 
-  // called every tick: swaps in a fresh, unopened cookie after local midnight
+  // called every tick: a fresh, closed cookie after local midnight
   function refresh(){
     if(!root) return;
     const st = today();
-    const sig = st.date + '|' + st.opened;
-    if(sig === shown) return;
-    shown = sig; paint(st, false);
+    if(st.date === shownDay) return;
+    shownDay = st.date; close(false);
   }
 
-  return { mount, refresh, open, today };
+  return { mount, refresh, open, close, today, get isOpen(){ return isOpen; } };
 })();
 Fortune.mount($('fortune'));
 tick(); setInterval(()=>{ tick(); updateDayNight(); }, 20000);
@@ -7213,8 +7306,43 @@ async function loadDashboard(){
     };
     renderDash();
     paintSummary();
+    loadStreak().catch(err=>console.error('streak', err));
   }catch(err){ showError($('dashTasksList'), err, loadDashboard); }
 }
+
+/* Activity streak: days in a row with at least one thing done (the same rule
+   and the same number as the Progress page). Loads after the plan so the
+   tasks never wait for it. */
+let DSTREAK = null;
+async function loadStreak(){
+  const today = _dayOnly(new Date()), from = addDays(today, -HISTORY_DAYS), fromTs = from.toISOString();
+  const [plan, doneTasks, comps] = await Promise.all([
+    fetchPlan(iso(from), iso(today)),
+    sb.from('tasks').select('id,title,category,completed_at').eq('completed', true).gte('completed_at', fromTs),
+    sb.from('recurring_completions').select('*').gte('created_at', fromTs)
+  ]);
+  if(doneTasks.error) throw doneTasks.error;
+  if(comps.error) throw comps.error;
+  const { actByDay } = buildActs(plan, doneTasks.data || [], comps.data || []);
+  const prev = DSTREAK;
+  DSTREAK = streakCalc(plan, actByDay, from);
+  paintStreak(prev && DSTREAK.cur > prev.cur);
+}
+function paintStreak(bump){
+  const el = $('dashStreak'), s = DSTREAK;
+  if(!el || !s) return;
+  const n = s.cur;
+  el.hidden = false;
+  el.classList.toggle('lit', s.today);
+  el.innerHTML = `${ico('flame')}<b>${n}</b><span>day${n === 1 ? '' : 's'}<br>streak</span>`;
+  const tip = n === 0 ? 'No streak yet. Finish one thing today to start one.'
+    : s.today ? `${n} day${n === 1 ? '' : 's'} in a row with something done. Best: ${s.longest}.`
+    : `${n}-day streak. Finish one thing today to keep it going.`;
+  el.title = tip;
+  el.setAttribute('aria-label', 'Activity streak: ' + tip + ' Open Progress');
+  if(bump){ el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+}
+$('dashStreak').addEventListener('click', ()=>{ progPeriod = 'week'; go('progress'); });
 
 /* the items for one day, in list groups. Today keeps carry-over; other days use the plan. */
 function buildDay(d){
@@ -7714,14 +7842,7 @@ async function loadProgress(){
     ]);
     [doneTasks, comps, meals, budget, budRec, openTasks].forEach(r=>{ if(r.error) throw r.error; });
 
-    // completions by the day they actually happened
-    const rulesById = new Map(plan.rules.map(r=>[r.id, r]));
-    const acts = [];
-    (doneTasks.data || []).forEach(t=> acts.push({ day: iso(new Date(t.completed_at)), title:t.title, cat:taskCat(t) }));
-    (comps.data || []).forEach(c=>{ const r = rulesById.get(c.recurring_id); if(r) acts.push({ day: iso(new Date(c.created_at)), title:r.title, cat: CATS[r.category] ? r.category : 'home' }); });
-    plan.sess.filter(s=>s.status === 'completed').forEach(s=> acts.push({ day: s.date, title: s.label || 'Training', cat:'training' }));
-    const actByDay = new Map();
-    acts.forEach(a=>{ if(!actByDay.has(a.day)) actByDay.set(a.day, []); actByDay.get(a.day).push(a); });
+    const { acts, actByDay } = buildActs(plan, doneTasks.data || [], comps.data || []);
 
     PROG = { plan, acts, actByDay, meals: meals.data || [], budget: budget.data || [], budRec: budRec.data || [],
              openTasks: openTasks.data || [], from, to };
@@ -7730,24 +7851,41 @@ async function loadProgress(){
   }catch(err){ showError($('progKpis'), err, loadProgress); }
 }
 
-function computeStreaks(){
+// completions by the day they actually happened
+function buildActs(plan, doneTasks, comps){
+  const rulesById = new Map(plan.rules.map(r=>[r.id, r]));
+  const acts = [];
+  doneTasks.forEach(t=> acts.push({ day: iso(new Date(t.completed_at)), title:t.title, cat:taskCat(t) }));
+  comps.forEach(c=>{ const r = rulesById.get(c.recurring_id); if(r) acts.push({ day: iso(new Date(c.created_at)), title:r.title, cat: CATS[r.category] ? r.category : 'home' }); });
+  plan.sess.filter(s=>s.status === 'completed').forEach(s=> acts.push({ day: s.date, title: s.label || 'Training', cat:'training' }));
+  const actByDay = new Map();
+  acts.forEach(a=>{ if(!actByDay.has(a.day)) actByDay.set(a.day, []); actByDay.get(a.day).push(a); });
+  return { acts, actByDay };
+}
+
+// the one streak rule, used by the dashboard flame and the Progress page
+function streakCalc(plan, actByDay, from){
   const today = _dayOnly(new Date());
-  let cur = 0, longest = 0, run = 0, counting = true;
+  let cur = 0, longest = 0, run = 0;
   // walk forward for the longest streak
-  for(let d = _dayOnly(PROG.from); d <= today; d = addDays(d, 1)){
-    const di = iso(d), active = (PROG.actByDay.get(di) || []).length > 0;
-    const planned = planDay(PROG.plan, d).length > 0;
+  for(let d = _dayOnly(from); d <= today; d = addDays(d, 1)){
+    const di = iso(d), active = (actByDay.get(di) || []).length > 0;
+    const planned = planDay(plan, d).length > 0;
     if(active){ run++; longest = Math.max(longest, run); }
     else if(planned && di !== iso(today)) run = 0;
   }
   // walk back from today for the current one
-  for(let d = today; d >= PROG.from; d = addDays(d, -1)){
-    const di = iso(d), active = (PROG.actByDay.get(di) || []).length > 0;
+  for(let d = today; d >= from; d = addDays(d, -1)){
+    const di = iso(d), active = (actByDay.get(di) || []).length > 0;
     if(active){ cur++; continue; }
     if(di === iso(today)) continue;                    // today isn't over yet
-    if(planDay(PROG.plan, d).length > 0) break;        // planned but nothing done
+    if(planDay(plan, d).length > 0) break;             // planned but nothing done
   }
-  PROG.streak = cur; PROG.longest = longest;
+  return { cur, longest, today: (actByDay.get(iso(today)) || []).length > 0 };
+}
+function computeStreaks(){
+  const s = streakCalc(PROG.plan, PROG.actByDay, PROG.from);
+  PROG.streak = s.cur; PROG.longest = s.longest;
 }
 
 function periodRange(p){

@@ -2397,7 +2397,7 @@
      mint = today / done, lavender = this week, category pastels = areas,
      pink = overdue. Everything is scoped to the dashboard.
      =================================================================== */
-  #page-dashboard{
+  #page-dashboard, #page-schedule{
     --dz-ink:var(--foreground); --dz-ink-2:var(--muted-foreground); --dz-ink-3:var(--muted-foreground-2);
     --dz-line:var(--border); --dz-line-2:var(--muted); --dz-canvas:var(--background); --dz-card:var(--card);
     --dz-mint:var(--primary); --dz-mint-2:var(--primary-soft); --dz-mint-ink:var(--foreground); --dz-done:var(--foreground);
@@ -2959,6 +2959,197 @@
   .auth-btn{background:var(--btn-primary-bg) !important;color:var(--btn-primary-fg) !important;box-shadow:inset 0 0 0 1px rgba(var(--foreground-rgb),.08) !important;}
   .auth-btn:hover{filter:none;background:var(--btn-primary-hover) !important;}
   .dp-btn.ok:hover{background:var(--primary) !important;}
+
+  /* ===================================================================
+     CALENDAR (2026-11 redesign). Same tokens and pieces as the Dashboard:
+     card + hairline border, round day buttons, pastel category tints.
+     =================================================================== */
+  #page-schedule .cz-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+  #page-schedule .cz-head .page-title{margin:0;}
+  #page-schedule .cz-head .spacer{flex:1;}
+  #page-schedule .btn{border-radius:999px;padding:11px 18px 11px 14px;}
+  #page-schedule .btn-ghost{background:var(--card);color:var(--foreground);box-shadow:inset 0 0 0 1px var(--border);}
+  #page-schedule .btn-ghost:hover{background:var(--muted);}
+  #page-schedule .btn .ico{width:17px;height:17px;}
+
+  /* segmented switches (Events / Birthdays, Week / Month) */
+  .cz-seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--muted);}
+  .cz-seg button{border:none;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+    padding:7px 14px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--muted-foreground);background:transparent;
+    transition:background .18s ease, color .18s ease, box-shadow .18s ease;}
+  .cz-seg button:hover{color:var(--foreground);}
+  .cz-seg button.on{background:var(--card);color:var(--foreground);box-shadow:0 1px 3px rgba(var(--shadow-rgb),.08), inset 0 0 0 1px var(--border);}
+  .cz-seg .ico{width:15px;height:15px;}
+  .cz-seg[hidden]{display:none;}
+
+  /* the card: navigation bar on top, view + day list below */
+  .cz-card{background:var(--card);border-radius:var(--dz-r);box-shadow:inset 0 0 0 1px var(--dz-line);overflow:hidden;}
+  .cz-bar{display:flex;align-items:center;gap:8px;padding:14px 18px 12px;border-bottom:1px solid var(--dz-line);flex-wrap:wrap;}
+  .cz-bar .ds-month{min-width:0;}
+  .cz-bar .spacer{flex:1;}
+  .cz-bar .ds-arrow .ico{width:18px;height:18px;}
+  .cz-body{display:grid;grid-template-columns:minmax(0,1fr) 340px;align-items:stretch;}
+  .cz-main{padding:14px 18px 18px;min-width:0;}
+  .cz-day{border-left:1px solid var(--dz-line);padding:16px 18px 20px;min-width:0;background:var(--card);}
+  .cz-body.is-swap{animation:czIn .22s ease;}
+  @keyframes czIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* ---- month grid: round day buttons, dots underneath ---- */
+  .cm{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));row-gap:4px;}
+  .cm-wd{text-align:center;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--dz-ink-3);padding:4px 0 8px;}
+  .cm-wd.we{color:var(--dz-ink-2);}
+  .cm-day{border:none;background:transparent;font:inherit;color:var(--dz-ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;
+    gap:4px;padding:5px 0 6px;border-radius:16px;min-height:66px;transition:background .15s ease;}
+  .cm-day:hover{background:var(--dz-line-2);}
+  .cm-num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;
+    font-variant-numeric:tabular-nums;transition:background .18s ease, box-shadow .18s ease, transform .18s ease;}
+  .cm-day.has-items .cm-num{background:var(--muted);}
+  .cm-day.is-out{color:var(--dz-ink-3);opacity:.45;}
+  .cm-day.is-out .cm-num{background:transparent;}
+  .cm-day.is-past:not(.is-sel) .cm-num{color:var(--dz-ink-2);}
+  .cm-day.is-today .cm-num{box-shadow:inset 0 0 0 1.5px var(--ring);font-weight:800;}
+  .cm-day.is-sel .cm-num{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);color:var(--foreground);transform:scale(1.06);}
+  .cm-dots{display:flex;align-items:center;justify-content:center;gap:3px;height:8px;}
+  .cm-dots i{width:6px;height:6px;border-radius:50%;background:var(--acc, var(--dz-ink-3));}
+  .cm-dots i.bd{background:transparent;box-shadow:inset 0 0 0 1.5px var(--c-sun);}
+  .cm-dots .ico{width:12px;height:12px;color:var(--c-sun);}
+  .cm-dots b{font-size:10px;font-weight:800;color:var(--muted-foreground);}
+  /* birthday mode: days with a birthday get a warm tint */
+  .cz-kind-bdays .cm-day.has-bday .cm-num{background:rgba(var(--cat-training-rgb),.26);}
+  .cz-kind-bdays .cm-day.has-bday.is-sel .cm-num{background:var(--primary);}
+
+  /* ---- week view: day pills, then a light time grid ---- */
+  .cw{--row:40px;}
+  .cw-head{display:grid;grid-template-columns:48px repeat(7,minmax(0,1fr));gap:4px;margin-bottom:6px;}
+  .cw-day{border:none;background:transparent;font:inherit;color:var(--dz-ink);cursor:pointer;border-radius:16px;
+    display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 7px;position:relative;transition:background .15s ease, transform .18s ease;}
+  .cw-day:hover{background:var(--dz-line-2);}
+  .cw-wd{font-size:11px;font-weight:600;color:var(--dz-ink-3);text-transform:uppercase;letter-spacing:.04em;}
+  .cw-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .cw-day.is-today .cw-num{box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .cw-day.is-sel{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .cw-day.is-sel .cw-wd{color:var(--foreground);}
+  .cw-cake{position:absolute;top:5px;right:6px;color:var(--c-sun);}
+  .cw-cake .ico{width:13px;height:13px;}
+  .cw-body{display:grid;grid-template-columns:48px repeat(7,minmax(0,1fr));gap:4px;position:relative;}
+  .cw-times{position:relative;height:calc(var(--rows) * var(--row));}
+  .cw-times span{position:absolute;right:6px;transform:translateY(-50%);font-size:10.5px;font-weight:600;color:var(--dz-ink-3);font-variant-numeric:tabular-nums;}
+  .cw-col{position:relative;height:calc(var(--rows) * var(--row));border-radius:12px;cursor:pointer;
+    background-image:linear-gradient(var(--dz-line-2) 1px, transparent 1px);background-size:100% var(--row);transition:background-color .15s ease;}
+  .cw-col:hover{background-color:rgba(var(--foreground-rgb),.015);}
+  .cw-col.is-today{background-color:rgba(var(--primary-rgb),.18);}
+  .cw-col.is-sel{background-color:rgba(var(--primary-rgb),.3);}
+  .cw-ev{position:absolute;border:none;font:inherit;text-align:left;cursor:pointer;color:var(--foreground);overflow:hidden;
+    border-radius:10px;padding:5px 7px 5px 9px;display:flex;flex-direction:column;gap:1px;min-height:22px;
+    background:rgba(var(--acc-rgb),.24);box-shadow:inset 3px 0 0 0 var(--acc);transition:transform .15s ease, box-shadow .15s ease;}
+  .cw-ev:hover{transform:translateY(-1px);box-shadow:inset 3px 0 0 0 var(--acc), 0 6px 14px -8px rgba(var(--shadow-rgb),.25);z-index:3;}
+  .cw-ev b{font-size:12px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .cw-ev small{font-size:10.5px;font-weight:600;color:var(--muted-foreground);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cw-ev.is-short{justify-content:center;padding-top:2px;padding-bottom:2px;}
+  .cw-ev.is-short b{-webkit-line-clamp:1;}
+  .cw-ev.is-short small{display:none;}
+  .cw-ev .s-star{color:var(--warning);}
+  .cw-ev.is-task{background:var(--card);box-shadow:inset 0 0 0 1.5px var(--acc);}
+  .cw-ev.is-task.done{opacity:.6;}
+  .cw-ev.is-task.done b{text-decoration:line-through;}
+  .cw-ev .ico{width:12px;height:12px;flex-shrink:0;}
+  .cw-now{position:absolute;left:-3px;right:0;height:2px;background:var(--danger);border-radius:2px;z-index:4;pointer-events:none;}
+  .cw-now::before{content:"";position:absolute;left:-2px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--danger);}
+
+  /* ---- the selected day (or month of birthdays) ---- */
+  .cd-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .cd-date{display:flex;align-items:center;gap:10px;padding-left:10px;border-left:3px solid var(--ring);min-width:0;}
+  .cd-date b{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;}
+  .cd-date span{display:flex;flex-direction:column;font-size:13px;font-weight:700;line-height:1.25;}
+  .cd-date small{font-size:11.5px;font-weight:600;color:var(--dz-ink-3);}
+  .cd-tag{font-size:10.5px !important;font-weight:800 !important;text-transform:uppercase;letter-spacing:.06em;color:var(--dz-ink-2) !important;}
+  .cd-head .spacer{flex:1;}
+  .cd-sum{font-size:12.5px;color:var(--dz-ink-3);font-weight:600;margin:-6px 0 12px;}
+  .cd-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .cd-item{display:grid;grid-template-columns:50px minmax(0,1fr);gap:10px;align-items:stretch;}
+  .cd-time{text-align:right;padding-top:9px;font-variant-numeric:tabular-nums;}
+  .cd-time b{display:block;font-size:12.5px;font-weight:700;}
+  .cd-time small{font-size:11px;color:var(--dz-ink-3);font-weight:600;}
+  .cd-card{position:relative;border-radius:var(--dz-r-sm);padding:9px 76px 10px 12px;min-width:0;
+    background:rgba(var(--acc-rgb),.16);box-shadow:inset 3px 0 0 0 var(--acc);transition:transform .15s ease, box-shadow .15s ease;cursor:pointer;}
+  .cd-card:hover{transform:translateX(2px);box-shadow:inset 3px 0 0 0 var(--acc), 0 6px 14px -10px rgba(var(--shadow-rgb),.2);}
+  .cd-item.is-task .cd-card{background:var(--card);box-shadow:inset 0 0 0 1.5px rgba(var(--acc-rgb),.7);}
+  .cd-item.is-task.done .cd-title{text-decoration:line-through;color:var(--dz-ink-3);}
+  .cd-item.is-past .cd-card{opacity:.62;}
+  .cd-item.is-bday .cd-card{background:rgba(var(--cat-training-rgb),.16);box-shadow:inset 3px 0 0 0 var(--c-sun);}
+  .cd-title{font-size:14px;font-weight:700;line-height:1.3;display:flex;align-items:center;gap:6px;overflow-wrap:anywhere;}
+  .cd-title .s-star{color:var(--warning);display:inline-flex;}
+  .cd-title .ico{width:15px;height:15px;color:var(--c-sun);flex-shrink:0;}
+  .cd-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:11.5px;font-weight:600;color:var(--muted-foreground);margin-top:3px;}
+  .cd-meta i{width:7px;height:7px;border-radius:50%;background:var(--acc);}
+  .cd-note{font-size:12.5px;color:var(--muted-foreground);margin-top:5px;line-height:1.4;white-space:pre-line;overflow-wrap:anywhere;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .cd-acts{position:absolute;top:6px;right:6px;display:flex;gap:2px;opacity:.55;transition:opacity .15s ease;}
+  .cd-card:hover .cd-acts, .cd-card:focus-within .cd-acts{opacity:1;}
+  .cd-acts button{border:none;background:transparent;cursor:pointer;color:var(--foreground);width:30px;height:30px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;transition:background .15s ease, color .15s ease;}
+  .cd-acts button:hover{background:rgba(var(--foreground-rgb),.07);}
+  .cd-acts button.cd-del:hover{color:var(--danger);background:var(--danger-faint);}
+  .cd-acts .ico{width:15px;height:15px;}
+  .cd-empty{text-align:center;padding:18px 10px 8px;color:var(--dz-ink-3);font-size:13px;}
+  .cd-empty .doodle{width:120px;height:100px;display:block;margin:0 auto 6px;}
+  .cd-empty b{display:block;color:var(--dz-ink);font-size:14px;margin-bottom:2px;}
+  .cd-empty .dz-ghost{margin-top:10px;}
+
+  /* birthday list */
+  .cb-none{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted-foreground);
+    padding:9px 12px;border-radius:12px;background:var(--muted);margin-bottom:12px;}
+  .cb-none .spacer{flex:1;}
+  .cb-none button{border:none;background:transparent;font:inherit;font-weight:700;color:var(--foreground);cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+  .cb-row{display:grid;grid-template-columns:50px minmax(0,1fr);gap:10px;align-items:stretch;}
+  .cb-date{border:none;background:transparent;font:inherit;color:var(--foreground);cursor:pointer;border-radius:12px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 0;transition:background .15s ease;}
+  .cb-date:hover{background:var(--muted);}
+  .cb-date b{font-size:18px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;}
+  .cb-date small{font-size:10.5px;font-weight:700;color:var(--dz-ink-3);text-transform:uppercase;letter-spacing:.04em;}
+  .cb-row .cd-card{background:rgba(var(--cat-training-rgb),.13);box-shadow:inset 3px 0 0 0 var(--c-sun);}
+  .cb-row.is-sel .cd-card{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .cb-row.is-sel .cb-date b{color:var(--foreground);}
+  .cb-row.is-past .cd-card{opacity:.6;}
+  .cb-row.is-today .cd-title::after{content:"Today";font-size:10.5px;font-weight:800;border-radius:999px;padding:1px 8px;background:var(--foreground);color:var(--card);}
+  .cb-soon{color:var(--foreground);}
+
+  /* legend under the card */
+  #page-schedule .cal-legend{margin-top:14px;}
+
+  @media (max-width:1180px){
+    .cz-body{grid-template-columns:1fr;}
+    .cz-day{border-left:none;border-top:1px solid var(--dz-line);}
+  }
+  @media (max-width:760px){
+    #page-schedule .cz-head{gap:10px;}
+    #page-schedule .cz-head .page-title{flex:1;}
+    #page-schedule .cz-head .spacer{display:none;}
+    #page-schedule .cz-head .cz-seg{order:5;width:100%;}
+    #page-schedule .cz-head .cz-seg button{flex:1;justify-content:center;}
+    #page-schedule .cz-head .btn{flex:1;justify-content:center;padding:10px 12px;}
+    #page-schedule .cz-head .btn-primary{order:3;}
+    #page-schedule .cz-head .btn-ghost{order:4;}
+    .cz-bar{padding:12px 12px 10px;gap:6px;}
+    .cz-bar .ds-month{font-size:17px;}
+    .cz-bar .cz-seg{width:100%;order:9;}
+    .cz-bar .cz-seg button{flex:1;justify-content:center;}
+    .cz-main{padding:10px 8px 12px;}
+    .cz-day{padding:14px 12px 18px;}
+    .cm-day{min-height:54px;padding:3px 0 4px;border-radius:12px;}
+    .cm-num{width:34px;height:34px;font-size:14px;}
+    .cm-wd{font-size:10px;}
+    /* phones: the week is the day pills; the chosen day's list sits right under it */
+    .cw-head{grid-template-columns:repeat(7,minmax(0,1fr));margin-bottom:0;}
+    .cw-head > :first-child{display:none;}
+    .cw-body{display:none;}
+    .cd-card{padding-right:70px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .cz-body.is-swap{animation:none;}
+    .cm-num, .cw-ev, .cd-card, .cz-seg button{transition:none;}
+    .cm-day.is-sel .cm-num{transform:none;}
+  }
 </style>
 </head>
 <body>
@@ -3153,25 +3344,34 @@
 
     <!-- ---------- SCHEDULE ---------- -->
     <section class="page" id="page-schedule">
-      <div class="page-head"><h1 class="page-title">Calendar</h1></div>
-
-      <div class="schedule-toolbar">
-        <div class="cal-nav">
-          <button id="calPrev">‹</button>
-          <span class="cal-label" id="calLabel">—</span>
-          <button id="calNext">›</button>
+      <div class="cz-head">
+        <h1 class="page-title">Calendar</h1>
+        <div class="cz-seg" role="tablist" aria-label="Calendar mode">
+          <button type="button" role="tab" data-calkind="events" class="on" aria-selected="true"><i data-ico="calendar"></i>Events</button>
+          <button type="button" role="tab" data-calkind="bdays" aria-selected="false"><i data-ico="cake"></i>Birthdays</button>
         </div>
-        <div class="toolbar-right">
-          <div class="view-toggle">
-            <button class="active" id="btnWeek">Week</button>
-            <button id="btnMonth">Month</button>
-          </div>
-          <button class="budget-btn" id="evOpen">Add event</button>
-        </div>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-ghost" id="bdOpen"><i data-ico="cake"></i>Add birthday</button>
+        <button type="button" class="btn btn-primary" id="evOpen"><i data-ico="plus"></i>Add event</button>
       </div>
 
-      <div id="weekView"></div>
-      <div id="monthView" style="display:none;"></div>
+      <div class="cz-card">
+        <div class="cz-bar">
+          <button type="button" class="ds-arrow" id="calPrev" aria-label="Previous"><i data-ico="chevL"></i></button>
+          <h2 class="ds-month" id="calLabel" aria-live="polite">—</h2>
+          <button type="button" class="ds-arrow" id="calNext" aria-label="Next"><i data-ico="chevR"></i></button>
+          <button type="button" class="ds-today" id="calToday">Today</button>
+          <span class="spacer"></span>
+          <div class="cz-seg" id="calView" aria-label="View">
+            <button type="button" id="btnWeek">Week</button>
+            <button type="button" id="btnMonth">Month</button>
+          </div>
+        </div>
+        <div class="cz-body" id="calBody">
+          <div class="cz-main" id="calMain"><div class="skel"></div></div>
+          <aside class="cz-day" id="calDay" aria-live="polite"></aside>
+        </div>
+      </div>
       <div class="cal-legend">
         <span class="acc-blue"><i></i>Work</span>
         <span class="acc-sun"><i></i>Training</span>
@@ -3182,9 +3382,6 @@
         <span class="acc-sky"><i></i>Personal &amp; General</span>
         <span class="lg-bday"><i></i>Birthday</span>
       </div>
-
-      <div class="section-h" id="birthdaysSection"><h2>Birthdays</h2></div>
-      <div class="people-grid" id="peopleGrid"><div class="loading">Loading…</div></div>
     </section>
 
     <!-- ---------- TRAINING ---------- -->
@@ -3446,6 +3643,7 @@
       <label>From <input type="time" id="evStart" value="09:00" /></label>
       <label>To <input type="time" id="evEnd" value="10:00" /></label>
     </div>
+    <textarea id="evNote" rows="2" placeholder="Description (optional)"></textarea>
     <div class="modal-actions">
       <button class="modal-danger" id="evDelete" style="display:none;">Delete</button>
       <button class="modal-cancel" id="evCancel">Cancel</button>
@@ -4991,27 +5189,7 @@ async function toggleTodaySession(split, existing){
 /* ===================================================================
    SCHEDULE
    =================================================================== */
-let calMode = 'week';
-let calRef  = new Date();
-const HOURS = Array.from({length:18},(_,i)=>i+6);   // 06:00 → 00:00
-const ROW_H = 41;
-
-$('btnWeek').addEventListener('click', ()=>{
-  calMode='week'; $('btnWeek').classList.add('active'); $('btnMonth').classList.remove('active');
-  $('weekView').style.display='block'; $('monthView').style.display='none'; renderCalendar();
-});
-$('btnMonth').addEventListener('click', ()=>{
-  calMode='month'; $('btnMonth').classList.add('active'); $('btnWeek').classList.remove('active');
-  $('monthView').style.display='block'; $('weekView').style.display='none'; renderCalendar();
-});
-$('calPrev').addEventListener('click', ()=>{
-  if(calMode==='week') calRef.setDate(calRef.getDate()-7); else calRef.setMonth(calRef.getMonth()-1);
-  renderCalendar();
-});
-$('calNext').addEventListener('click', ()=>{
-  if(calMode==='week') calRef.setDate(calRef.getDate()+7); else calRef.setMonth(calRef.getMonth()+1);
-  renderCalendar();
-});
+// calendar state and views live in the CALENDAR block below
 
 /* ---------- event popup: create and edit share one form ---------- */
 let editingEventId = null;
@@ -5050,6 +5228,7 @@ function openEventModal(dateISO){
   $('evDate').value  = (typeof dateISO === 'string' && dateISO) || iso(new Date());
   $('evStart').value = '09:00';
   $('evEnd').value   = '10:00';
+  $('evNote').value  = '';
   setEventCat('general');
   setHighlight(false);
   _showEventModal();
@@ -5066,6 +5245,7 @@ function openEditEvent(ev){
   $('evDate').value  = iso(s);
   $('evStart').value = _hhmm(s);
   $('evEnd').value   = endsAtMidnight ? '00:00' : _hhmm(en);
+  $('evNote').value  = ev.note || '';
   setEventCat(ev.category || 'general');
   setHighlight(ev.highlight);
   _showEventModal();
@@ -5113,7 +5293,7 @@ $('evStart').addEventListener('change', ()=>{
   const [h, m] = st.split(':').map(Number);
   $('evEnd').value = h >= 23 ? '00:00' : pad2(h + 1) + ':' + pad2(m);
 });
-$('evOpen').addEventListener('click', openEventModal);
+$('evOpen').addEventListener('click', ()=> openEventModal(iso(calSel)));
 $('evCancel').addEventListener('click', closeEventModal);
 $('evModal').addEventListener('click', e=>{ if(e.target === $('evModal')) closeEventModal(); });
 document.addEventListener('keydown', e=>{
@@ -5136,7 +5316,8 @@ $('evAdd').addEventListener('click', async ()=>{
                  ? addDays(new Date(date + 'T00:00'), 1).toISOString()
                  : new Date(date + 'T' + en).toISOString(),
     category: $('evCat').value,
-    highlight: $('evHighlight').classList.contains('on')
+    highlight: $('evHighlight').classList.contains('on'),
+    note: $('evNote').value.trim() || null
   };
   try{
     if(editingEventId){
@@ -5153,116 +5334,380 @@ $('evAdd').addEventListener('click', async ()=>{
   }catch(err){ fail(err, editingEventId ? 'Could not save event' : 'Could not add event'); }
 });
 
+/* ===================================================================
+   CALENDAR (2026-11 redesign)
+   One card: month or week view on the left, the chosen day's list on the
+   right. "Birthdays" mode uses the same card for the birthday calendar.
+   Reads schedule_events, birthdays and learning tasks; nothing is copied.
+   =================================================================== */
+let calMode = (()=>{ try{ return localStorage.getItem('pa_cal_view') === 'week' ? 'week' : 'month'; }catch(e){ return 'month'; } })();
+let calKind = 'events';                      // 'events' | 'bdays'
+let calRef  = new Date();                    // the week / month on screen
+let calSel  = _dayOnly(new Date());          // the day the list shows
+let CAL = null, calSeq = 0, calSwap = false;
+const ROW_H = 40;
+
+const isLeap = y => new Date(y, 1, 29).getMonth() === 1;
+// a birthday's date in a given year (29 Feb falls on the 28th in other years)
+function bdDate(b, yr){ return new Date(yr, b.month - 1, (b.month === 2 && b.day === 29 && !isLeap(yr)) ? 28 : b.day); }
+const bdaysOn = d => (CAL ? CAL.bdays : []).filter(b=> sameDay(bdDate(b, d.getFullYear()), d));
+const shortDate = d => `${DAY_SHORT[(d.getDay() + 6) % 7]} ${d.getDate()} ${MONTHS_SH[d.getMonth()]}`;
+const hhmm = d => pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+function evEnd(e){                            // an event that ends at midnight ends at 24:00 of its day
+  const s = new Date(e.starts_at), en = new Date(e.ends_at);
+  return { s, en, endH: (iso(en) !== iso(s) && en.getHours() === 0 && en.getMinutes() === 0) ? 24 : en.getHours() + en.getMinutes() / 60 };
+}
+function durLabel(mins){ const h = Math.floor(mins / 60), m = mins % 60; return h ? (m ? `${h}h ${m}m` : `${h}h`) : `${m}m`; }
+
+function calRange(){
+  if(calKind === 'bdays' || calMode === 'month'){
+    const y = calRef.getFullYear(), m = calRef.getMonth();
+    return { from: new Date(y, m, 1), to: new Date(y, m + 1, 0) };
+  }
+  const from = mondayOf(calRef);
+  return { from, to: addDays(from, 6) };
+}
+const inRange = d => { const { from, to } = calRange(); return d >= from && d <= to; };
+
+async function calFetch(from, to){
+  const [ev, bd, lt] = await Promise.all([
+    sb.from('schedule_events').select('*').gte('starts_at', _dayOnly(from).toISOString()).lt('starts_at', addDays(to, 1).toISOString()).order('starts_at'),
+    sb.from('birthdays').select('*').order('day'),
+    // study tasks are tasks, not events: read them from the task list, so nothing is copied
+    sb.from('tasks').select('*').eq('category', 'learning').gte('due_date', iso(from)).lte('due_date', iso(to))
+  ]);
+  if(ev.error) throw ev.error;
+  if(bd.error) throw bd.error;
+  return { events: ev.data || [], bdays: bd.data || [], ltasks: (lt && lt.data) || [] };
+}
+
 async function renderCalendar(){
   if(!USER) return;
-  if(calMode === 'week') await renderWeek(); else await renderMonth();
-}
-
-let CAL_LTASKS = [];
-async function renderWeek(){
-  const monday = mondayOf(calRef);
-  const dates  = Array.from({length:7},(_,i)=>addDays(monday,i));
-  $('calLabel').textContent =
-    dates[0].toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' – ' +
-    dates[6].toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
-
-  const [{ data, error }, bdRes] = await Promise.all([
-    sb.from('schedule_events').select('*')
-      .gte('starts_at', iso(monday) + 'T00:00:00')
-      .lte('starts_at', iso(dates[6]) + 'T23:59:59')
-      .order('starts_at'),
-    sb.from('birthdays').select('*'),
-    // study tasks are tasks, not events: read them from the task list, so nothing is copied
-    sb.from('tasks').select('*').eq('category', 'learning').gte('due_date', iso(monday)).lte('due_date', iso(dates[6]))
-  ]).then(r=>{ CAL_LTASKS = (r[2] && r[2].data) || []; return r; });
-  if(error){ fail(error, 'Could not load events'); return; }
-  const weekBdays = birthdaysInRange(bdRes.data || [], monday, dates[6]);
-
-  let html = '<div class="week-grid"><div class="head-cell"></div>';
-  dates.forEach((d,i)=>{
-    const bd = weekBdays.filter(b=>b.dateISO === iso(d));
-    const isTodayCol = iso(d) === iso(new Date());
-    html += `<div class="head-cell${isTodayCol?' today':''}">${DAY_SHORT[i]}<small>${d.getDate()}</small>` +
-      bd.map(b=>`<span class="bd-chip" title="Birthday">🎂 ${esc(b.name)}</span>`).join('') +
-      '</div>';
-  });
-  html += '<div>' + HOURS.map(h=>`<div class="time-cell">${h}:00</div>`).join('') + '</div>';
-
-  for(let i=0;i<7;i++){
-    html += `<div class="day-col${iso(dates[i]) === iso(new Date()) ? ' today' : ''}" style="height:${HOURS.length*ROW_H}px;">`;
-    html += HOURS.map(()=>'<div class="hour-line"></div>').join('');
-    (data||[]).filter(e=>iso(new Date(e.starts_at)) === iso(dates[i])).forEach(e=>{
-      const s = new Date(e.starts_at), en = new Date(e.ends_at);
-      const startH = s.getHours() + s.getMinutes()/60;
-      const endH   = (iso(en) !== iso(s) && en.getHours() === 0 && en.getMinutes() === 0)
-                     ? 24
-                     : en.getHours() + en.getMinutes()/60;
-      const top = Math.max(0, (startH - HOURS[0]) * ROW_H);
-      const h   = Math.max(18, (endH - startH) * ROW_H - 4);
-      html += `<div class="event ${catAcc(e.category)}" style="top:${top}px;height:${h}px;"
-                    title="Click to edit" data-ev="${e.id}">${e.highlight ? '<span class="ev-star">★</span>' : ''}${esc(e.title)}</div>`;
-    });
-    CAL_LTASKS.filter(t=>t.due_date === iso(dates[i]) && t.due_time).forEach(t=>{
-      const [hh, mm] = t.due_time.split(':').map(Number), startH = hh + mm / 60;
-      if(startH < HOURS[0]) return;
-      html += `<div class="event acc-learn ev-task${t.completed ? ' done' : ''}" style="top:${(startH - HOURS[0]) * ROW_H}px;height:${ROW_H - 6}px;"
-                    title="Study task: click to edit" data-ltask="${t.id}">${ico(t.completed ? 'check' : 'book', 'ico-sm')}${esc(t.title)}</div>`;
-    });
-    html += '</div>';
+  paintCalChrome();
+  const { from, to } = calRange(), seq = ++calSeq;
+  let data;
+  try{ data = await calFetch(from, to); }
+  catch(err){ if(seq === calSeq) showError($('calMain'), err, renderCalendar); return; }
+  if(seq !== calSeq) return;
+  CAL = { from, to, ...data };
+  paintCalMain();
+  paintCalDay();
+  if(calSwap){
+    calSwap = false;
+    const b = $('calBody'); b.classList.remove('is-swap'); void b.offsetWidth; b.classList.add('is-swap');
   }
-  html += '</div>';
-  $('weekView').innerHTML = html;
-
-  const byId = {};
-  (data||[]).forEach(e=>{ byId[e.id] = e; });
-  $('weekView').querySelectorAll('[data-ev]').forEach(el=>{
-    el.addEventListener('click', ()=> openEditEvent(byId[el.dataset.ev]));
-  });
-  $('weekView').querySelectorAll('[data-ltask]').forEach(el=>{
-    el.addEventListener('click', ()=> openTaskForm(CAL_LTASKS.find(t=>t.id === el.dataset.ltask)));
-  });
 }
 
-async function renderMonth(){
+/* ---------- top bar ---------- */
+function paintCalChrome(){
+  const bd = calKind === 'bdays', y = calRef.getFullYear();
+  $('page-schedule').classList.toggle('cz-kind-bdays', bd);
+  document.querySelectorAll('[data-calkind]').forEach(b=>{ const on = b.dataset.calkind === calKind; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  $('calView').hidden = bd;
+  $('btnWeek').classList.toggle('on', calMode === 'week');
+  $('btnMonth').classList.toggle('on', calMode === 'month');
+  if(bd || calMode === 'month'){
+    $('calLabel').innerHTML = `${MONTHS_FULL[calRef.getMonth()]} <span>${y}</span>`;
+  } else {
+    const a = mondayOf(calRef), z = addDays(a, 6);
+    $('calLabel').innerHTML = a.getMonth() === z.getMonth()
+      ? `${MONTHS_SH[a.getMonth()]} ${a.getDate()} – ${z.getDate()} <span>${z.getFullYear()}</span>`
+      : `${MONTHS_SH[a.getMonth()]} ${a.getDate()} – ${MONTHS_SH[z.getMonth()]} ${z.getDate()} <span>${z.getFullYear()}</span>`;
+  }
+  const t = _dayOnly(new Date());
+  $('calToday').hidden = inRange(t) && sameDay(calSel, t);
+}
+
+/* ---------- month grid (events and birthdays) ---------- */
+function paintCalMain(){
+  if(calKind === 'events' && calMode === 'week') return paintWeek();
   const y = calRef.getFullYear(), m = calRef.getMonth();
-  $('calLabel').textContent = calRef.toLocaleDateString(undefined,{month:'long',year:'numeric'});
-  const first = new Date(y, m, 1);
-  const offset = (first.getDay()+6)%7;
-  const days = new Date(y, m+1, 0).getDate();
-  const today = new Date();
-
-  const [{ data }, bdRes, ltRes] = await Promise.all([
-    sb.from('schedule_events').select('starts_at,category')
-      .gte('starts_at', iso(first) + 'T00:00:00')
-      .lte('starts_at', iso(new Date(y, m, days)) + 'T23:59:59'),
-    sb.from('birthdays').select('*').eq('month', m+1),
-    sb.from('tasks').select('due_date').eq('category', 'learning').gte('due_date', iso(first)).lte('due_date', iso(new Date(y, m, days)))
-  ]);
-  const catsOn = {};
-  (data||[]).forEach(e=>{
-    const k = iso(new Date(e.starts_at));
-    (catsOn[k] = catsOn[k] || new Set()).add(e.category || 'general');
-  });
-  ((ltRes && ltRes.data) || []).forEach(t=>{ (catsOn[t.due_date] = catsOn[t.due_date] || new Set()).add('learning'); });
-  const bdayDays = new Set((bdRes.data||[]).map(b=>b.day));
-
-  let html = '<div class="month-grid">' + DAY_SHORT.map(d=>`<div class="head-cell">${d}</div>`).join('');
-  const total = Math.ceil((offset+days)/7)*7;
-  for(let i=0;i<total;i++){
-    const n = i - offset + 1;
-    if(n < 1 || n > days){ html += '<div class="month-cell pad"></div>'; continue; }
-    const isToday = today.getFullYear()===y && today.getMonth()===m && today.getDate()===n;
-    const cats = [...(catsOn[iso(new Date(y,m,n))] || [])];
-    const bd  = bdayDays.has(n);
-    html += `<div class="month-cell${isToday?' today':''}"><span class="daynum">${n}</span>` +
-            '<div class="dots">' +
-              cats.map(k=>`<span class="month-dot ${catAcc(k)}"></span>`).join('') +
-              (bd ? '<span class="month-dot bd"></span>' : '') +
-            '</div></div>';
+  const first = new Date(y, m, 1), offset = (first.getDay() + 6) % 7, days = new Date(y, m + 1, 0).getDate();
+  const total = Math.ceil((offset + days) / 7) * 7, today = _dayOnly(new Date());
+  const cats = {};
+  if(calKind === 'events'){
+    CAL.events.forEach(e=>{ const k = iso(new Date(e.starts_at)); (cats[k] = cats[k] || new Set()).add(e.category || 'general'); });
+    CAL.ltasks.forEach(t=>{ (cats[t.due_date] = cats[t.due_date] || new Set()).add('learning'); });
   }
-  html += '</div>';
-  $('monthView').innerHTML = html;
+  let html = '<div class="cm" role="grid">' + DAY_SHORT.map((d, i)=>`<div class="cm-wd${i >= 5 ? ' we' : ''}">${d}</div>`).join('');
+  for(let i = 0; i < total; i++){
+    const d = new Date(y, m, i - offset + 1), k = iso(d), out = d.getMonth() !== m;
+    const bds = bdaysOn(d), cs = [...(cats[k] || [])];
+    let dots = '';
+    if(!out){
+      if(calKind === 'events'){
+        dots = cs.slice(0, 3).map(c=>`<i class="${catAcc(c)}"></i>`).join('') + (bds.length ? '<i class="bd"></i>' : '');
+      } else if(bds.length){
+        dots = ico('cake') + (bds.length > 1 ? `<b>${bds.length}</b>` : '');
+      }
+    }
+    const busy = !out && (calKind === 'events' ? (cs.length || bds.length) : bds.length);
+    const label = `${d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long' })}` +
+      (bds.length ? `, ${bds.length} birthday${bds.length > 1 ? 's' : ''}` : '') + (calKind === 'events' && cs.length ? ', has events' : '');
+    html += `<button type="button" class="cm-day${out ? ' is-out' : ''}${busy ? ' has-items' : ''}${bds.length && !out ? ' has-bday' : ''}${sameDay(d, today) ? ' is-today' : ''}${!out && sameDay(d, calSel) ? ' is-sel' : ''}${d < today ? ' is-past' : ''}"
+      data-day="${k}" aria-label="${esc(label)}" aria-pressed="${!out && sameDay(d, calSel)}"><span class="cm-num">${d.getDate()}</span><span class="cm-dots">${dots}</span></button>`;
+  }
+  $('calMain').innerHTML = html + '</div>';
 }
+
+/* ---------- week view: day pills + a light time grid ---------- */
+function weekItems(d){
+  const k = iso(d), out = [];
+  CAL.events.filter(e=> iso(new Date(e.starts_at)) === k).forEach(e=>{
+    const { s, endH } = evEnd(e), sh = s.getHours() + s.getMinutes() / 60;
+    out.push({ kind:'ev', id:e.id, sh, eh: Math.max(endH, sh + .25), title:e.title, cat:e.category || 'general', star:e.highlight,
+      time: hhmm(s) + '–' + (endH === 24 ? '00:00' : hhmm(new Date(e.ends_at))) });
+  });
+  CAL.ltasks.filter(t=> t.due_date === k && t.due_time).forEach(t=>{
+    const [hh, mm] = t.due_time.split(':').map(Number), sh = hh + mm / 60;
+    out.push({ kind:'task', id:t.id, sh, eh: Math.min(24, sh + .75), title:t.title, cat:'learning', done:t.completed, time: t.due_time.slice(0, 5) });
+  });
+  out.sort((a, b)=> a.sh - b.sh || b.eh - a.eh);
+  // side by side when they overlap
+  let cluster = [], end = -1;
+  const flush = ()=>{ const lanes = []; cluster.forEach(it=>{ let l = lanes.findIndex(x=> x <= it.sh); if(l < 0){ l = lanes.length; lanes.push(0); } lanes[l] = it.eh; it.lane = l; }); cluster.forEach(it=> it.lanes = lanes.length); cluster = []; };
+  out.forEach(it=>{ if(it.sh >= end) flush(); cluster.push(it); end = Math.max(end, it.eh); });
+  flush();
+  return out;
+}
+function paintWeek(){
+  const mon = mondayOf(calRef), dates = Array.from({ length:7 }, (_, i)=> addDays(mon, i)), today = _dayOnly(new Date());
+  const cols = dates.map(weekItems);
+  // only the hours that matter: 8:00–20:00, stretched to fit anything earlier or later
+  let h0 = 8, h1 = 20;
+  cols.flat().forEach(it=>{ h0 = Math.min(h0, Math.floor(it.sh)); h1 = Math.max(h1, Math.ceil(it.eh)); });
+  h0 = Math.max(0, h0); h1 = Math.min(24, h1);
+  const rows = h1 - h0, now = new Date(), nowH = now.getHours() + now.getMinutes() / 60;
+
+  let html = `<div class="cw" style="--rows:${rows};--row:${ROW_H}px"><div class="cw-head"><span></span>`;
+  dates.forEach((d, i)=>{
+    const bd = bdaysOn(d).length;
+    html += `<button type="button" class="cw-day${sameDay(d, today) ? ' is-today' : ''}${sameDay(d, calSel) ? ' is-sel' : ''}" data-day="${iso(d)}" aria-pressed="${sameDay(d, calSel)}"
+      aria-label="${esc(d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long' }))}${bd ? ', birthday' : ''}">
+      <span class="cw-wd">${DAY_SHORT[i]}</span><span class="cw-num">${d.getDate()}</span>${bd ? `<span class="cw-cake" title="Birthday">${ico('cake')}</span>` : ''}</button>`;
+  });
+  html += '</div><div class="cw-body"><div class="cw-times">' +
+    Array.from({ length: rows - 1 }, (_, i)=>`<span style="top:${(i + 1) * ROW_H}px">${pad2(h0 + i + 1)}:00</span>`).join('') + '</div>';
+  dates.forEach((d, i)=>{
+    html += `<div class="cw-col${sameDay(d, today) ? ' is-today' : ''}${sameDay(d, calSel) ? ' is-sel' : ''}" data-day="${iso(d)}">`;
+    cols[i].forEach(it=>{
+      const top = (Math.max(it.sh, h0) - h0) * ROW_H + 1, h = Math.max(22, (Math.min(it.eh, h1) - Math.max(it.sh, h0)) * ROW_H - 3);
+      const w = 100 / it.lanes;
+      html += `<button type="button" class="cw-ev ${catAcc(it.cat)}${it.kind === 'task' ? ' is-task' : ''}${it.done ? ' done' : ''}${h < 42 ? ' is-short' : ''}"
+        style="top:${top}px;height:${h}px;left:calc(${it.lane * w}% + 2px);width:calc(${w}% - 4px)"
+        data-${it.kind === 'ev' ? 'ev' : 'ltask'}="${it.id}" title="${esc(it.title)} · ${it.time}">
+        <b>${it.star ? '<span class="s-star">★</span> ' : ''}${it.kind === 'task' ? ico(it.done ? 'check' : 'book') + ' ' : ''}${esc(it.title)}</b><small>${it.time}</small></button>`;
+    });
+    if(sameDay(d, today) && nowH >= h0 && nowH <= h1) html += `<div class="cw-now" style="top:${(nowH - h0) * ROW_H}px"></div>`;
+    html += '</div>';
+  });
+  $('calMain').innerHTML = html + '</div></div>';
+}
+
+/* ---------- the selected day ---------- */
+function dayHead(d, sub, addBtn){
+  const isT = sameDay(d, new Date());
+  return `<div class="cd-head"><div class="cd-date"><b>${d.getDate()}</b><span>${isT ? '<small class="cd-tag">Today</small>' : ''}
+      ${d.toLocaleDateString(undefined, { weekday:'long' })}<small>${MONTHS_FULL[d.getMonth()]} ${d.getFullYear()}</small></span></div>
+      <span class="spacer"></span>${addBtn}</div>${sub ? `<div class="cd-sum">${sub}</div>` : ''}`;
+}
+const actsHtml = (kind, id, what)=>`<div class="cd-acts">
+  <button type="button" data-act="edit" data-${kind}="${id}" aria-label="Edit ${esc(what)}" title="Edit">${ico('pencil')}</button>
+  <button type="button" class="cd-del" data-act="del" data-${kind}="${id}" aria-label="Delete ${esc(what)}" title="Delete">${ico('trash')}</button></div>`;
+
+function bdayMeta(b, d){
+  const today = _dayOnly(new Date()), bits = [];
+  if(b.year) bits.push(`${d < today ? 'turned' : 'turns'} ${d.getFullYear() - b.year}`);
+  if(b.time) bits.push(b.time.slice(0, 5));
+  const du = Math.round((d - today) / 86400000);
+  if(du > 0 && du <= 30) bits.push(`<span class="cb-soon">in ${du} day${du === 1 ? '' : 's'}</span>`);
+  return bits.join(' · ');
+}
+
+function paintCalDay(){
+  if(calKind === 'bdays') return paintBdayList();
+  const d = calSel, k = iso(d), now = new Date();
+  const bds = bdaysOn(d);
+  const items = [];
+  CAL.events.filter(e=> iso(new Date(e.starts_at)) === k).forEach(e=>{
+    const { s, en, endH } = evEnd(e);
+    items.push({ kind:'ev', s, html: `<li class="cd-item ${catAcc(e.category)}${en < now ? ' is-past' : ''}">
+      <div class="cd-time"><b>${hhmm(s)}</b><small>${endH === 24 ? '00:00' : hhmm(en)}</small></div>
+      <div class="cd-card" data-ev="${e.id}" data-act="open" tabindex="0" role="button" aria-label="${esc(e.title)}, ${hhmm(s)}">
+        <div class="cd-title">${e.highlight ? `<span class="s-star" title="Shown in Upcoming">★</span>` : ''}${esc(e.title)}</div>
+        <div class="cd-meta"><i></i>${esc(CAT_LABEL(e.category))} · ${durLabel(Math.round((en - s) / 60000))}</div>
+        ${e.note ? `<div class="cd-note">${esc(e.note)}</div>` : ''}
+        ${actsHtml('ev', e.id, e.title)}
+      </div></li>` });
+  });
+  CAL.ltasks.filter(t=> t.due_date === k).forEach(t=>{
+    items.push({ kind:'task', s: t.due_time ? new Date(k + 'T' + t.due_time) : null, html: `<li class="cd-item is-task acc-learn${t.completed ? ' done' : ''}">
+      <div class="cd-time"><b>${t.due_time ? t.due_time.slice(0, 5) : 'Any'}</b><small>${t.due_time ? '' : 'time'}</small></div>
+      <div class="cd-card" data-ltask="${t.id}" data-act="open" tabindex="0" role="button" aria-label="Study task: ${esc(t.title)}">
+        <div class="cd-title">${esc(t.title)}</div>
+        <div class="cd-meta"><i></i>Learning · study task${t.completed ? ' · done' : ''}</div>
+      </div></li>` });
+  });
+  items.sort((a, b)=> (a.s ? a.s.getTime() : 0) - (b.s ? b.s.getTime() : 0));
+  const nEv = items.filter(i=>i.kind === 'ev').length, nT = items.length - nEv;
+  const sum = [nEv ? `${nEv} event${nEv > 1 ? 's' : ''}` : '', nT ? `${nT} study task${nT > 1 ? 's' : ''}` : '', bds.length ? `${bds.length} birthday${bds.length > 1 ? 's' : ''}` : ''].filter(Boolean).join(' · ');
+  const add = `<button type="button" class="dz-ghost" data-act="add-ev">${ico('plus', 'ico-sm')}Event</button>`;
+  const bdHtml = bds.map(b=>`<li class="cd-item is-bday"><div class="cd-time"><b>${b.time ? b.time.slice(0, 5) : ''}</b></div>
+      <div class="cd-card" data-bd="${b.id}" data-act="open" tabindex="0" role="button" aria-label="${esc(b.name)}'s birthday">
+        <div class="cd-title">${ico('cake')}${esc(b.name)}'s birthday</div>
+        ${bdayMeta(b, d) ? `<div class="cd-meta">${bdayMeta(b, d)}</div>` : ''}
+        ${b.note ? `<div class="cd-note">${esc(b.note)}</div>` : ''}
+        ${actsHtml('bd', b.id, b.name + "'s birthday")}
+      </div></li>`).join('');
+  $('calDay').innerHTML = dayHead(d, sum || 'Nothing planned', add) + ((items.length || bds.length)
+    ? `<ul class="cd-list">${bdHtml}${items.map(i=>i.html).join('')}</ul>`
+    : `<div class="cd-empty">${typeof doodleSvg === 'function' ? doodleSvg('free') : ''}<b>A free day</b>Nothing on the calendar yet.<br>
+        <button type="button" class="dz-ghost" data-act="add-ev">${ico('plus', 'ico-sm')}Add an event</button></div>`);
+}
+
+/* ---------- birthdays of the month ---------- */
+function paintBdayList(){
+  const y = calRef.getFullYear(), m = calRef.getMonth(), today = _dayOnly(new Date());
+  const list = CAL.bdays.map(b=>({ b, d: bdDate(b, y) })).filter(x=> x.d.getMonth() === m).sort((a, b)=> a.d - b.d || a.b.name.localeCompare(b.b.name));
+  const selHas = list.some(x=> sameDay(x.d, calSel));
+  const head = `<div class="cd-head"><div class="cd-date"><span>${MONTHS_FULL[m]}<small>${list.length ? `${list.length} birthday${list.length > 1 ? 's' : ''}` : 'No birthdays yet'}</small></span></div>
+    <span class="spacer"></span><button type="button" class="dz-ghost" data-act="add-bd">${ico('plus', 'ico-sm')}Add birthday</button></div>`;
+  const none = !selHas && calSel.getMonth() === m
+    ? `<div class="cb-none">Nothing on ${shortDate(calSel)}.<span class="spacer"></span><button type="button" data-act="add-bd">Add a birthday here</button></div>` : '';
+  const rows = list.map(({ b, d })=>`<li class="cb-row${sameDay(d, calSel) ? ' is-sel' : ''}${sameDay(d, today) ? ' is-today' : ''}${d < today ? ' is-past' : ''}">
+      <button type="button" class="cb-date" data-day="${iso(d)}" aria-label="Show ${esc(shortDate(d))}"><b>${d.getDate()}</b><small>${DAY_SHORT[(d.getDay() + 6) % 7]}</small></button>
+      <div class="cd-card" data-bd="${b.id}" data-act="open" tabindex="0" role="button" aria-label="Edit ${esc(b.name)}'s birthday">
+        <div class="cd-title">${esc(b.name)}</div>
+        ${bdayMeta(b, d) ? `<div class="cd-meta">${bdayMeta(b, d)}</div>` : ''}
+        ${b.note ? `<div class="cd-note">${esc(b.note)}</div>` : ''}
+        ${actsHtml('bd', b.id, b.name + "'s birthday")}
+      </div></li>`).join('');
+  $('calDay').innerHTML = head + none + (list.length ? `<ul class="cd-list">${rows}</ul>`
+    : `<div class="cd-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>No birthdays in ${MONTHS_FULL[m]}</b>
+        <button type="button" class="dz-ghost" data-act="add-bd">${ico('plus', 'ico-sm')}Add birthday</button></div>`);
+}
+
+const CAT_LABEL = c => c === 'general' ? 'General' : c === 'side' ? 'Side Hustle' : (CATS[c] ? CATS[c].label : 'General');
+
+/* ---------- birthday form: add and edit share it ---------- */
+function openBirthdayForm(b, defDate){
+  const d = defDate || calSel;
+  const day = b ? b.day : d.getDate(), month = b ? b.month : d.getMonth() + 1;
+  openForm({
+    title: b ? 'Edit birthday' : 'Add birthday',
+    rows: [
+      [{ id:'bdName', label:'Name', placeholder:'Who is it?', value: b ? b.name : '' }],
+      [{ id:'bdDay', label:'Day', type:'select', width:'80px', value: day, options: Array.from({ length:31 }, (_, i)=>({ value: i + 1, label: String(i + 1) })) },
+       { id:'bdMonth', label:'Month', type:'select', value: month, options: MONTHS_FULL.map((n, i)=>({ value: i + 1, label: n })) },
+       { id:'bdYear', label:'Year', type:'number', width:'96px', placeholder:'optional', value: b && b.year ? b.year : '' }],
+      [{ id:'bdTime', label:'Time (optional)', type:'select', value: b && b.time ? b.time.slice(0, 5) : '', options: TIME_OPTS }],
+      [{ id:'bdNote', type:'textarea', rows:2, placeholder:'Note (optional): gift ideas, plans…', value: b && b.note ? b.note : '' }]
+    ],
+    actions: b ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add birthday', value:'save' }],
+    onSubmit: async (v, act)=>{
+      if(act === 'delete'){ setTimeout(()=> deleteBirthday(b), 0); return; }
+      const name = v.bdName, dd = Number(v.bdDay), mm = Number(v.bdMonth), yr = v.bdYear ? Number(v.bdYear) : null;
+      if(!name){ toast('Add a name', true); return false; }
+      const thisYear = new Date().getFullYear();
+      if(yr !== null && !(Number.isInteger(yr) && yr >= 1900 && yr <= thisYear)){ toast(`Year should be between 1900 and ${thisYear}`, true); return false; }
+      const test = new Date(yr || 2000, mm - 1, dd);           // 2000 was a leap year, so 29 Feb is fine without a year
+      if(test.getMonth() !== mm - 1){ toast(`${MONTHS_FULL[mm - 1]} doesn't have a ${dd}${yr ? ' in ' + yr : ''}`, true); return false; }
+      const payload = { name, day: dd, month: mm, year: yr, time: v.bdTime || null, note: v.bdNote || null };
+      const { error } = b
+        ? await sb.from('birthdays').update(payload).eq('id', b.id)
+        : await sb.from('birthdays').insert({ user_id: USER.id, ...payload });
+      if(error){ fail(error, 'Could not save the birthday'); return false; }
+      toast(b ? 'Birthday updated' : 'Birthday saved');
+      // show its next occurrence (this year, or next year if it has passed)
+      const t0 = _dayOnly(new Date());
+      let nx = bdDate({ month: mm, day: dd }, t0.getFullYear());
+      if(nx < t0) nx = bdDate({ month: mm, day: dd }, t0.getFullYear() + 1);
+      calSel = nx; calRef = new Date(nx.getFullYear(), nx.getMonth(), 1);
+      if(calKind !== 'bdays'){ calKind = 'bdays'; calSwap = true; }
+      renderCalendar(); dataChanged();
+    }
+  });
+}
+async function deleteBirthday(b){
+  const yes = await askConfirm({ title:`Delete ${b.name}'s birthday?`, message:'It will be removed from the calendar and from reminders. This can\'t be undone.', ok:'Delete birthday' });
+  if(!yes) return;
+  const { error } = await sb.from('birthdays').delete().eq('id', b.id);
+  if(error){ fail(error, 'Could not delete'); return; }
+  toast('Birthday deleted');
+  renderCalendar(); dataChanged();
+}
+async function deleteEvent(e){
+  const yes = await askConfirm({ title:'Delete this event?', message:`"${e.title}" will be removed from your calendar and dashboard.`, ok:'Delete event' });
+  if(!yes) return;
+  const { error } = await sb.from('schedule_events').delete().eq('id', e.id);
+  if(error){ fail(error, 'Could not delete'); return; }
+  toast('Event deleted');
+  refreshAfterEventChange();
+}
+
+/* ---------- interactions ---------- */
+function calSelect(d){
+  calSel = _dayOnly(d);
+  if(!inRange(calSel)){ calRef = new Date(calSel); renderCalendar(); return; }
+  paintCalChrome(); paintCalMain(); paintCalDay();
+}
+function calSetKind(kind){
+  if(kind === calKind) return;
+  calKind = kind; calSwap = true;
+  calRef = new Date(calSel);
+  renderCalendar();
+}
+// from a birthday reminder: open the birthday calendar on that day
+function calOpenBirthdays(d){
+  calKind = 'bdays'; calSel = _dayOnly(d); calRef = new Date(calSel);
+  renderCalendar();
+}
+
+$('btnWeek').addEventListener('click', ()=>{ if(calMode === 'week') return; calMode = 'week'; try{ localStorage.setItem('pa_cal_view', 'week'); }catch(e){} calRef = new Date(calSel); calSwap = true; renderCalendar(); });
+$('btnMonth').addEventListener('click', ()=>{ if(calMode === 'month') return; calMode = 'month'; try{ localStorage.setItem('pa_cal_view', 'month'); }catch(e){} calRef = new Date(calSel); calSwap = true; renderCalendar(); });
+document.querySelectorAll('[data-calkind]').forEach(b=> b.addEventListener('click', ()=> calSetKind(b.dataset.calkind)));
+function calStep(dir){
+  if(calKind === 'events' && calMode === 'week'){
+    calRef = addDays(mondayOf(calRef), 7 * dir); calSel = addDays(calSel, 7 * dir);
+  } else {
+    calRef = new Date(calRef.getFullYear(), calRef.getMonth() + dir, 1);
+    const t = _dayOnly(new Date());
+    calSel = (t.getFullYear() === calRef.getFullYear() && t.getMonth() === calRef.getMonth()) ? t : new Date(calRef);
+  }
+  renderCalendar();
+}
+$('calPrev').addEventListener('click', ()=> calStep(-1));
+$('calNext').addEventListener('click', ()=> calStep(1));
+$('calToday').addEventListener('click', ()=>{ calSel = _dayOnly(new Date()); calRef = new Date(calSel); renderCalendar(); });
+$('bdOpen').addEventListener('click', ()=>{ calSetKind('bdays'); openBirthdayForm(null, calSel); });
+
+$('calMain').addEventListener('click', e=>{
+  const ev = e.target.closest('[data-ev]');
+  if(ev){ const x = CAL.events.find(z=> z.id === ev.dataset.ev); if(x) openEditEvent(x); return; }
+  const lt = e.target.closest('[data-ltask]');
+  if(lt){ const t = CAL.ltasks.find(z=> z.id === lt.dataset.ltask); if(t) openTaskForm(t); return; }
+  const day = e.target.closest('[data-day]');
+  if(day) calSelect(parseISO(day.dataset.day));
+});
+function calDayAction(e){
+  const el = e.target.closest('[data-act]');
+  if(!el) return;
+  const act = el.dataset.act;
+  if(act === 'add-ev') return openEventModal(iso(calSel));
+  if(act === 'add-bd') return openBirthdayForm(null, calSel);
+  const evId = el.dataset.ev, bdId = el.dataset.bd, ltId = el.dataset.ltask;
+  if(evId){ const x = CAL.events.find(z=> z.id === evId); if(!x) return; return act === 'del' ? deleteEvent(x) : openEditEvent(x); }
+  if(bdId){ const b = CAL.bdays.find(z=> z.id === bdId); if(!b) return; return act === 'del' ? deleteBirthday(b) : openBirthdayForm(b); }
+  if(ltId){ const t = CAL.ltasks.find(z=> z.id === ltId); if(t) openTaskForm(t); }
+}
+$('calDay').addEventListener('click', e=>{
+  const day = e.target.closest('.cb-date[data-day]');
+  if(day) return calSelect(parseISO(day.dataset.day));
+  calDayAction(e);
+});
+$('calDay').addEventListener('keydown', e=>{
+  if((e.key === 'Enter' || e.key === ' ') && e.target.matches('.cd-card[data-act]')){ e.preventDefault(); calDayAction(e); }
+});
 
 
 /* ===================================================================
@@ -6449,128 +6894,6 @@ function summarise(rows, label){
 }
 
 /* ===================================================================
-   PEOPLE
-   =================================================================== */
-const MIN_ROWS = 3, MAX_ROWS = 5;
-let expandedMonth = null;
-let BIRTHDAY_CACHE = {};
-
-async function loadPeople(){
-  if(!USER) return;
-  const { data, error } = await sb.from('birthdays').select('*').order('day');
-  if(error){ fail(error, 'Could not load birthdays'); return; }
-  BIRTHDAY_CACHE = {};
-  for(let i=1;i<=12;i++) BIRTHDAY_CACHE[i] = [];
-  (data||[]).forEach(b=>{ BIRTHDAY_CACHE[b.month].push(b); });
-  renderPeople();
-}
-
-function renderPeople(){
-  const now = new Date();
-  const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const curMonth = now.getMonth() + 1;
-  // days until the next occurrence of a birthday (0 = today)
-  const daysUntil = b=>{
-    let d = new Date(now.getFullYear(), b.month - 1, b.day);
-    if(d < todayMid) d = new Date(now.getFullYear() + 1, b.month - 1, b.day);
-    return Math.round((d - todayMid) / 86400000);
-  };
-  const busiest = Math.max(0, ...Object.values(BIRTHDAY_CACHE).map(l=>l.length));
-  const rows = Math.min(Math.max(busiest, MIN_ROWS), MAX_ROWS);
-
-  $('peopleGrid').innerHTML = MONTHS_FULL.map((m,idx)=>{
-    const month = idx + 1;
-    const list = (BIRTHDAY_CACHE[month] || []).slice().sort((a,b)=>a.day-b.day);
-    const isOpen = expandedMonth === month;
-    const shown = isOpen ? list : list.slice(0, rows);
-    const pad = isOpen ? 0 : Math.max(0, rows - shown.length);
-    const hidden = isOpen ? 0 : Math.max(0, list.length - shown.length);
-
-    return `<div class="month-card${isOpen?' expanded':''}${month === curMonth ? ' current' : ''}" data-month="${month}">
-      <div class="mc-head">
-        <span class="mc-name">${m}</span>
-        <span class="mc-count">${list.length || ''}</span>
-      </div>
-      <div class="mc-list">
-        ${shown.map(b=>{
-            const du = daysUntil(b);
-            const state = du === 0 ? ' is-today' : du <= 14 ? ' soon'
-                        : (b.month === curMonth && b.day < now.getDate()) ? ' past' : '';
-            return `<div class="bday${state}" title="${du === 0 ? 'Today!' : 'In ' + du + ' day' + (du === 1 ? '' : 's')}">
-            <span class="bday-date">${b.day}</span>
-            <span class="bday-name">${esc(b.name)}</span>
-            <button class="del" data-del-bday="${b.id}" style="margin-left:auto;">✕</button>
-          </div>`;
-          }).join('')}
-        ${Array.from({length:pad},()=>`<div class="bday placeholder"><span class="bday-date">—</span><span class="bday-name">&nbsp;</span></div>`).join('')}
-      </div>
-      ${hidden ? `<div class="mc-more">+${hidden} more</div>` : ''}
-      <button class="mc-add">+ Add birthday</button>
-      <div class="mc-form">
-        <input class="in-date" type="text" placeholder="12" maxlength="2" />
-        <input class="in-name" type="text" placeholder="Name" />
-        <button class="btn-save">✓</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-$('peopleGrid').addEventListener('click', async e=>{
-  const card = e.target.closest('.month-card');
-  if(!card) return;
-  const month = Number(card.dataset.month);
-
-  const delBtn = e.target.closest('[data-del-bday]');
-  if(delBtn){
-    e.stopPropagation();
-    const { error } = await sb.from('birthdays').delete().eq('id', delBtn.dataset.delBday);
-    if(error){ fail(error, 'Could not delete'); return; }
-    toast('Removed'); expandedMonth = month; await loadPeople();
-    return;
-  }
-
-  if(e.target.closest('.btn-save')){
-    const form = card.querySelector('.mc-form');
-    const day = parseInt(form.querySelector('.in-date').value.trim(), 10);
-    const name = form.querySelector('.in-name').value.trim();
-    if(!name || !(day >= 1 && day <= 31)){ toast('Need a day (1–31) and a name', true); return; }
-    const { error } = await sb.from('birthdays').insert({ user_id: USER.id, name, month, day });
-    if(error){ fail(error, 'Could not save'); return; }
-    toast('Birthday saved');
-    expandedMonth = month;
-    await loadPeople();
-    const fresh = $('peopleGrid').querySelector(`.month-card[data-month="${month}"]`);
-    if(fresh){
-      const f = fresh.querySelector('.mc-form');
-      f.classList.add('show');
-      fresh.querySelector('.mc-add').style.display = 'none';
-      f.querySelector('.in-date').focus();
-    }
-    return;
-  }
-
-  if(e.target.closest('.mc-add')){
-    const form = card.querySelector('.mc-form');
-    form.classList.add('show');
-    card.querySelector('.mc-add').style.display = 'none';
-    form.querySelector('.in-date').focus();
-    return;
-  }
-
-  if(e.target.closest('.mc-form')) return;
-
-  expandedMonth = (expandedMonth === month) ? null : month;
-  renderPeople();
-});
-
-$('peopleGrid').addEventListener('keydown', e=>{
-  if(e.key === 'Enter' && e.target.closest('.mc-form')){
-    e.target.closest('.month-card').querySelector('.btn-save').click();
-  }
-});
-
-
-/* ===================================================================
    REDESIGN (2026-11): sidebar router, shared task model, category
    pages, notifications, progress, settings, food.
    Everything below reads the same tables as the rest of the app, so a
@@ -6599,6 +6922,7 @@ const ICONS = {
   check:'<path d="M5 12.5l4.5 4.5L19 7"/>',
   checks:'<path d="M2 12.5l4.5 4.5L15 8M12 16l1 1 9-9.5"/>',
   x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/>',
   cake:'<path d="M4 21h16M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7"/><path d="M5 16c2 1.3 4.5 1.3 7 0s5-1.3 7 0M12 12V8"/><path d="M12 4.5c.8.8.8 2 0 2.5-.8-.5-.8-1.7 0-2.5z"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   alert:'<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.5"/>',
@@ -6775,7 +7099,7 @@ document.addEventListener('keydown', e=>{ if(e.key === 'Escape') document.body.c
 
 const LOADERS = {
   dashboard:     ()=>loadDashboard(),
-  schedule:      ()=>Promise.all([ renderCalendar(), loadPeople() ]),
+  schedule:      ()=>renderCalendar(),
   training:      ()=>Promise.all([ loadTraining(), loadFood(), renderCatTasksCard('training') ]),
   tasks:         ()=>loadTasks(),
   budget:        ()=>Promise.all([ loadBudget(), renderCatTasksCard('money') ]),
@@ -7761,7 +8085,7 @@ async function computeNotifications(){
     const age = b.year ? b.date.getFullYear() - b.year : null;
     push({ key:`bday:${b.id}:${b.dateISO}`, group: b.dateISO === t0 ? 'today' : 'soon', icon:'cake', acc:'acc-sun', at:b.date,
       title: `${b.name}'s birthday${age ? ' (turns ' + age + ')' : ''}`, when: relDay(b.date),
-      open: ()=>{ go('schedule').then(()=>{ const s = $('birthdaysSection'); if(s) s.scrollIntoView({ behavior:'smooth' }); }); } });
+      open: ()=>{ go('schedule').then(()=> calOpenBirthdays(b.date)); } });
   });
   ev.forEach(e=>{
     const s = new Date(e.starts_at), en = new Date(e.ends_at);

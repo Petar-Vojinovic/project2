@@ -2397,7 +2397,7 @@
      mint = today / done, lavender = this week, category pastels = areas,
      pink = overdue. Everything is scoped to the dashboard.
      =================================================================== */
-  #page-dashboard, #page-schedule{
+  #page-dashboard, #page-schedule, #page-tasks{
     --dz-ink:var(--foreground); --dz-ink-2:var(--muted-foreground); --dz-ink-3:var(--muted-foreground-2);
     --dz-line:var(--border); --dz-line-2:var(--muted); --dz-canvas:var(--background); --dz-card:var(--card);
     --dz-mint:var(--primary); --dz-mint-2:var(--primary-soft); --dz-mint-ink:var(--foreground); --dz-done:var(--foreground);
@@ -3150,6 +3150,150 @@
     .cm-num, .cw-ev, .cd-card, .cz-seg button{transition:none;}
     .cm-day.is-sel .cm-num{transform:none;}
   }
+
+  /* ===================================================================
+     ALL TASKS (2026-11 redesign): header, one filter bar, one aligned list.
+     Same tokens and pieces as the Dashboard and Calendar.
+     =================================================================== */
+  #page-tasks .tk-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+  #page-tasks .tk-head .page-title{margin:0;}
+  .tk-count{font-size:13px;font-weight:600;color:var(--dz-ink-3);margin-top:3px;}
+  .tk-count b{color:var(--danger);font-weight:700;}
+  #page-tasks .tk-head .spacer{flex:1;}
+  #page-tasks .btn{border-radius:999px;padding:11px 18px 11px 14px;}
+  #page-tasks .btn-ghost{background:var(--card);color:var(--foreground);box-shadow:inset 0 0 0 1px var(--border);}
+  #page-tasks .btn-ghost:hover{background:var(--muted);}
+  #page-tasks .btn .ico{width:17px;height:17px;}
+
+  .tk-card{background:var(--card);border-radius:var(--dz-r);box-shadow:inset 0 0 0 1px var(--dz-line);}
+  /* filter bar */
+  .tk-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 18px 10px;}
+  .tk-bar .spacer{flex:1;}
+  .tk-search{display:flex;align-items:center;gap:8px;flex:1 1 220px;max-width:360px;height:38px;padding:0 12px;border-radius:999px;
+    background:var(--muted);box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .15s ease, background .15s ease;color:var(--dz-ink-3);}
+  .tk-search:focus-within{background:var(--card);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .tk-search .ico{width:16px;height:16px;flex-shrink:0;}
+  .tk-search input{border:none;background:transparent;outline:none;font:inherit;font-size:13.5px;color:var(--foreground);flex:1;min-width:0;padding:0;height:100%;}
+  .tk-search input::placeholder{color:var(--dz-ink-3);}
+  .tk-search button{border:none;background:transparent;cursor:pointer;color:var(--dz-ink-3);display:flex;padding:2px;border-radius:50%;}
+  .tk-search button:hover{color:var(--foreground);}
+  .tk-search button[hidden]{display:none;}
+  .tk-sort{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--dz-ink-3);}
+  .tk-sort .sel-field{height:38px;min-width:132px;border-radius:999px;font-size:12.5px;font-weight:700;}
+  .tk-sort select{height:38px;border-radius:999px;}
+  /* area chips */
+  .tk-areas{display:flex;gap:6px;flex-wrap:wrap;padding:0 18px 14px;border-bottom:1px solid var(--dz-line);}
+  .tk-chip{border:none;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 10px;border-radius:999px;
+    font-size:12.5px;font-weight:700;color:var(--foreground);background:transparent;box-shadow:inset 0 0 0 1px var(--dz-line);
+    transition:background .15s ease, box-shadow .15s ease;}
+  .tk-chip:hover{background:var(--muted);}
+  .tk-chip i{width:8px;height:8px;border-radius:50%;background:var(--acc, var(--foreground));}
+  .tk-chip .n{font-size:11px;font-weight:700;color:var(--dz-ink-3);font-variant-numeric:tabular-nums;}
+  .tk-chip.on{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .tk-chip.on .n{color:var(--foreground);}
+  .tk-chip.is-empty:not(.on){opacity:.5;}
+
+  /* quick add */
+  .tk-quick{display:flex;align-items:center;gap:8px;margin:14px 18px 6px;padding:5px 5px 5px 12px;border-radius:14px;background:var(--muted);
+    box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .15s ease, background .15s ease;}
+  .tk-quick:focus-within{background:var(--card);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .tk-quick .ico{width:16px;height:16px;color:var(--dz-ink-3);flex-shrink:0;}
+  .tk-quick input{flex:1;min-width:0;border:none;background:transparent;outline:none;font:inherit;font-size:14px;color:var(--foreground);height:34px;padding:0;}
+  .tk-quick input::placeholder{color:var(--dz-ink-3);}
+  .tk-quick small{font-size:11.5px;font-weight:600;color:var(--dz-ink-3);white-space:nowrap;}
+  .tk-quick button{border:none;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;height:34px;padding:0 14px;border-radius:10px;background:var(--primary);color:var(--foreground);}
+
+  /* the list: one grid so every column lines up */
+  .tk-list{padding:6px 10px 14px;}
+  .tk-cols, .tk-row{display:grid;grid-template-columns:34px minmax(0,1fr) 128px 132px 84px 72px;align-items:center;column-gap:12px;}
+  .tk-cols{padding:8px 10px 6px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dz-ink-3);}
+  .tk-group{display:flex;align-items:center;gap:8px;padding:16px 10px 6px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--dz-ink-2);}
+  .tk-group:first-of-type{padding-top:6px;}
+  .tk-group .n{font-size:11px;font-weight:700;background:var(--dz-line-2);color:var(--dz-ink-2);border-radius:999px;padding:1px 7px;letter-spacing:0;}
+  .tk-group.g-late{color:var(--danger);}
+  .tk-row{position:relative;padding:7px 10px;border-radius:12px;min-height:46px;transition:background .15s ease;
+    --cs:var(--acc);--cp:rgba(var(--acc-rgb),.24);}
+  .tk-row + .tk-row{box-shadow:0 -1px 0 0 var(--dz-line-2);}
+  .tk-row:hover, .tk-row:focus-within{background:var(--muted);box-shadow:none;}
+  .tk-row:hover + .tk-row, .tk-row:focus-within + .tk-row{box-shadow:none;}
+  .tk-row .tcheck{width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--cs);background:var(--card);color:transparent;justify-self:center;}
+  .tk-row .tcheck:hover{background:var(--cp);color:var(--cs);}
+  .tk-row.done .tcheck{background:var(--foreground);box-shadow:none;color:var(--card);}
+  .tk-row .tcheck .ico{width:13px;height:13px;}
+  .tk-main{border:none;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:2px 0;min-width:0;display:flex;flex-direction:column;gap:2px;border-radius:6px;}
+  .tk-title{font-size:14px;font-weight:600;color:var(--foreground);line-height:1.35;overflow-wrap:anywhere;}
+  .tk-sub{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--dz-ink-3);}
+  .tk-sub span{display:inline-flex;align-items:center;gap:4px;}
+  .tk-sub .ico{width:12px;height:12px;}
+  .tk-row.done .tk-title{text-decoration:line-through;color:var(--dz-ink-3);}
+  .tk-row.done .tk-cell, .tk-row.done .tk-sub{opacity:.55;}
+  .tk-row.just-done{animation:tkDone .6s ease;}
+  @keyframes tkDone{0%{background:transparent}30%{background:var(--primary-soft)}100%{background:transparent}}
+  .tk-cell{min-width:0;display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--foreground);white-space:nowrap;}
+  .tk-cell .chip{background:var(--cp);color:var(--foreground);padding:3px 9px 3px 7px;overflow:hidden;text-overflow:ellipsis;}
+  .tk-cell .chip i{background:var(--cs);}
+  .tk-due{flex-direction:column;align-items:flex-start;gap:0;line-height:1.25;}
+  .tk-due small{font-size:11px;color:var(--dz-ink-3);font-weight:600;}
+  .tk-due.is-late{color:var(--danger);}
+  .tk-due.is-today{color:var(--foreground);font-weight:800;}
+  .tk-due.none{color:var(--dz-ink-3);}
+  .tk-cell .prio{font-size:11px;}
+  .tk-cell .prio.high{background:rgba(var(--cat-home-rgb),.3);color:var(--danger);}
+  .tk-cell .prio.low{background:var(--dz-line-2);color:var(--dz-ink-2);}
+  .tk-cell .prio.normal{color:var(--dz-ink-3);background:transparent;font-weight:600;padding-left:0;}
+  .tk-acts{display:flex;justify-content:flex-end;gap:2px;opacity:.35;transition:opacity .15s ease;}
+  .tk-row:hover .tk-acts, .tk-row:focus-within .tk-acts{opacity:1;}
+  .tk-acts button{border:none;background:transparent;cursor:pointer;color:var(--foreground);width:30px;height:30px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;transition:background .15s ease, color .15s ease;}
+  .tk-acts button:hover{background:rgba(var(--foreground-rgb),.08);}
+  .tk-acts button.tk-del:hover{color:var(--danger);background:var(--danger-faint);}
+  .tk-acts .ico{width:15px;height:15px;}
+  @media (hover:none){ .tk-acts{opacity:.8;} }
+  .tk-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:26px 12px 18px;color:var(--dz-ink-2);font-size:13px;}
+  .tk-empty b{color:var(--foreground);font-size:15px;}
+  .tk-empty .doodle{width:170px;height:auto;max-width:100%;}
+  .tk-empty button{margin-top:6px;}
+  .tk-more{display:block;margin:10px auto 0;}
+
+  @media (max-width:1100px){
+    .tk-cols, .tk-row{grid-template-columns:34px minmax(0,1fr) 118px 118px 74px 68px;column-gap:10px;}
+  }
+  @media (max-width:860px){
+    /* two lines per task: name on top, area / due / priority underneath */
+    .tk-cols{display:none;}
+    .tk-row{grid-template-columns:34px minmax(0,1fr) auto;grid-template-areas:"c m a" ". x x";row-gap:6px;padding:9px 8px;}
+    .tk-row .tcheck{grid-area:c;align-self:start;margin-top:1px;}
+    .tk-main{grid-area:m;}
+    .tk-acts{grid-area:a;align-self:start;opacity:.8;}
+    .tk-meta-line{grid-area:x;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .tk-due{flex-direction:row;gap:5px;align-items:baseline;}
+    .tk-cell .prio.normal{display:none;}
+  }
+  @media (min-width:861px){ .tk-meta-line{display:contents;} }
+  @media (max-width:760px){
+    #page-tasks .tk-head .spacer{display:none;}
+    #page-tasks .tk-head > div:first-of-type{flex:1 1 100%;}
+    #page-tasks .tk-head .btn{flex:1;justify-content:center;padding:10px 12px;}
+    .tk-bar{padding:12px 12px 8px;}
+    .tk-search{max-width:none;flex:1 1 100%;}
+    .tk-bar .spacer{display:none;}
+    .tk-bar > .cz-seg:first-child{flex:1 1 100%;}
+    #tkStatus{flex:1 1 auto;}
+    .tk-bar .cz-seg button{flex:1;justify-content:center;white-space:nowrap;padding:7px 10px;}
+    .tk-sort{flex:0 0 auto;}
+    .tk-sort > span{display:none;}
+    .tk-sort .sel-field{min-width:118px;}
+    .tk-areas{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:0 12px 12px;}
+    .tk-areas::-webkit-scrollbar{display:none;}
+    .tk-chip{flex-shrink:0;}
+    .tk-quick{margin:12px 12px 4px;}
+    .tk-quick small{display:none;}
+    .tk-list{padding:4px 4px 12px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .tk-row, .tk-chip, .tk-acts{transition:none;}
+    .tk-row.just-done{animation:none;}
+  }
 </style>
 </head>
 <body>
@@ -3472,44 +3616,49 @@
 
     <!-- ---------- TASKS ---------- -->
     <section class="page" id="page-tasks">
-      <div class="page-head"><h1 class="page-title">All tasks</h1></div>
-
-      <div class="tasks-grid">
-        <div class="tasks-left">
-          <button class="add-task-btn" id="addTaskBtn"><span class="plus">+</span> Add task</button>
-
-          <div class="task-panel acc-sun">
-            <div class="tp-head">
-              <div class="tp-title acc-title">Today</div>
-              <div class="tp-sub" id="tasksTodayDate">—</div>
-            </div>
-            <div id="tasksTodayList"><div class="loading">Loading…</div></div>
-          </div>
+      <div class="tk-head">
+        <div>
+          <h1 class="page-title">All tasks</h1>
+          <div class="tk-count" id="tkCount" aria-live="polite"></div>
         </div>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-ghost" id="recAddBtn"><i data-ico="repeat"></i>Add recurring</button>
+        <button type="button" class="btn btn-primary" id="addTaskBtn"><i data-ico="plus"></i>Add task</button>
+      </div>
 
-        <div class="tasks-right">
-          <div class="task-panel acc-blue">
-            <div class="tp-head">
-              <div class="tp-title acc-title">This week</div>
-              <div class="tp-sub" id="tasksWeekRange">—</div>
-            </div>
-            <div class="week-days" id="tasksWeekList"></div>
+      <div class="tk-card">
+        <div class="tk-bar">
+          <div class="cz-seg" role="tablist" aria-label="Show">
+            <button type="button" role="tab" data-tkview="tasks">Tasks</button>
+            <button type="button" role="tab" data-tkview="recurring"><i data-ico="repeat"></i>Recurring</button>
           </div>
-
-          <div class="tasks-bottom">
-            <div class="task-panel acc-amber">
-              <div class="tp-head"><div class="tp-title acc-title">Upcoming this month</div></div>
-              <div id="tasksMonthList"><div class="loading">Loading…</div></div>
-            </div>
-
-            <div class="task-panel acc-sky">
-              <div class="tp-head"><div class="tp-title acc-title">Recurring tasks</div></div>
-              <div id="tasksRecurringList"><div class="loading">Loading…</div></div>
-              <button class="mini-add" id="recAddBtn">+ Add recurring</button>
-
-            </div>
+          <label class="tk-search"><i data-ico="search"></i>
+            <input id="tkSearch" type="search" placeholder="Search tasks" aria-label="Search tasks" autocomplete="off" />
+            <button type="button" id="tkSearchClear" aria-label="Clear search" hidden><i data-ico="x" class="ico-sm"></i></button>
+          </label>
+          <span class="spacer"></span>
+          <div class="cz-seg" id="tkStatus" aria-label="Status">
+            <button type="button" data-tkstatus="todo">To do</button>
+            <button type="button" data-tkstatus="done">Done</button>
+            <button type="button" data-tkstatus="all">All</button>
           </div>
+          <label class="tk-sort" id="tkSortWrap"><span>Sort</span>
+            <select id="tkSort" aria-label="Sort tasks">
+              <option value="due">Due date</option>
+              <option value="priority">Priority</option>
+              <option value="area">Area</option>
+              <option value="new">Newest</option>
+            </select>
+          </label>
         </div>
+        <div class="tk-areas" id="tkAreas" aria-label="Filter by area"></div>
+        <form class="tk-quick" id="tkQuick" autocomplete="off">
+          <i data-ico="plus"></i>
+          <input id="tkQuickInput" placeholder="Add a task for today…" aria-label="Quick add a task for today" />
+          <small id="tkQuickArea"></small>
+          <button type="submit">Add</button>
+        </form>
+        <div class="tk-list" id="tkList"><div class="skel"></div><div class="skel"></div></div>
       </div>
     </section>
 
@@ -6364,9 +6513,6 @@ $('runsNext').addEventListener('click', ()=>{ runsMonth.setMonth(runsMonth.getMo
 /* ===================================================================
    TASKS
    =================================================================== */
-$('addTaskBtn').addEventListener('click', ()=> openTaskForm(null));
-
-$('recAddBtn').addEventListener('click', ()=> openRecurringForm());
 
 
 /* Birthdays that fall between two dates, as concrete dated entries.
@@ -6385,205 +6531,252 @@ function birthdaysInRange(rows, from, to){
   return out.sort((a,b)=>a.date - b.date);
 }
 
+/* ===================================================================
+   ALL TASKS (2026-11 redesign)
+   One list for every task, filtered by area, status and search, sorted by
+   due date, priority, area or newest. Today's and overdue recurring tasks
+   sit in the same list; the rules themselves are under "Recurring".
+   Tick, edit and delete reuse the shared task model (toggleItem, openItem).
+   =================================================================== */
+const TK = (()=>{
+  const def = { view:'tasks', status:'todo', area:'all', sort:'due' };
+  try{ return { ...def, ...JSON.parse(localStorage.getItem('pa_tasks_view') || '{}'), q:'' }; }catch(e){ return { ...def, q:'' }; }
+})();
+let TK_DATA = null;
+const tkSave = ()=>{ try{ const { q, ...keep } = TK; localStorage.setItem('pa_tasks_view', JSON.stringify(keep)); }catch(e){} };
+
 async function loadTasks(){
   if(!USER) return;
-  const now = new Date();
-  const today = iso(now);
-  const monthEnd = iso(new Date(now.getFullYear(), now.getMonth()+1, 0));
-  const win = upcomingWindow(now);
-  // fetch far enough for both the upcoming window and the 6-day week columns,
-  // which near the end of a month reach into the next one
-  const sixOut = addDays(win.today, 6);
-  const rangeEnd = win.to > sixOut ? win.to : sixOut;
-
+  const today = _dayOnly(new Date());
   try{
-    const [todays, weekRes, monthRes, recState, evRes, bdRes] = await Promise.all([
-      fetchTodayTasks(),
-      sb.from('tasks').select('*').gte('due_date', iso(addDays(now,1))).lte('due_date', iso(addDays(now,6))).order('due_date'),
-      sb.from('tasks').select('*').gt('due_date', today).lte('due_date', iso(win.to)).order('due_date'),
-      fetchRecurringState(),
-      // scheduled events show up here too — read straight from the schedule,
-      // so nothing is duplicated and editing an event updates both pages
-      sb.from('schedule_events').select('*')
-        .gte('starts_at', today + 'T00:00:00')
-        .lte('starts_at', iso(addDays(rangeEnd, 1)) + 'T23:59:59')
-        .order('starts_at'),
-      sb.from('birthdays').select('*')
+    const [open, done, recState] = await Promise.all([
+      sb.from('tasks').select('*').eq('completed', false).order('due_date'),
+      // finished in the last 60 days, for "Done"
+      sb.from('tasks').select('*').eq('completed', true).gte('completed_at', addDays(today, -60).toISOString()),
+      fetchRecurringState()
     ]);
-
-    const events = evRes.data || [];
-    // birthdays are derived, never copied: this year's date is computed from
-    // the stored month/day, so a new month needs no job and no duplicate rows
-    const bdays = birthdaysInRange(bdRes.data || [], now, rangeEnd);
-    const bdOn = d => bdays.filter(b => b.dateISO === d);
-    const evOn = d => events.filter(e => iso(new Date(e.starts_at)) === d);
-    const evTime = e => new Date(e.starts_at).toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});
-
-    $('tasksTodayDate').textContent = now.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'});
-
-    const todayEvents = evOn(today);
-    const taskRow = t=>`
-        <div class="task-item ${t.carried ? 'acc-amber carried' : kindAcc(t.kind)}${t.completed?' done':''}">
-          <div class="task-check" data-toggle="${t.id}" data-state="${t.completed}"></div>
-          <div class="task-body">
-            <div class="task-name">${esc(t.title)}</div>
-            ${t.kind !== 'one-off' ? `<div class="task-meta">${esc(t.kind)}</div>` : ''}
-          </div>
-          ${carryTag(t)}
-          <button class="del" data-del-task="${t.id}">✕</button>
-        </div>`;
-    const rec = todayRecurring(recState, now);
-    const recRow = r=>`
-        <div class="task-item ${r.carried ? 'acc-amber carried' : 'acc-sky'} recurring${r.done?' done':''}">
-          <div class="task-check" data-rec-toggle="${r.rule.id}|${iso(r.date)}" data-state="${r.done}"></div>
-          <div class="task-body"><div class="task-name">${esc(r.rule.title)}</div></div>
-          ${r.carried ? carryTag({ carried:true, daysLate:r.daysLate, due_date: iso(r.date) })
-                      : `<span class="rep-tag">${esc(freqLabel(r.rule))}</span>`}
-        </div>`;
-    // carried one-off tasks and carried recurring ones, oldest first
-    const carriedAll = todays.filter(t=>t.carried).map(t=>({ kind:'task', at: t.due_date, t }))
-      .concat(rec.carried.map(r=>({ kind:'rec', at: iso(r.date), r })))
-      .sort((a,b)=> a.at < b.at ? -1 : a.at > b.at ? 1 : 0);
-    const ownTasks = todays.filter(t=>!t.carried);
-
-    const todayHtml =
-      carriedAll.map(x=> x.kind === 'task' ? taskRow(x.t) : recRow(x.r)).join('') +
-      bdOn(today).map(b=>`
-        <div class="task-item is-bday acc-sun">
-          <div class="event-mark bday-mark" title="Birthday">🎂</div>
-          <div class="task-body">
-            <div class="task-name">${esc(b.name)}</div>
-            <div class="task-meta">birthday</div>
-          </div>
-        </div>`).join('') +
-      todayEvents.map(e=>`
-        <div class="task-item is-event ${catAcc(e.category)}">
-          <div class="event-mark" title="From Schedule">◷</div>
-          <div class="task-body">
-            <div class="task-name">${esc(e.title)}</div>
-            <div class="task-meta">${evTime(e)} · scheduled</div>
-          </div>
-          <button class="del" data-del-event="${e.id}">✕</button>
-        </div>`).join('') +
-      rec.due.map(recRow).join('') +
-      ownTasks.map(taskRow).join('');
-    $('tasksTodayList').innerHTML = todayHtml || '<div class="empty-note">Nothing due today</div>';
-
-    const week = weekRes.data || [];
-    $('tasksWeekRange').textContent =
-      addDays(now,1).toLocaleDateString(undefined,{day:'numeric',month:'short'}) + ' – ' +
-      addDays(now,6).toLocaleDateString(undefined,{day:'numeric',month:'short'});
-    $('tasksWeekList').innerHTML = Array.from({length:6},(_,i)=>{
-      const d = addDays(now, i+1);
-      const items = week.filter(t=>t.due_date === iso(d));
-      const dayEvents = evOn(iso(d));
-      const lines =
-        bdOn(iso(d)).map(b=>`<div class="wd-task acc-sun"><span class="dot"></span>${esc(b.name)}</div>`).join('') +
-        dayEvents.map(e=>`<div class="wd-task ${catAcc(e.category)}"><span class="dot"></span>${esc(e.title)}</div>`).join('') +
-        items.map(t=>`<div class="wd-task ${kindAcc(t.kind)}"><span class="dot"></span>${esc(t.title)}</div>`).join('') +
-        recurringOn(recState, d, { skipDaily:true }).map(r=>`<div class="wd-task acc-sky"><span class="dot"></span>${esc(r.title)}</div>`).join('');
-      return `<div class="week-day">
-        <div class="wd-label">
-          <span class="wd-name">${d.toLocaleDateString(undefined,{weekday:'short'})}</span>
-          <span class="wd-date">${d.toLocaleDateString(undefined,{day:'numeric',month:'short'})}</span>
-        </div>
-        <div class="wd-tasks">
-          ${lines || '<div class="wd-none">No tasks</div>'}
-        </div>
-      </div>`;
-    }).join('');
-
-    // same rules as the dashboard: dated tasks, birthdays, starred events only
-    const upItems = withMonthBreaks(
-      buildUpcoming({ tasks: monthRes.data, events, birthdays: bdRes.data }, win), win);
-
-    $('tasksMonthList').innerHTML = upItems.length
-      ? upItems.map(m=> m.divider
-          ? `<div class="up-divider">${m.divider}</div>`
-          : `<div class="month-item ${m.acc}"${m.type==='event' ? ` data-up-ev="${m.id}" title="Click to edit"` : ''}>
-               <span class="mi-date">${m.date.getDate()} ${MONTHS_SH[m.date.getMonth()]}</span>
-               <span class="mi-name">${esc(m.title)}</span>
-               ${m.thisWeek ? WEEK_TAG : ''}
-               ${m.type === 'bday' ? '' : `<button class="del" data-${m.type==='event'?'del-event':'del-task'}="${m.id}">✕</button>`}
-             </div>`).join('')
-      : '<div class="empty-note">Nothing upcoming</div>';
-    $('tasksMonthList').querySelectorAll('[data-up-ev]').forEach(el=>{
-      const it = upItems.find(x=>x.id === el.dataset.upEv);
-      el.addEventListener('click', e=>{ if(!e.target.closest('.del')) openEditEvent(it.ev); });
-    });
-
-    const rules = recState.rules;
-    TASKS_REC = rules;
-    $('tasksRecurringList').innerHTML = rules.length
-      ? rules.map(r=>`
-          <div class="recurring-item acc-sky" data-rec-edit="${r.id}" title="Click to edit">
-            <span class="ri-name">${esc(r.title)}</span>
-            <span class="ri-freq">${esc(freqLabel(r))}</span>
-            <button class="del" data-del-rec="${r.id}">✕</button>
-          </div>`).join('')
-      : '<div class="empty-note">None yet</div>';
-    $('tasksRecurringList').querySelectorAll('[data-rec-edit]').forEach(el=>{
-      el.addEventListener('click', e=>{
-        if(e.target.closest('.del')) return;
-        openRecurringForm(rules.find(r=>r.id === el.dataset.recEdit));
-      });
-    });
-
-    wireTaskActions();
-  }catch(err){ fail(err, 'Could not load tasks'); }
+    if(open.error) throw open.error;
+    if(done.error) throw done.error;
+    TK_DATA = { tasks: (open.data || []).concat(done.data || []), recState };
+    paintTasks();
+  }catch(err){ showError($('tkList'), err, loadTasks); }
 }
 
-function wireTaskActions(){
-  document.querySelectorAll('[data-toggle]').forEach(el=>{
-    el.addEventListener('click', async ()=>{
-      const done = el.dataset.state === 'true';
-      const row = el.closest('.task-item');
-
-      // play the tick first so the feedback lands before the list refreshes
-      el.classList.add('popped');
-      if(!done && row){
-        row.classList.add('done','just-done');
-      } else if(row){
-        row.classList.remove('done','just-done');
-      }
-
-      const { error } = await sb.from('tasks')
-        .update({ completed: !done, completed_at: !done ? new Date().toISOString() : null })
-        .eq('id', el.dataset.toggle);
-      if(error){ fail(error, 'Could not update'); loadTasks(); return; }
-
-      setTimeout(loadTasks, 420);
-    });
+function tkItems(){
+  const today = _dayOnly(new Date()), out = [];
+  TK_DATA.tasks.forEach(t=>{
+    out.push({ key:'t:' + t.id, type:'task', id:t.id, raw:t, title:t.title, cat: taskCat(t), done: !!t.completed,
+      due: t.due_date || null, time: t.due_time ? t.due_time.slice(0, 5) : '', priority: t.priority || 'normal',
+      created: t.created_at || '', doneAt: t.completed_at || '' });
   });
-  document.querySelectorAll('[data-del-task]').forEach(el=>{
-    el.addEventListener('click', async e=>{
-      e.stopPropagation();
-      const { error } = await sb.from('tasks').delete().eq('id', el.dataset.delTask);
-      if(error){ fail(error, 'Could not delete'); return; }
-      toast('Task deleted'); loadTasks();
-    });
+  // recurring: today's and the overdue ones, ticked straight from the list
+  const rec = todayRecurring(TK_DATA.recState, today);
+  rec.carried.concat(rec.due).forEach(r=>{
+    const d = iso(r.date);
+    out.push({ key:'r:' + r.rule.id + '|' + d, type:'rec', id:r.rule.id, date:d, raw:r.rule, title:r.rule.title,
+      cat: CATS[r.rule.category] ? r.rule.category : 'home', done:r.done, due:d, time:'', priority:'normal',
+      created: r.rule.created_at || '', doneAt: r.done ? new Date().toISOString() : '' });
   });
-  document.querySelectorAll('[data-del-event]').forEach(el=>{
-    el.addEventListener('click', async e=>{
-      e.stopPropagation();
-      const yes = await askConfirm({ title:'Delete this event?', message:'It will be removed from your schedule too.' });
-      if(!yes) return;
-      const { error } = await sb.from('schedule_events').delete().eq('id', el.dataset.delEvent);
-      if(error){ fail(error, 'Could not delete'); return; }
-      toast('Event deleted'); loadTasks();
-    });
-  });
-  document.querySelectorAll('#tasksTodayList [data-rec-toggle]').forEach(el=>{
-    el.addEventListener('click', ()=> toggleRecurring(el, loadTasks));
-  });
-  document.querySelectorAll('[data-del-rec]').forEach(el=>{
-    el.addEventListener('click', async e=>{
-      e.stopPropagation();
-      const rule = (TASKS_REC || []).find(r=>r.id === el.dataset.delRec);
-      if(rule) deleteRecurring(rule);
-    });
-  });
+  return out;
 }
+
+const PRIO_RANK = { high:0, normal:1, low:2 };
+function tkBucket(it, today){
+  if(it.done) return 'done';
+  if(!it.due) return 'nodate';
+  const d = parseISO(it.due), diff = Math.round((d - today) / 86400000);
+  if(diff < 0) return 'late';
+  if(diff === 0) return 'today';
+  if(diff === 1) return 'tomorrow';
+  if(d <= addDays(mondayOf(today), 6)) return 'week';
+  if(d <= addDays(mondayOf(today), 13)) return 'nextweek';
+  return 'later';
+}
+const BUCKETS = [['late','Overdue','g-late'], ['today','Today'], ['tomorrow','Tomorrow'], ['week','Later this week'], ['nextweek','Next week'],
+  ['later','Later'], ['nodate','No date'], ['done','Done']];
+
+function paintTasks(){
+  if(!TK_DATA) return;
+  const today = _dayOnly(new Date()), all = tkItems(), q = TK.q.trim().toLowerCase();
+  const openN = all.filter(i=>!i.done).length, lateN = all.filter(i=>!i.done && tkBucket(i, today) === 'late').length;
+  $('tkCount').innerHTML = `${openN} to do${lateN ? ` · <b>${lateN} overdue</b>` : ''}`;
+
+  // view + status switches
+  document.querySelectorAll('[data-tkview]').forEach(b=>{ const on = b.dataset.tkview === TK.view; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  document.querySelectorAll('[data-tkstatus]').forEach(b=>{ const on = b.dataset.tkstatus === TK.status; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  $('tkStatus').hidden = TK.view !== 'tasks';
+  $('tkSortWrap').hidden = TK.view !== 'tasks';
+  $('tkQuick').hidden = TK.view !== 'tasks';
+  $('tkSearchClear').hidden = !TK.q;
+
+  if(TK.view === 'recurring') return paintRecurringRules(q);
+
+  const byStatus = all.filter(i=> TK.status === 'all' || (TK.status === 'done' ? i.done : !i.done))
+    .filter(i=> !q || i.title.toLowerCase().includes(q) || CATS[i.cat].label.toLowerCase().includes(q));
+  // area chips with live counts
+  const counts = {}; byStatus.forEach(i=>{ counts[i.cat] = (counts[i.cat] || 0) + 1; });
+  $('tkAreas').innerHTML = `<button type="button" class="tk-chip${TK.area === 'all' ? ' on' : ''}" data-tkarea="all" aria-pressed="${TK.area === 'all'}">All <span class="n">${byStatus.length}</span></button>` +
+    CAT_ORDER.map(k=>`<button type="button" class="tk-chip ${CATS[k].acc}${TK.area === k ? ' on' : ''}${counts[k] ? '' : ' is-empty'}" data-tkarea="${k}" aria-pressed="${TK.area === k}"><i></i>${CATS[k].label} <span class="n">${counts[k] || 0}</span></button>`).join('');
+  $('tkQuickArea').textContent = TK.area === 'all' ? 'Today · Personal' : 'Today · ' + CATS[TK.area].label;
+
+  let items = byStatus.filter(i=> TK.area === 'all' || i.cat === TK.area);
+  const byDue = (a, b)=> (a.due || '9999') < (b.due || '9999') ? -1 : (a.due || '9999') > (b.due || '9999') ? 1
+    : (a.time || '99') < (b.time || '99') ? -1 : (a.time || '99') > (b.time || '99') ? 1
+    : PRIO_RANK[a.priority] - PRIO_RANK[b.priority] || a.title.localeCompare(b.title);
+  let groups;
+  if(TK.sort === 'priority'){
+    items.sort((a, b)=> PRIO_RANK[a.priority] - PRIO_RANK[b.priority] || byDue(a, b));
+    groups = [['high','High priority'], ['normal','Normal'], ['low','Low priority']].map(([k, l])=>({ label:l, items: items.filter(i=>i.priority === k) }));
+  } else if(TK.sort === 'area'){
+    items.sort(byDue);
+    groups = CAT_ORDER.map(k=>({ label: CATS[k].label, items: items.filter(i=>i.cat === k) }));
+  } else if(TK.sort === 'new'){
+    items.sort((a, b)=> (b.created || '').localeCompare(a.created || ''));
+    groups = [{ label:'Newest first', items }];
+  } else {
+    items.sort(byDue);
+    const done = items.filter(i=>i.done).sort((a, b)=> (b.doneAt || '').localeCompare(a.doneAt || ''));
+    groups = BUCKETS.map(([k, l, cls])=>({ label:l, cls, items: k === 'done' ? done : items.filter(i=>!i.done && tkBucket(i, today) === k) }));
+  }
+  groups = groups.filter(g=>g.items.length);
+  const list = $('tkList');
+  list._items = new Map(items.map(i=>[i.key, i]));
+  if(!items.length){
+    const filtered = q || TK.area !== 'all';
+    list.innerHTML = `<div class="tk-empty">${typeof doodleSvg === 'function' ? doodleSvg(TK.status === 'done' ? 'calm' : 'done') : ''}
+      <b>${filtered ? 'No tasks match' : TK.status === 'done' ? 'Nothing finished yet' : 'All clear'}</b>
+      ${filtered ? 'Try another area or search.' : TK.status === 'done' ? 'Tasks you finish in the last 60 days show here.' : 'Nothing left to do. Nice.'}
+      ${filtered ? '<button type="button" class="dz-ghost" data-tk="reset">Show all tasks</button>' : ''}</div>`;
+    return;
+  }
+  list.innerHTML = `<div class="tk-cols" aria-hidden="true"><span></span><span>Task</span><span>Area</span><span>Due</span><span>Priority</span><span></span></div>` +
+    groups.map(g=>`<div class="tk-group ${g.cls || ''}">${esc(g.label)}<span class="n">${g.items.length}</span></div>` +
+      `<div role="list">${g.items.map(i=>tkRow(i, today)).join('')}</div>`).join('');
+}
+
+function tkDue(it, today){
+  if(!it.due) return `<span class="tk-cell tk-due none">No date</span>`;
+  const d = parseISO(it.due), diff = Math.round((d - today) / 86400000);
+  if(!it.done && diff < 0) return `<span class="tk-cell tk-due is-late" title="Due ${esc(d.toLocaleDateString())}">${diff === -1 ? 'Yesterday' : -diff + ' days late'}<small>${d.getDate()} ${MONTHS_SH[d.getMonth()]}</small></span>`;
+  const label = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : diff === -1 ? 'Yesterday'
+    : `${DAY_SHORT[(d.getDay() + 6) % 7]} ${d.getDate()} ${MONTHS_SH[d.getMonth()]}`;
+  return `<span class="tk-cell tk-due${diff === 0 ? ' is-today' : ''}">${label}${it.time ? `<small>${it.time}</small>` : ''}</span>`;
+}
+function tkRow(it, today){
+  const c = CATS[it.cat] || CATS.personal;
+  const sub = [];
+  if(it.type === 'rec') sub.push(`<span>${ico('repeat')}${esc(freqLabel(it.raw))}</span>`);
+  if(it.type === 'task' && it.raw.learning_path_id && typeof LEARN !== 'undefined' && LEARN && LEARN.paths){
+    const p = LEARN.paths.find(x=>x.id === it.raw.learning_path_id); if(p) sub.push(`<span>${ico('book')}${esc(p.title)}</span>`);
+  }
+  const prio = it.priority === 'high' ? `<span class="prio high">${ico('flag','ico-sm')}High</span>`
+    : it.priority === 'low' ? '<span class="prio low">Low</span>' : '<span class="prio normal">—</span>';
+  return `<div class="tk-row ${c.acc}${it.done ? ' done' : ''}" role="listitem" data-key="${esc(it.key)}">
+    <button type="button" class="tcheck" role="checkbox" aria-checked="${it.done}" data-act="toggle" aria-label="${it.done ? 'Mark not done' : 'Mark done'}: ${esc(it.title)}">${ico('check')}</button>
+    <button type="button" class="tk-main" data-act="open" aria-label="Edit ${esc(it.title)}"><span class="tk-title">${esc(it.title)}</span>${sub.length ? `<span class="tk-sub">${sub.join('')}</span>` : ''}</button>
+    <div class="tk-meta-line">
+      <span class="tk-cell"><span class="chip ${c.acc}"><i></i>${c.label}</span></span>
+      ${tkDue(it, today)}
+      <span class="tk-cell">${prio}</span>
+    </div>
+    <div class="tk-acts">
+      <button type="button" data-act="open" aria-label="Edit ${esc(it.title)}" title="Edit">${ico('pencil')}</button>
+      <button type="button" class="tk-del" data-act="del" aria-label="Delete ${esc(it.title)}" title="Delete">${ico('trash')}</button>
+    </div>
+  </div>`;
+}
+
+/* recurring rules: name, area, how often, next date */
+function paintRecurringRules(q){
+  const today = _dayOnly(new Date());
+  const rules = TK_DATA.recState.rules.filter(r=> !q || r.title.toLowerCase().includes(q));
+  const counts = {}; rules.forEach(r=>{ const k = CATS[r.category] ? r.category : 'home'; counts[k] = (counts[k] || 0) + 1; });
+  $('tkAreas').innerHTML = `<button type="button" class="tk-chip${TK.area === 'all' ? ' on' : ''}" data-tkarea="all">All <span class="n">${rules.length}</span></button>` +
+    CAT_ORDER.map(k=>`<button type="button" class="tk-chip ${CATS[k].acc}${TK.area === k ? ' on' : ''}${counts[k] ? '' : ' is-empty'}" data-tkarea="${k}"><i></i>${CATS[k].label} <span class="n">${counts[k] || 0}</span></button>`).join('');
+  const shown = rules.filter(r=> TK.area === 'all' || (CATS[r.category] ? r.category : 'home') === TK.area);
+  const doneToday = new Set(TK_DATA.recState.completions.filter(c=> c.date === iso(today)).map(c=> c.recurring_id));
+  const list = $('tkList');
+  list._items = new Map();
+  if(!shown.length){
+    list.innerHTML = `<div class="tk-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>${rules.length ? 'No recurring tasks match' : 'No recurring tasks yet'}</b>
+      <button type="button" class="dz-ghost" data-tk="add-rec">${ico('plus','ico-sm')}Add recurring task</button></div>`;
+    return;
+  }
+  const rows = shown.map(r=>{
+    const cat = CATS[r.category] ? r.category : 'home', c = CATS[cat];
+    const dueToday = occursOn(r, today), done = dueToday && doneToday.has(r.id);
+    const it = { key:'rr:' + r.id, type:'rec', id:r.id, date: iso(today), raw:r, title:r.title, cat, done, rule:true, dueToday };
+    list._items.set(it.key, it);
+    const nx = nextOccurrence(r, done ? new Set([iso(today)]) : null);
+    return `<div class="tk-row ${c.acc}${done ? ' done' : ''}" role="listitem" data-key="${it.key}">
+      ${dueToday ? `<button type="button" class="tcheck" role="checkbox" aria-checked="${done}" data-act="toggle" aria-label="${done ? 'Mark not done' : 'Mark done'} for today: ${esc(r.title)}">${ico('check')}</button>`
+                 : `<span class="tcheck" aria-hidden="true" style="opacity:.35;cursor:default">${ico('repeat')}</span>`}
+      <button type="button" class="tk-main" data-act="open" aria-label="Edit ${esc(r.title)}"><span class="tk-title">${esc(r.title)}</span></button>
+      <div class="tk-meta-line">
+        <span class="tk-cell"><span class="chip ${c.acc}"><i></i>${c.label}</span></span>
+        <span class="tk-cell tk-due">${esc(freqLabel(r))}</span>
+        <span class="tk-cell tk-due${nx && sameDay(nx, today) ? ' is-today' : ''}">${nx ? (sameDay(nx, today) ? 'Today' : relDay(nx)) : '—'}</span>
+      </div>
+      <div class="tk-acts">
+        <button type="button" data-act="open" aria-label="Edit ${esc(r.title)}" title="Edit">${ico('pencil')}</button>
+        <button type="button" class="tk-del" data-act="del" aria-label="Delete ${esc(r.title)}" title="Delete">${ico('trash')}</button>
+      </div></div>`;
+  }).join('');
+  list.innerHTML = `<div class="tk-cols" aria-hidden="true"><span></span><span>Recurring task</span><span>Area</span><span>Repeats</span><span>Next</span><span></span></div><div role="list">${rows}</div>`;
+}
+
+async function tkDelete(it){
+  if(it.type === 'rec') return deleteRecurring(it.raw, it.rule ? undefined : it.date);
+  const yes = await askConfirm({ title:'Delete this task?', message:`"${it.title}" will be removed everywhere. This can't be undone.`, ok:'Delete task' });
+  if(!yes) return;
+  const { error } = await sb.from('tasks').delete().eq('id', it.id);
+  if(error){ fail(error, 'Could not delete'); return; }
+  toast('Task deleted');
+  dataChanged();
+}
+
+/* ---------- wiring ---------- */
+$('addTaskBtn').addEventListener('click', ()=> openTaskForm(null, TK.area !== 'all' ? { category: TK.area } : {}));
+$('recAddBtn').addEventListener('click', ()=> openRecurringForm(null, TK.area !== 'all' ? TK.area : undefined));
+document.querySelectorAll('[data-tkview]').forEach(b=> b.addEventListener('click', ()=>{ TK.view = b.dataset.tkview; tkSave(); paintTasks(); }));
+document.querySelectorAll('[data-tkstatus]').forEach(b=> b.addEventListener('click', ()=>{ TK.status = b.dataset.tkstatus; tkSave(); paintTasks(); }));
+$('tkSort').value = TK.sort;
+enhanceSelects($('tkSortWrap'));
+$('tkSort').addEventListener('change', ()=>{ TK.sort = $('tkSort').value; tkSave(); paintTasks(); });
+$('tkSearch').addEventListener('input', ()=>{ TK.q = $('tkSearch').value; paintTasks(); });
+$('tkSearch').addEventListener('keydown', e=>{ if(e.key === 'Escape'){ $('tkSearch').value = ''; TK.q = ''; paintTasks(); } });
+$('tkSearchClear').addEventListener('click', ()=>{ $('tkSearch').value = ''; TK.q = ''; paintTasks(); $('tkSearch').focus(); });
+$('tkAreas').addEventListener('click', e=>{
+  const b = e.target.closest('[data-tkarea]'); if(!b) return;
+  TK.area = b.dataset.tkarea; tkSave(); paintTasks();
+});
+$('tkQuick').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const title = $('tkQuickInput').value.trim();
+  if(!title){ $('tkQuickInput').focus(); return; }
+  $('tkQuickInput').value = '';
+  const category = TK.area !== 'all' ? TK.area : 'personal';
+  const { error } = await sb.from('tasks').insert({ user_id: USER.id, title, due_date: iso(new Date()), kind:'one-off', category, completed:false });
+  if(error){ fail(error, 'Could not add task'); $('tkQuickInput').value = title; return; }
+  toast('Added to today');
+  if(TK.status === 'done') TK.status = 'todo';
+  dataChanged();
+});
+$('tkList').addEventListener('click', e=>{
+  const reset = e.target.closest('[data-tk]');
+  if(reset){
+    if(reset.dataset.tk === 'add-rec') return openRecurringForm();
+    TK.area = 'all'; TK.q = ''; $('tkSearch').value = ''; tkSave(); return paintTasks();
+  }
+  const btn = e.target.closest('[data-act]'); if(!btn) return;
+  const row = btn.closest('.tk-row'), it = row && $('tkList')._items.get(row.dataset.key);
+  if(!it) return;
+  if(btn.dataset.act === 'toggle') return toggleItem(it, row, btn);
+  if(btn.dataset.act === 'del') return tkDelete(it);
+  if(it.rule) return openRecurringForm(it.raw);
+  openItem(it);
+});
+
 
 /* ===================================================================
    BUDGET
@@ -6922,6 +7115,7 @@ const ICONS = {
   check:'<path d="M5 12.5l4.5 4.5L19 7"/>',
   checks:'<path d="M2 12.5l4.5 4.5L15 8M12 16l1 1 9-9.5"/>',
   x:'<path d="M6 6l12 12M18 6L6 18"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
   trash:'<path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/>',
   cake:'<path d="M4 21h16M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7"/><path d="M5 16c2 1.3 4.5 1.3 7 0s5-1.3 7 0M12 12V8"/><path d="M12 4.5c.8.8.8 2 0 2.5-.8-.5-.8-1.7 0-2.5z"/>',
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',

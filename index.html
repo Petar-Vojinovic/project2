@@ -5051,7 +5051,6 @@
         </div>
       </div>
       <div class="cal-legend">
-        <span class="acc-blue"><i></i>Work</span>
         <span class="acc-sun"><i></i>Training</span>
         <span class="acc-violet"><i></i>Side Hustle</span>
         <span class="acc-green"><i></i>Money</span>
@@ -5352,7 +5351,6 @@
     <input type="date" id="evDate" />
     <div class="fm-label">Category</div>
     <div class="cat-chips" id="evCatChips">
-      <button type="button" class="cat-chip acc-blue"  data-cat="work"><i></i>Work</button>
       <button type="button" class="cat-chip acc-sun"   data-cat="training"><i></i>Training</button>
       <button type="button" class="cat-chip acc-violet" data-cat="side"><i></i>Side</button>
       <button type="button" class="cat-chip acc-green" data-cat="money"><i></i>Money</button>
@@ -8279,7 +8277,7 @@ function paintTasks(){
     groups = [['high','High priority'], ['normal','Normal'], ['low','Low priority']].map(([k, l])=>({ label:l, items: items.filter(i=>i.priority === k) }));
   } else if(TK.sort === 'area'){
     items.sort(byDue);
-    groups = CAT_ORDER.map(k=>({ label: CATS[k].label, acc: CATS[k].acc, items: items.filter(i=>i.cat === k) }));
+    groups = CAT_ORDER.map(k=>({ label: CATS[k].label, acc: CATS[k].acc, items: items.filter(i=>(CAT_ORDER.includes(i.cat) ? i.cat : 'personal') === k) }));
   } else if(TK.sort === 'new'){
     items.sort((a, b)=> (b.created || '').localeCompare(a.created || ''));
     groups = [{ label:'Newest first', items }];
@@ -8976,6 +8974,7 @@ paintIcons();
 
 /* ---------- areas (categories) ---------- */
 const CATS = {
+  // Work was removed as an area (2026-11-09); kept only so an old item marked 'work' still shows
   work:     { label:'Work',        acc:'acc-blue',   icon:'briefcase', page:'tasks' },
   side:     { label:'Side Hustle', acc:'acc-violet', icon:'rocket',    page:'side' },
   money:    { label:'Money',       acc:'acc-green',  icon:'wallet',    page:'budget' },
@@ -8984,7 +8983,7 @@ const CATS = {
   personal: { label:'Personal',    acc:'acc-sky',    icon:'user',      page:'tasks' },
   learning: { label:'Learning',    acc:'acc-learn',  icon:'book',      page:'learning' }
 };
-const CAT_ORDER = ['work','side','money','training','home','learning','personal'];
+const CAT_ORDER = ['side','money','training','home','learning','personal'];
 const taskCat = t => (t && CATS[t.category]) ? t.category : 'personal';
 const catChip = c => `<span class="chip ${CATS[c].acc}"><i></i>${CATS[c].label}</span>`;
 const EVENT_CAT_LABEL = { work:'Work', side:'Side Hustle', money:'Money', training:'Training', home:'Home', learning:'Learning', personal:'Personal', general:'General' };
@@ -13018,7 +13017,7 @@ function periodRange(p){
 
 function catTally(from, to){
   const out = {}; CAT_ORDER.forEach(c=> out[c] = { planned:0, done:0 });
-  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{ out[it.cat].planned++; if(it.done) out[it.cat].done++; });
+  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{ const o = out[it.cat] || out.personal; o.planned++; if(it.done) o.done++; });
   return out;
 }
 
@@ -13057,9 +13056,6 @@ function paintProgress(){
   const sideDeadlines = openOf('side').filter(t=>t.due_date && t.due_date >= t0 && t.due_date <= iso(addDays(today, 14))).length;
 
   $('progCats').innerHTML =
-    card('work', big(ct.work.done, ct.work.planned, 'tasks done') + bar(ct.work.done, ct.work.planned) +
-      `<div class="catp-rows"><div>Open tasks <b>${openOf('work').length}</b></div>
-       <div>Long-term / projects <b>${openOf('work').filter(t=>t.kind === 'long-term').length}</b></div><div>Next deadline ${nd('work')}</div></div>`) +
     card('side', big(ct.side.done, ct.side.planned, 'planned activities') + bar(ct.side.done, ct.side.planned) +
       `<div class="catp-rows"><div>Active projects <b>${sideProjects}</b></div><div>Deadlines in 14 days <b>${sideDeadlines}</b></div><div>Next deadline ${nd('side')}</div></div>`) +
     card('training', big(ct.training.done, ct.training.planned, 'sessions & tasks') + bar(ct.training.done, ct.training.planned) +
@@ -13126,7 +13122,7 @@ function paintWeeks(){
   const cats = CAT_ORDER;
   const data = weeks.map(w=>{
     const end = addDays(w, 6), byCat = {}; cats.forEach(c=> byCat[c] = 0);
-    for(let d = w; d <= end; d = addDays(d, 1)) (PROG.actByDay.get(iso(d)) || []).forEach(a=> byCat[a.cat]++);
+    for(let d = w; d <= end; d = addDays(d, 1)) (PROG.actByDay.get(iso(d)) || []).forEach(a=> byCat[a.cat in byCat ? a.cat : 'personal']++);
     const t = tally(PROG.plan, w, end > now ? _dayOnly(now) : end);
     return { w, byCat, total: Object.values(byCat).reduce((a,b)=>a + b, 0), planned: t.planned, donePlanned: t.done };
   });
@@ -13143,7 +13139,7 @@ function paintWeeks(){
   const curM = countActs(mNow, now), prevM = countActs(mPrev, new Date(now.getFullYear(), now.getMonth(), 0));
   const rateM = (()=>{ const a = tally(PROG.plan, mNow, _dayOnly(now)); const b = tally(PROG.plan, mPrev, new Date(now.getFullYear(), now.getMonth(), 0)); return [pct(a.done, a.planned), pct(b.done, b.planned)]; })();
 
-  box.innerHTML = `<div class="legend">${(used.length ? used : ['work','home','training']).map(c=>`<span class="${CATS[c].acc}"><i></i>${CATS[c].label}</span>`).join('')}</div>
+  box.innerHTML = `<div class="legend">${(used.length ? used : ['side','home','training']).map(c=>`<span class="${CATS[c].acc}"><i></i>${CATS[c].label}</span>`).join('')}</div>
     <div class="chart" role="img" aria-label="Completed items per week, last 12 weeks">
       ${data.map((x, i)=>`<div class="col${i === 11 ? ' cur' : ''}" data-wk="${i}">
         ${x.total ? `<span class="num" style="bottom:${x.total / max * 100}%">${x.total}</span>` : ''}

@@ -4706,6 +4706,134 @@
     .at-prio.high span{display:none;}
   }
   @media (prefers-reduced-motion:reduce){ .at-row.just-done, .at-row .tcheck.popped{animation:none;} }
+  /* ===================================================================
+     DEPTH — surface refinement (2026-11). Same palette, layout and sizes:
+     only backgrounds (soft tonal sheens), shadows, edge highlights and
+     translucency change. Nothing here touches size, spacing or position.
+     =================================================================== */
+  :root{
+    --edge:rgba(var(--shadow-rgb),.085);                       /* low-contrast outline */
+    --hi:rgba(255,255,255,.92);                                /* top edge highlight */
+    --sheen:linear-gradient(180deg, rgba(255,255,255,.62) 0, rgba(255,255,255,0) 120px, rgba(var(--shadow-rgb),0) 70%, rgba(var(--shadow-rgb),.02) 100%);
+    --sheen-sm:linear-gradient(180deg, rgba(255,255,255,.55) 0, rgba(255,255,255,0) 70%, rgba(var(--shadow-rgb),.025) 100%);
+    --lift-1:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 1px 2px rgba(var(--shadow-rgb),.04), 0 12px 32px -20px rgba(var(--shadow-rgb),.26);
+    --lift-1h:inset 0 1px 0 var(--hi), inset 0 0 0 1px rgba(var(--shadow-rgb),.11), 0 2px 4px rgba(var(--shadow-rgb),.05), 0 18px 38px -20px rgba(var(--shadow-rgb),.32);
+    --lift-2:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 1px 2px rgba(var(--shadow-rgb),.05), 0 4px 12px -6px rgba(var(--shadow-rgb),.14);
+    --well:inset 0 1px 2px rgba(var(--shadow-rgb),.07), inset 0 0 0 1px rgba(var(--shadow-rgb),.035), 0 1px 0 rgba(255,255,255,.7);
+    --well-bg:linear-gradient(180deg, rgba(var(--shadow-rgb),.035), rgba(var(--shadow-rgb),0) 60%);
+    --glow:rgba(var(--primary-rgb),.16);
+    --glow-2:rgba(255,255,255,.5);
+    --glass:rgba(244,239,233,.72);
+    --pop:0 1px 2px rgba(var(--shadow-rgb),.06), 0 18px 48px -14px rgba(var(--shadow-rgb),.28);
+  }
+  :root[data-theme="dark"]{
+    --edge:rgba(255,255,255,.075);
+    --hi:rgba(255,255,255,.07);
+    --sheen:linear-gradient(180deg, rgba(255,255,255,.045) 0, rgba(255,255,255,0) 120px, rgba(0,0,0,0) 70%, rgba(0,0,0,.08) 100%);
+    --sheen-sm:linear-gradient(180deg, rgba(255,255,255,.05) 0, rgba(255,255,255,0) 70%, rgba(0,0,0,.08) 100%);
+    --lift-1:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 1px 2px rgba(0,0,0,.25), 0 14px 34px -18px rgba(0,0,0,.6);
+    --lift-1h:inset 0 1px 0 rgba(255,255,255,.09), inset 0 0 0 1px rgba(255,255,255,.1), 0 2px 4px rgba(0,0,0,.3), 0 20px 40px -18px rgba(0,0,0,.7);
+    --lift-2:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 1px 2px rgba(0,0,0,.3), 0 6px 14px -8px rgba(0,0,0,.5);
+    --well:inset 0 1px 3px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.04), 0 1px 0 rgba(255,255,255,.03);
+    --well-bg:linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,0) 70%);
+    --glow:rgba(var(--primary-rgb),.10);
+    --glow-2:rgba(255,255,255,.025);
+    --glass:rgba(25,28,34,.74);
+    --pop:0 1px 2px rgba(0,0,0,.3), 0 22px 50px -14px rgba(0,0,0,.7);
+  }
+
+  /* 1 · background: the paper gets a faint light from the top, so panels read as sitting above it */
+  html{background:var(--background);}
+  body{background:transparent !important;}
+  .app, .main, .main .content{background:transparent !important;}
+  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(1000px 520px at 30% -14%, var(--glow-2), transparent 64%),
+      radial-gradient(900px 560px at 92% -10%, var(--glow), transparent 62%),
+      linear-gradient(180deg, rgba(255,255,255,0) 45%, rgba(var(--shadow-rgb),.02) 100%),
+      var(--background);}
+  :root[data-theme="dark"] body::before{background:
+      radial-gradient(1100px 620px at 18% -12%, var(--glow), transparent 62%),
+      radial-gradient(900px 560px at 100% -8%, var(--glow-2), transparent 60%),
+      linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.18) 100%),
+      var(--background);}
+
+  /* 2 · navigation surfaces: translucent, with a soft edge */
+  .sidebar{background:linear-gradient(180deg, rgba(255,255,255,.42), rgba(255,255,255,.08) 55%, rgba(255,255,255,0)), var(--glass) !important;
+    -webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:inset -1px 0 0 var(--edge), 1px 0 0 rgba(255,255,255,.55), 8px 0 30px -24px rgba(var(--shadow-rgb),.35) !important;}
+  :root[data-theme="dark"] .sidebar{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0) 55%), var(--glass) !important;
+    box-shadow:inset -1px 0 0 var(--edge), 8px 0 30px -24px rgba(0,0,0,.7) !important;}
+  .mobilebar{background:var(--glass) !important;-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:inset 0 -1px 0 var(--edge), 0 8px 24px -20px rgba(var(--shadow-rgb),.4) !important;}
+  .sb-item.active{background-image:linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,0) 75%) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.75), inset 0 0 0 1px rgba(var(--shadow-rgb),.06), 0 2px 6px -2px rgba(var(--shadow-rgb),.12), 0 8px 18px -12px rgba(134,189,217,.9) !important;}
+  :root[data-theme="dark"] .sb-item.active{background-image:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 75%) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 1px rgba(255,255,255,.06), 0 6px 16px -10px rgba(0,0,0,.6) !important;}
+  .sb-item:hover:not(.active){background-image:linear-gradient(180deg, rgba(255,255,255,.35), rgba(255,255,255,0)) !important;}
+  .mb-btn, .sb-logo, .sb-brand .sb-mark{background-image:var(--sheen-sm) !important;box-shadow:var(--lift-2) !important;}
+
+  /* 3 · panels and cards: a tonal sheen, a top highlight, a low outline and a soft shadow */
+  .card:not(.nrow), .panel, .glass, .sum-card, .glass-card, .wo-card, .cz-card, .at-panel, .tk-card, .budget-panel, .bsum,
+  .pw-month, .pw-week, .cl-card, .tt-card, .sh-gcard, .explain-card, .runs-list, .consistency-week, .auth-card,
+  .pl-card, .rs-wrap > .card, .ln-box, .pe-box, .rp-box, .theme-opt{
+    background-image:var(--sheen) !important;box-shadow:var(--lift-1) !important;}
+  /* the dashboard's day strip and the tasks/schedule block below it read as one card */
+  .dz-strip{background-image:var(--sheen) !important;box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge) !important;}
+  .dz-work{background-image:linear-gradient(180deg, rgba(var(--shadow-rgb),0) 70%, rgba(var(--shadow-rgb),.02) 100%) !important;
+    box-shadow:inset 0 0 0 1px var(--edge), 0 1px 2px rgba(var(--shadow-rgb),.04), 0 14px 34px -20px rgba(var(--shadow-rgb),.26) !important;}
+  :root[data-theme="dark"] .dz-work{box-shadow:var(--lift-1) !important;background-image:none !important;}
+  .dz-sched{background:transparent !important;}
+  .card.nrow, .wo-stat, .stat, .card.stat, .card.kpi, .card.catp{background-image:var(--sheen-sm) !important;box-shadow:var(--lift-2) !important;}
+  .pw-today{background-image:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0) 70%) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 0 0 1px rgba(var(--shadow-rgb),.05), 0 12px 28px -18px rgba(134,189,217,.95) !important;}
+  :root[data-theme="dark"] .pw-today{background-image:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,0) 70%) !important;box-shadow:var(--lift-1) !important;}
+  .pw:hover, .glass-card:hover, .bsum:hover{box-shadow:var(--lift-1h) !important;}
+  .pw-today:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 0 0 1px rgba(var(--shadow-rgb),.06), 0 16px 32px -16px rgba(134,189,217,1) !important;}
+
+  /* items inside panels keep their own outlines (area colours, late state); they only get the sheen */
+  .trow, .tl-card, .sh-kcard, .split-day, .rs-cell, .cd-card, .sh-pcard, .sh-oppr, .month-btn, .ring-mini, .dz-streak{
+    background-image:var(--sheen-sm) !important;}
+  .month-btn.active{box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 0 0 1px rgba(var(--shadow-rgb),.08), 0 8px 18px -10px rgba(134,189,217,.95) !important;}
+
+  /* 4 · tab tracks and inputs sit slightly into the surface; the selected tab rises out of it */
+  .cz-seg, .wk-tabs, .seg, .nfilter, .view-toggle, .sh-kcol, .dz-quick, .wo-quick, .tk-quick, .tk-search, .ws-search{
+    background-image:var(--well-bg) !important;box-shadow:var(--well) !important;}
+  .at-search, .at-filter-btn, .at-sort .sel-field{box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 1px 2px rgba(var(--shadow-rgb),.05) !important;background-image:var(--sheen-sm) !important;}
+  .at-search:focus-within{box-shadow:inset 0 0 0 1.5px var(--ring), 0 0 0 4px rgba(var(--primary-rgb),.35) !important;}
+  .cz-seg button.on, .wk-tabs button.on, .seg button.on, .nfilter button.on, .at-chip.on, .tk-chip.on, .seg-pill{
+    background-image:linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,0) 85%) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px rgba(var(--shadow-rgb),.07), 0 1px 2px rgba(var(--shadow-rgb),.08), 0 4px 10px -4px rgba(var(--shadow-rgb),.16) !important;}
+  :root[data-theme="dark"] .cz-seg button.on, :root[data-theme="dark"] .wk-tabs button.on, :root[data-theme="dark"] .seg button.on,
+  :root[data-theme="dark"] .nfilter button.on, :root[data-theme="dark"] .at-chip.on, :root[data-theme="dark"] .tk-chip.on, :root[data-theme="dark"] .seg-pill{
+    background-image:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 85%) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 1px rgba(255,255,255,.07), 0 2px 8px -2px rgba(0,0,0,.5) !important;}
+
+  /* 5 · buttons: primary gets a gentle sheen and a tinted shadow; quiet buttons a light lift */
+  .btn-primary, .btn.btn-primary, .modal-ok, .budget-btn, .at-quick button, .tk-quick button{
+    background-image:linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0) 70%) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 0 0 1px rgba(var(--shadow-rgb),.07), 0 1px 2px rgba(var(--shadow-rgb),.06), 0 8px 18px -10px rgba(134,189,217,.9) !important;}
+  .btn-primary:hover, .modal-ok:hover, .budget-btn:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.75), inset 0 0 0 1px rgba(var(--shadow-rgb),.08), 0 2px 4px rgba(var(--shadow-rgb),.07), 0 12px 24px -10px rgba(134,189,217,1) !important;}
+  :root[data-theme="dark"] .btn-primary, :root[data-theme="dark"] .btn.btn-primary, :root[data-theme="dark"] .modal-ok,
+  :root[data-theme="dark"] .budget-btn, :root[data-theme="dark"] .at-quick button, :root[data-theme="dark"] .tk-quick button{
+    background-image:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,0) 70%) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.1), inset 0 0 0 1px rgba(255,255,255,.06), 0 8px 18px -10px rgba(0,0,0,.6) !important;}
+  .btn-ghost, .btn.btn-ghost, .modal-cancel, .dz-ghost, .at-more[aria-expanded="true"]{
+    background-image:var(--sheen-sm) !important;box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 1px 2px rgba(var(--shadow-rgb),.06) !important;}
+  .btn-ghost:hover, .modal-cancel:hover, .dz-ghost:hover{box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px rgba(var(--shadow-rgb),.12), 0 3px 8px -3px rgba(var(--shadow-rgb),.14) !important;}
+
+  /* 6 · floating layers: menus, sheets and dialogs are lifted and slightly glassy */
+  .modal-card, .wk-menu, .at-menu, .at-sheet-card, .sel-menu, .dp-pop, .tp-pop{
+    background-image:var(--sheen) !important;box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), var(--pop) !important;}
+  @media (max-width:760px){
+    .at-menu{box-shadow:0 0 0 100vmax rgba(var(--shadow-rgb),.32), inset 0 1px 0 var(--hi), var(--pop) !important;}
+  }
+  .modal-back, .at-sheet-bg{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px) !important;}
+  .at-panel, .tk-card{background-color:var(--card);}
+  .tk-search:focus-within, .dz-quick:focus-within, .wo-quick:focus-within, .tk-quick:focus-within, .ws-search:focus-within{
+    background-image:none !important;box-shadow:inset 0 0 0 1.5px var(--ring), 0 0 0 4px rgba(var(--primary-rgb),.3) !important;}
+  /* keyboard focus always wins over the depth shadows */
+  :root :is(button, a, [tabindex]):focus-visible{box-shadow:0 0 0 3px rgba(134,189,217,.6) !important;}
 </style>
 </head>
 <body>

@@ -4458,6 +4458,254 @@
     #page-side .wo-card-head .dz-title{white-space:nowrap;}
     #page-side .wo-card-head .dz-ghost{white-space:nowrap;}
   }
+  /* ===== ALL TASKS v2: header · toolbar · list (scoped to #page-tasks) ===== */
+  .at-row, .at-chip, .at-pill, .at-group > i{--cs:var(--acc, var(--foreground));--cp:rgba(var(--acc-rgb, var(--foreground-rgb)),.24);}
+  #page-tasks .at-head{display:flex;align-items:flex-end;gap:16px;margin-bottom:18px;}
+  #page-tasks .at-head-t{flex:1;min-width:0;}
+  #page-tasks .at-head .page-title{margin:0;}
+  .at-count{font-size:13px;font-weight:600;color:var(--dz-ink-3);margin-top:4px;}
+  .at-count b{color:var(--danger);font-weight:700;}
+  #page-tasks .btn.at-add{border-radius:999px;padding:10px 18px 10px 14px;flex-shrink:0;}
+  #page-tasks .btn.at-add .ico{width:17px;height:17px;}
+
+  /* toolbar: plain row on the page background, no container */
+  .at-tools{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .at-tools .cz-seg button{padding:6px 12px;font-size:12.5px;}
+  .at-spacer{flex:1;}
+  .at-break{display:none;}
+  .at-search{display:flex;align-items:center;gap:8px;flex:0 1 300px;min-width:0;height:36px;padding:0 12px;border-radius:10px;
+    background:var(--card);box-shadow:inset 0 0 0 1px var(--border);color:var(--dz-ink-3);cursor:text;}
+  .at-search:focus-within{box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .at-search .ico{width:16px;height:16px;flex-shrink:0;}
+  .at-search input{border:none;background:transparent;outline:none;font:inherit;font-size:13.5px;color:var(--foreground);flex:1;min-width:0;padding:0;height:100%;}
+  .at-search input::-webkit-search-cancel-button{display:none;}
+  .at-search input::placeholder{color:var(--dz-ink-3);}
+  .at-search button{border:none;background:transparent;cursor:pointer;color:var(--dz-ink-3);display:flex;padding:4px;border-radius:50%;}
+  .at-search button:hover{color:var(--foreground);background:var(--muted);}
+  .at-search button[hidden]{display:none;}
+  .at-sort{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--dz-ink-3);white-space:nowrap;}
+  .at-sort .sel-field{height:36px;min-width:118px;border-radius:10px;font-size:12.5px;font-weight:700;margin:0;}
+  .at-sort select{height:36px;border-radius:10px;}
+  .at-filter-btn{display:none;align-items:center;gap:7px;height:36px;padding:0 12px;border:none;border-radius:10px;cursor:pointer;flex-shrink:0;
+    font:inherit;font-size:12.5px;font-weight:700;color:var(--foreground);background:var(--card);box-shadow:inset 0 0 0 1px var(--border);}
+  .at-filter-btn:hover{background:var(--muted);}
+  .at-filter-btn .ico{width:16px;height:16px;}
+  .at-filter-btn b{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--btn-primary-bg, var(--primary));color:var(--btn-primary-fg, var(--foreground));
+    font-size:11px;display:inline-flex;align-items:center;justify-content:center;}
+  .at-filter-btn b[hidden]{display:none;}
+
+  /* second row: area chips (and priority) */
+  .at-filters{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .at-chips{display:flex;align-items:center;gap:4px;flex-wrap:wrap;flex:1;min-width:0;}
+  .at-chip{border:none;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:8px;
+    background:transparent;color:var(--dz-ink-2);font-size:12.5px;font-weight:600;white-space:nowrap;}
+  .at-chip:hover{background:var(--muted);color:var(--foreground);}
+  .at-chip i{width:7px;height:7px;border-radius:50%;background:var(--cs, var(--foreground));}
+  .at-chip .n{font-size:11px;font-weight:600;color:var(--dz-ink-3);font-variant-numeric:tabular-nums;}
+  .at-chip.on{background:var(--card);color:var(--foreground);font-weight:700;box-shadow:inset 0 0 0 1px var(--border);}
+  .at-chip.is-empty:not(.on){opacity:.5;}
+  .at-active{display:none;}
+
+  /* the list: one surface, thin dividers */
+  .at-panel{background:var(--card);border-radius:16px;box-shadow:inset 0 0 0 1px var(--dz-line);padding:6px 0 10px;}
+  .at-quick{display:flex;align-items:center;gap:10px;margin:2px 10px 2px;padding:0 6px 0 10px;height:42px;border-radius:10px;}
+  .at-quick:hover{background:var(--muted);}
+  .at-quick:focus-within{background:var(--card);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .at-quick .ico{width:16px;height:16px;color:var(--dz-ink-3);flex-shrink:0;margin:0 4px;}
+  .at-quick input{flex:1;min-width:0;border:none;background:transparent;outline:none;font:inherit;font-size:13.5px;color:var(--foreground);height:100%;padding:0;}
+  .at-quick input::placeholder{color:var(--dz-ink-3);}
+  .at-quick small{font-size:11.5px;font-weight:600;color:var(--dz-ink-3);white-space:nowrap;}
+  .at-quick button{border:none;font:inherit;font-size:12px;font-weight:700;cursor:pointer;height:28px;padding:0 12px;border-radius:8px;
+    background:var(--btn-primary-bg, var(--primary));color:var(--btn-primary-fg, var(--foreground));opacity:0;transition:opacity .15s ease;}
+  .at-quick:focus-within button{opacity:1;}
+  #page-tasks.is-rec .at-quick, #page-tasks.is-doneview .at-quick{display:none;}
+  #page-tasks.is-rec .at-tools .at-status, #page-tasks.is-rec .at-tools .at-sort, #page-tasks.is-rec .at-prio-f{display:none;}
+
+  .at-list{padding:0 10px;}
+  .at-cols, .at-row{display:grid;grid-template-columns:32px minmax(0,1fr) 120px 128px 76px 34px;align-items:center;column-gap:12px;}
+  .at-cols{padding:10px 10px 4px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dz-ink-3);}
+  .at-group{display:flex;align-items:center;gap:8px;padding:18px 10px 6px;font-size:12.5px;font-weight:700;color:var(--foreground);}
+  .at-cols + .at-group{padding-top:8px;}
+  .at-group .n{font-size:11.5px;font-weight:600;color:var(--dz-ink-3);font-variant-numeric:tabular-nums;}
+  .at-group .n.ok .ico{width:13px;height:13px;color:var(--success, var(--dz-ink-3));vertical-align:-2px;}
+  .at-group.g-late{color:var(--danger);}
+  .at-group.g-muted{color:var(--dz-ink-3);}
+  .at-group > i{width:8px;height:8px;border-radius:50%;background:var(--cs);}
+  #page-tasks.is-rec .at-cols, #page-tasks.is-rec .at-row{grid-template-columns:32px minmax(0,1fr) 120px 160px 100px 34px;}
+
+  .at-row{position:relative;padding:0 10px;min-height:44px;border-radius:10px;transition:background .15s ease;}
+  .at-row + .at-row::before{content:"";position:absolute;left:52px;right:10px;top:0;height:1px;background:var(--dz-line-2);}
+  .at-row:hover, .at-row:focus-within{background:var(--muted);}
+  .at-row:hover::before, .at-row:focus-within::before, .at-row:hover + .at-row::before, .at-row:focus-within + .at-row::before{opacity:0;}
+  .at-row .tcheck{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1.75px var(--cs);background:var(--card);color:transparent;justify-self:center;position:relative;}
+  .at-row .tcheck::after{content:"";position:absolute;inset:-11px;}
+  .at-row .tcheck:hover{background:var(--cp);color:var(--cs);}
+  .at-row .tcheck:hover{background:var(--cp) !important;color:var(--cs) !important;}
+  .at-row.done .tcheck{background:var(--foreground) !important;box-shadow:none !important;color:var(--card) !important;}
+  .at-row .tcheck .ico{width:12px;height:12px;}
+  .at-rec-ico{display:flex;align-items:center;justify-content:center;color:var(--dz-ink-3);}
+  .at-rec-ico .ico{width:15px;height:15px;}
+  .at-main{border:none;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:10px 0;min-width:0;
+    display:flex;align-items:center;gap:8px;border-radius:6px;align-self:stretch;}
+  .at-title{font-size:14px;font-weight:600;color:var(--foreground);line-height:1.35;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .at-rec, .at-path{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--dz-ink-3);white-space:nowrap;flex-shrink:0;}
+  .at-rec .ico, .at-path .ico{width:12px;height:12px;}
+  .at-hi, .at-rec-m{display:none;}
+  .at-meta{display:contents;}
+  .at-area{display:flex;align-items:center;gap:7px;min-width:0;font-size:12.5px;font-weight:600;color:var(--dz-ink-2);white-space:nowrap;}
+  .at-area i{width:8px;height:8px;border-radius:50%;background:var(--cs);flex-shrink:0;}
+  .at-due{display:flex;align-items:baseline;gap:6px;min-width:0;font-size:12.5px;font-weight:600;color:var(--foreground);white-space:nowrap;}
+  .at-due small{font-size:11.5px;font-weight:600;color:var(--dz-ink-3);}
+  .at-due.is-late{color:var(--danger);}
+  .at-due.is-today{font-weight:800;}
+  .at-due.none{color:var(--dz-ink-3);font-weight:500;}
+  .at-freq{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--dz-ink-2);white-space:nowrap;min-width:0;}
+  .at-freq .ico{width:13px;height:13px;color:var(--dz-ink-3);}
+  .at-prio{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;white-space:nowrap;}
+  .at-prio .ico{width:13px;height:13px;}
+  .at-prio.high{color:var(--danger);}
+  .at-prio.low{color:var(--dz-ink-3);font-weight:600;}
+  .at-more{border:none;background:transparent;cursor:pointer;color:var(--dz-ink-3);width:32px;height:32px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;opacity:.55;transition:opacity .15s ease, background .15s ease;}
+  .at-row:hover .at-more, .at-row:focus-within .at-more, .at-more[aria-expanded="true"]{opacity:1;}
+  .at-more:hover, .at-more[aria-expanded="true"]{background:rgba(var(--foreground-rgb),.08);color:var(--foreground);}
+  .at-more .ico{width:18px;height:18px;}
+  .at-row.done .at-title{text-decoration:line-through;text-decoration-color:var(--dz-ink-3);color:var(--dz-ink-3);}
+  .at-row.done .at-meta > *, .at-row.done .at-rec, .at-row.done .at-path{opacity:.55;}
+  .at-row.is-paused .at-title{color:var(--dz-ink-2);}
+  .at-row.just-done{animation:atDone .5s ease;}
+  @keyframes atDone{0%{background:var(--cp);}100%{background:transparent;}}
+  .at-row .tcheck.popped{animation:atPop .35s ease;}
+  @keyframes atPop{0%{transform:scale(1);}40%{transform:scale(1.2);}100%{transform:scale(1);}}
+
+  .at-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:24px 16px 18px;color:var(--dz-ink-2);font-size:13px;}
+  .at-empty b{color:var(--foreground);font-size:15px;}
+  .at-empty span{max-width:360px;}
+  .at-empty .doodle{width:150px;height:auto;max-width:100%;}
+  .at-empty button{margin-top:6px;}
+
+  /* ⋯ menu: a popover by the button; a sheet at the bottom on phones */
+  .at-menu{position:fixed;z-index:80;width:230px;padding:6px;border-radius:14px;background:var(--card);
+    box-shadow:0 12px 32px rgba(var(--shadow-rgb),.16), 0 0 0 1px var(--border);}
+  .at-menu[hidden]{display:none;}
+  .at-menu-t{display:none;}
+  .at-menu button{display:flex;align-items:center;gap:10px;width:100%;border:none;background:transparent;font:inherit;font-size:13.5px;font-weight:600;
+    color:var(--foreground);text-align:left;cursor:pointer;padding:8px 10px;border-radius:8px;}
+  .at-menu button:hover, .at-menu button:focus-visible{background:var(--muted);outline:none;}
+  .at-menu button .ico{width:16px;height:16px;color:var(--dz-ink-3);}
+  .at-menu button.danger, .at-menu button.danger .ico{color:var(--danger);}
+  .at-menu button.danger:hover{background:var(--danger-faint);}
+  .at-menu hr{border:none;height:1px;background:var(--dz-line-2);margin:5px 4px;}
+  .at-menu-l{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dz-ink-3);padding:4px 10px 2px;}
+  .at-menu-seg{display:flex;gap:4px;padding:4px 6px;}
+  .at-menu-seg button{flex:1;justify-content:center;gap:4px;padding:6px 4px;font-size:12.5px;box-shadow:inset 0 0 0 1px var(--border);}
+  .at-menu-seg button .ico{width:13px;height:13px;color:var(--danger);}
+  .at-menu-seg button.on{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
+
+  /* Filter sheet */
+  .at-sheet{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;}
+  .at-sheet[hidden]{display:none;}
+  .at-sheet-bg{position:absolute;inset:0;background:rgba(var(--shadow-rgb),.32);}
+  .at-sheet-card{position:relative;width:100%;max-width:520px;max-height:calc(100dvh - 40px);overflow-y:auto;background:var(--card);
+    border-radius:20px 20px 0 0;padding:6px 16px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(var(--shadow-rgb),.18);}
+  .at-sheet-head{display:flex;align-items:center;justify-content:space-between;padding:10px 0 4px;}
+  .at-sheet-head b{font-size:16px;}
+  .at-x{border:none;background:transparent;cursor:pointer;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--dz-ink-2);margin-right:-8px;}
+  .at-x:hover{background:var(--muted);}
+  .at-sheet-l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dz-ink-3);margin:16px 0 8px;}
+  .at-sheet-seg{display:flex;width:100%;}
+  .at-sheet-seg button{flex:1;justify-content:center;padding:8px 6px;font-size:13px;}
+  .at-sheet-chips{gap:6px;}
+  .at-sheet-chips .at-chip{height:34px;padding:0 12px;box-shadow:inset 0 0 0 1px var(--border);}
+  .at-sheet-chips .at-chip.on{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .at-sheet-foot{display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:12px;border-top:1px solid var(--dz-line-2);}
+  .at-sheet-foot .btn{flex:1;justify-content:center;border-radius:12px;padding:12px;}
+  .at-clear{border:none;background:transparent;font:inherit;font-size:13px;font-weight:700;color:var(--dz-ink-2);cursor:pointer;padding:8px 10px;border-radius:8px;text-decoration:underline;text-underline-offset:3px;}
+  .at-clear:hover{color:var(--foreground);}
+  .at-clear:disabled{opacity:.4;cursor:default;text-decoration:none;}
+  body.at-sheet-open{overflow:hidden;}
+  .at-pill{border:none;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 6px 0 10px;border-radius:8px;flex-shrink:0;
+    background:var(--card);box-shadow:inset 0 0 0 1px var(--border);color:var(--foreground);font-size:12.5px;font-weight:600;white-space:nowrap;}
+  .at-pill i{width:7px;height:7px;border-radius:50%;background:var(--cs);}
+  .at-pill .ico{width:13px;height:13px;color:var(--dz-ink-3);}
+  .at-pill:hover .ico{color:var(--foreground);}
+
+  /* tablet and small laptops: fold status, area, priority and sort into Filter */
+  @media (max-width:1060px){
+    .at-filter-btn{display:inline-flex;}
+    .at-tools .at-status, .at-tools .at-sort, .at-filters{display:none;}
+    .at-search{flex:1 1 auto;max-width:none;}
+    .at-spacer{display:none;}
+    .at-tools{flex-wrap:wrap;}
+    .at-active:not([hidden]){display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1 1 100%;order:5;}
+    .at-cols, .at-row{grid-template-columns:32px minmax(0,1fr) 110px 120px 34px;}
+    .at-cols span:nth-child(5), .at-row .at-prio{display:none;}
+    .at-hi{display:inline-flex;color:var(--danger);flex-shrink:0;}
+    .at-hi .ico{width:13px;height:13px;}
+    #page-tasks.is-rec .at-cols, #page-tasks.is-rec .at-row{grid-template-columns:32px minmax(0,1fr) 110px 130px 90px 34px;}
+    #page-tasks.is-rec .at-cols span:nth-child(5){display:block;}
+  }
+  @media (min-width:761px) and (max-width:1060px){
+    .at-sheet{align-items:center;}
+    .at-sheet-card{border-radius:20px;padding-bottom:16px;}
+  }
+
+  /* phones: compact header, two-line rows, menu as a bottom sheet */
+  @media (max-width:760px){
+    #page-tasks .at-head .page-title{display:none;}
+    #page-tasks .at-head{align-items:center;margin-bottom:12px;}
+    .at-count{margin-top:0;font-size:13.5px;}
+    #page-tasks .btn.at-add{padding:8px 14px 8px 11px;font-size:13px;}
+    .at-tools{flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+    .at-search{order:1;flex:1 1 0;height:40px;}
+    .at-break{display:block;order:3;flex-basis:100%;height:0;margin-top:-8px;}
+    .at-filter-btn{order:2;height:40px;}
+    .at-filter-btn span{display:none;}
+    .at-tools .at-view{order:4;flex-shrink:0;}
+    .at-tools .at-view button{padding:5px 11px;font-size:12px;}
+    .at-tools .at-view .ico{width:13px;height:13px;}
+    .at-active:not([hidden]){order:5;flex:1 1 0;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px;}
+    .at-active::-webkit-scrollbar{display:none;}
+    .at-tools{margin-bottom:10px;}
+    .at-panel{padding:2px 0 6px;border-radius:14px;}
+    .at-quick{display:none;}
+    .at-list{padding:0 4px;}
+    .at-cols{display:none;}
+    .at-group{padding:14px 10px 4px;}
+    .at-group:first-child{padding-top:8px;}
+    .at-row, #page-tasks.is-rec .at-row{grid-template-columns:30px minmax(0,1fr) 32px;grid-template-areas:"c m x" "c d x";column-gap:10px;
+      padding:9px 4px 9px 8px;min-height:0;align-items:start;}
+    .at-row + .at-row::before{left:48px;right:8px;}
+    .at-row .tcheck, .at-row .at-rec-ico{grid-area:c;align-self:start;margin-top:0;}
+    .at-row .tcheck::after{inset:-10px;}
+    .at-main{grid-area:m;padding:1px 0 0;align-self:start;}
+    .at-title{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:14.5px;}
+    .at-main .at-rec, .at-main .at-path, .at-main .at-hi{display:none;}
+    .at-meta{grid-area:d;display:flex;align-items:center;gap:0;min-width:0;margin-top:3px;font-size:12px;overflow:hidden;}
+    .at-meta > *{flex-shrink:0;}
+    .at-meta > * + *:not(:empty)::before{content:"·";margin:0 6px;color:var(--dz-ink-3);font-weight:600;}
+    .at-area, .at-due, .at-freq, .at-prio{font-size:12px;}
+    .at-area i{width:7px;height:7px;}
+    .at-due small{font-size:11.5px;}
+    .at-row .at-prio, #page-tasks.is-rec .at-row .at-due{display:flex;}
+    .at-prio:empty{display:none !important;}
+    .at-prio.low{display:none !important;}
+    .at-rec-m{display:inline-flex;align-items:center;color:var(--dz-ink-3);}
+    .at-rec-m .ico{width:12px;height:12px;}
+    .at-freq .ico{display:none;}
+    .at-more{grid-area:x;align-self:center;opacity:.7;width:32px;height:36px;}
+    .at-menu{left:8px !important;right:8px;top:auto !important;bottom:8px;width:auto;border-radius:18px;padding:8px;
+      box-shadow:0 0 0 100vmax rgba(var(--shadow-rgb),.32), 0 -8px 30px rgba(var(--shadow-rgb),.18);}
+    .at-menu-t{display:block;font-size:13px;font-weight:700;color:var(--dz-ink-2);padding:8px 12px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .at-menu button{padding:12px;font-size:15px;}
+    .at-menu-seg button{padding:10px 4px;font-size:14px;}
+  }
+  @media (max-width:360px){
+    .at-tools .at-view button{padding:5px 9px;}
+    .at-due small{display:none;}
+    .at-prio.high span{display:none;}
+  }
+  @media (prefers-reduced-motion:reduce){ .at-row.just-done, .at-row .tcheck.popped{animation:none;} }
 </style>
 </head>
 <body>
@@ -4780,49 +5028,72 @@
 
     <!-- ---------- TASKS ---------- -->
     <section class="page" id="page-tasks">
-      <div class="tk-head">
-        <div>
+      <header class="at-head">
+        <div class="at-head-t">
           <h1 class="page-title">All tasks</h1>
-          <div class="tk-count" id="tkCount" aria-live="polite"></div>
+          <div class="at-count" id="tkCount" aria-live="polite"></div>
         </div>
-        <span class="spacer"></span>
-        <button type="button" class="btn btn-ghost" id="recAddBtn"><i data-ico="repeat"></i>Add recurring</button>
-        <button type="button" class="btn btn-primary" id="addTaskBtn"><i data-ico="plus"></i>Add task</button>
+        <button type="button" class="btn btn-primary at-add" id="addTaskBtn"><i data-ico="plus"></i><span id="addTaskLbl">Add task</span></button>
+      </header>
+
+      <div class="at-tools">
+        <div class="cz-seg at-view" role="tablist" aria-label="Show">
+          <button type="button" role="tab" data-tkview="tasks">Tasks</button>
+          <button type="button" role="tab" data-tkview="recurring"><i data-ico="repeat"></i>Recurring</button>
+        </div>
+        <label class="at-search"><i data-ico="search"></i>
+          <input id="tkSearch" type="search" placeholder="Search tasks" aria-label="Search tasks" autocomplete="off" />
+          <button type="button" id="tkSearchClear" aria-label="Clear search" hidden><i data-ico="x" class="ico-sm"></i></button>
+        </label>
+        <button type="button" class="at-filter-btn" id="tkFilterBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="tkSheet"><i data-ico="sliders"></i><span>Filter</span><b id="tkFilterN" hidden></b></button>
+        <span class="at-break" aria-hidden="true"></span>
+        <span class="at-spacer"></span>
+        <div class="cz-seg at-status" id="tkStatus" role="group" aria-label="Status">
+          <button type="button" data-tkstatus="todo">To do</button>
+          <button type="button" data-tkstatus="done">Done</button>
+          <button type="button" data-tkstatus="all">All</button>
+        </div>
+        <label class="at-sort" id="tkSortWrap"><span>Sort</span>
+          <select id="tkSort" aria-label="Sort tasks">
+            <option value="due">Due date</option>
+            <option value="priority">Priority</option>
+            <option value="area">Area</option>
+            <option value="new">Newest</option>
+          </select>
+        </label>
+        <div class="at-active" id="tkActive" aria-label="Filters on" hidden></div>
+      </div>
+      <!-- wide screens: area chips and priority. Narrow screens: the filters that are on, each removable -->
+      <div class="at-filters">
+        <div class="at-chips" id="tkAreas" role="group" aria-label="Filter by area"></div>
+        <label class="at-sort at-prio-f" id="tkPrioWrap"><span>Priority</span>
+          <select id="tkPrio" aria-label="Filter by priority">
+            <option value="all">Any</option>
+            <option value="high">High</option>
+            <option value="normal">Normal</option>
+            <option value="low">Low</option>
+          </select>
+        </label>
       </div>
 
-      <div class="tk-card">
-        <div class="tk-bar">
-          <div class="cz-seg" role="tablist" aria-label="Show">
-            <button type="button" role="tab" data-tkview="tasks">Tasks</button>
-            <button type="button" role="tab" data-tkview="recurring"><i data-ico="repeat"></i>Recurring</button>
-          </div>
-          <label class="tk-search"><i data-ico="search"></i>
-            <input id="tkSearch" type="search" placeholder="Search tasks" aria-label="Search tasks" autocomplete="off" />
-            <button type="button" id="tkSearchClear" aria-label="Clear search" hidden><i data-ico="x" class="ico-sm"></i></button>
-          </label>
-          <span class="spacer"></span>
-          <div class="cz-seg" id="tkStatus" aria-label="Status">
-            <button type="button" data-tkstatus="todo">To do</button>
-            <button type="button" data-tkstatus="done">Done</button>
-            <button type="button" data-tkstatus="all">All</button>
-          </div>
-          <label class="tk-sort" id="tkSortWrap"><span>Sort</span>
-            <select id="tkSort" aria-label="Sort tasks">
-              <option value="due">Due date</option>
-              <option value="priority">Priority</option>
-              <option value="area">Area</option>
-              <option value="new">Newest</option>
-            </select>
-          </label>
-        </div>
-        <div class="tk-areas" id="tkAreas" aria-label="Filter by area"></div>
-        <form class="tk-quick" id="tkQuick" autocomplete="off">
+      <div class="at-panel">
+        <form class="at-quick" id="tkQuick" autocomplete="off">
           <i data-ico="plus"></i>
           <input id="tkQuickInput" placeholder="Add a task for today…" aria-label="Quick add a task for today" />
           <small id="tkQuickArea"></small>
           <button type="submit">Add</button>
         </form>
-        <div class="tk-list" id="tkList"><div class="skel"></div><div class="skel"></div></div>
+        <div class="at-list" id="tkList"><div class="skel"></div><div class="skel"></div></div>
+      </div>
+
+      <div class="at-menu" id="tkMenu" role="menu" aria-label="Task actions" hidden></div>
+      <div class="at-sheet" id="tkSheet" role="dialog" aria-modal="true" aria-labelledby="tkSheetTitle" hidden>
+        <div class="at-sheet-bg" data-sheet="close"></div>
+        <div class="at-sheet-card">
+          <div class="at-sheet-head"><b id="tkSheetTitle">Filter and sort</b><button type="button" class="at-x" data-sheet="close" aria-label="Close"><i data-ico="x"></i></button></div>
+          <div class="at-sheet-body" id="tkSheetBody"></div>
+          <div class="at-sheet-foot"><button type="button" class="at-clear" data-sheet="clear">Clear all</button><button type="button" class="btn btn-primary" data-sheet="close" id="tkSheetDone">Show tasks</button></div>
+        </div>
       </div>
     </section>
 
@@ -7793,32 +8064,49 @@ function birthdaysInRange(rows, from, to){
 }
 
 /* ===================================================================
-   ALL TASKS (2026-11 redesign)
-   One list for every task, filtered by area, status and search, sorted by
-   due date, priority, area or newest. Today's and overdue recurring tasks
-   sit in the same list; the rules themselves are under "Recurring".
-   Tick, edit and delete reuse the shared task model (toggleItem, openItem).
+   ALL TASKS (2026-11 redesign, v2)
+   One list for every task, filtered by area, status, priority and search,
+   sorted by due date, priority, area or newest. Today's and overdue
+   recurring tasks sit in the same list; the rules themselves are under
+   "Recurring". Tick, edit and delete reuse the shared task model
+   (toggleItem, openItem, openTaskForm, openRecurringForm, deleteRecurring).
+   Layout: header (title, summary, one Add button) · toolbar · list.
+   Wide screens show every control; narrower ones fold status, area,
+   priority and sort into a Filter sheet and show what is on as chips.
    =================================================================== */
 const TK = (()=>{
-  const def = { view:'tasks', status:'todo', area:'all', sort:'due' };
-  try{ return { ...def, ...JSON.parse(localStorage.getItem('pa_tasks_view') || '{}'), q:'' }; }catch(e){ return { ...def, q:'' }; }
+  const def = { view:'tasks', status:'todo', area:'all', prio:'all', sort:'due' };
+  try{
+    const s = { ...def, ...JSON.parse(localStorage.getItem('pa_tasks_view') || '{}'), q:'' };
+    if(!['tasks', 'recurring'].includes(s.view)) s.view = 'tasks';
+    if(!['todo', 'done', 'all'].includes(s.status)) s.status = 'todo';
+    if(!['all', 'high', 'normal', 'low'].includes(s.prio)) s.prio = 'all';
+    if(!['due', 'priority', 'area', 'new'].includes(s.sort)) s.sort = 'due';
+    if(s.area !== 'all' && !CATS[s.area]) s.area = 'all';
+    return s;
+  }catch(e){ return { ...def, q:'' }; }
 })();
 let TK_DATA = null;
+// tasks ticked or unticked during this visit stay where they were (muted) until
+// the page is opened again, so the list never jumps under the finger
+window.TK_KEEP = new Map();
 const tkSave = ()=>{ try{ const { q, ...keep } = TK; localStorage.setItem('pa_tasks_view', JSON.stringify(keep)); }catch(e){} };
 
 async function loadTasks(){
   if(!USER) return;
   const today = _dayOnly(new Date());
   try{
-    const [open, done, recState] = await Promise.all([
+    const [open, done, recState, paused] = await Promise.all([
       sb.from('tasks').select('*').eq('completed', false).order('due_date'),
       // finished in the last 60 days, for "Done"
       sb.from('tasks').select('*').eq('completed', true).gte('completed_at', addDays(today, -60).toISOString()),
-      fetchRecurringState()
+      fetchRecurringState(),
+      // paused recurring tasks (active = false) only show under Recurring
+      sb.from('recurring_tasks').select('*').eq('active', false).order('created_at')
     ]);
     if(open.error) throw open.error;
     if(done.error) throw done.error;
-    TK_DATA = { tasks: (open.data || []).concat(done.data || []), recState };
+    TK_DATA = { tasks: (open.data || []).concat(done.data || []), recState, paused: paused.error ? [] : (paused.data || []) };
     paintTasks();
   }catch(err){ showError($('tkList'), err, loadTasks); }
 }
@@ -7842,45 +8130,76 @@ function tkItems(){
 }
 
 const PRIO_RANK = { high:0, normal:1, low:2 };
-function tkBucket(it, today){
-  if(it.done) return 'done';
+function tkBucket(it, today, ignoreDone){
+  if(it.done && !ignoreDone) return 'done';
   if(!it.due) return 'nodate';
   const d = parseISO(it.due), diff = Math.round((d - today) / 86400000);
   if(diff < 0) return 'late';
   if(diff === 0) return 'today';
   if(diff === 1) return 'tomorrow';
   if(d <= addDays(mondayOf(today), 6)) return 'week';
-  if(d <= addDays(mondayOf(today), 13)) return 'nextweek';
   return 'later';
 }
-const BUCKETS = [['late','Overdue','g-late'], ['today','Today'], ['tomorrow','Tomorrow'], ['week','Later this week'], ['nextweek','Next week'],
-  ['later','Later'], ['nodate','No date'], ['done','Done']];
+const BUCKETS = [['late','Overdue','g-late'], ['today','Today'], ['tomorrow','Tomorrow'], ['week','Later this week'],
+  ['later','Upcoming'], ['nodate','No date'], ['done','Done']];
+const TK_STATUS_L = { todo:'To do', done:'Done', all:'All' };
+const TK_PRIO_L = { all:'Any', high:'High', normal:'Normal', low:'Low' };
+const TK_SORT_L = { due:'Due date', priority:'Priority', area:'Area', new:'Newest' };
+
+// filters that differ from the default (for the Filter badge and the chips on small screens)
+function tkActive(){
+  const out = [];
+  if(TK.view === 'tasks' && TK.status !== 'todo') out.push({ k:'status', label: TK.status === 'done' ? 'Done' : 'All tasks' });
+  if(TK.area !== 'all') out.push({ k:'area', label: CATS[TK.area].label, acc: CATS[TK.area].acc });
+  if(TK.view === 'tasks' && TK.prio !== 'all') out.push({ k:'prio', label: TK_PRIO_L[TK.prio] + ' priority' });
+  if(TK.view === 'tasks' && TK.sort !== 'due') out.push({ k:'sort', label: 'By ' + TK_SORT_L[TK.sort].toLowerCase() });
+  return out;
+}
+function tkReset(k){
+  if(!k || k === 'status'){ if(TK.status !== 'todo') window.TK_KEEP.clear(); TK.status = 'todo'; }
+  if(!k || k === 'area') TK.area = 'all';
+  if(!k || k === 'prio') TK.prio = 'all';
+  if(!k || k === 'sort') TK.sort = 'due';
+  $('tkSort').value = TK.sort; $('tkPrio').value = TK.prio;
+  tkSave(); paintTasks();
+}
 
 function paintTasks(){
   if(!TK_DATA) return;
   const today = _dayOnly(new Date()), all = tkItems(), q = TK.q.trim().toLowerCase();
   const openN = all.filter(i=>!i.done).length, lateN = all.filter(i=>!i.done && tkBucket(i, today) === 'late').length;
-  $('tkCount').innerHTML = `${openN} to do${lateN ? ` · <b>${lateN} overdue</b>` : ''}`;
+  $('tkCount').innerHTML = TK.view === 'recurring'
+    ? `${plural(TK_DATA.recState.rules.length, 'repeating task')}${TK_DATA.paused.length ? ` · ${TK_DATA.paused.length} paused` : ''}`
+    : `${openN} to do${lateN ? ` · <b>${lateN} overdue</b>` : ''}`;
+  $('addTaskLbl').textContent = TK.view === 'recurring' ? 'Add recurring' : 'Add task';
 
   // view + status switches
   document.querySelectorAll('[data-tkview]').forEach(b=>{ const on = b.dataset.tkview === TK.view; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
-  document.querySelectorAll('[data-tkstatus]').forEach(b=>{ const on = b.dataset.tkstatus === TK.status; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
-  $('tkStatus').hidden = TK.view !== 'tasks';
-  $('tkSortWrap').hidden = TK.view !== 'tasks';
-  $('tkQuick').hidden = TK.view !== 'tasks';
+  document.querySelectorAll('#tkStatus [data-tkstatus]').forEach(b=>{ const on = b.dataset.tkstatus === TK.status; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  $('page-tasks').classList.toggle('is-rec', TK.view === 'recurring');
+  $('page-tasks').classList.toggle('is-doneview', TK.status === 'done');
   $('tkSearchClear').hidden = !TK.q;
+  $('tkSearch').placeholder = TK.view === 'recurring' ? 'Search recurring tasks' : 'Search tasks';
+  const act = tkActive();
+  $('tkFilterN').hidden = !act.length; $('tkFilterN').textContent = act.length;
+  $('tkFilterBtn').setAttribute('aria-label', 'Filter and sort' + (act.length ? `, ${act.length} on` : ''));
+  $('tkActive').hidden = !act.length;
+  $('tkActive').innerHTML = act.map(a=> `<button type="button" class="at-pill${a.acc ? ' ' + a.acc : ''}" data-tkoff="${a.k}" aria-label="Remove filter: ${esc(a.label)}">${a.acc ? '<i></i>' : ''}${esc(a.label)}${ico('x')}</button>`).join('') +
+    (act.length > 1 ? '<button type="button" class="at-clear" data-tkoff="">Clear all</button>' : '');
 
   if(TK.view === 'recurring') return paintRecurringRules(q);
 
-  const byStatus = all.filter(i=> TK.status === 'all' || (TK.status === 'done' ? i.done : !i.done))
-    .filter(i=> !q || i.title.toLowerCase().includes(q) || CATS[i.cat].label.toLowerCase().includes(q));
+  const keep = window.TK_KEEP;
+  const byStatus = all.filter(i=> TK.status === 'all' || keep.has(i.key) || (TK.status === 'done' ? i.done : !i.done))
+    .filter(i=> !q || i.title.toLowerCase().includes(q) || CATS[i.cat].label.toLowerCase().includes(q))
+    .filter(i=> TK.prio === 'all' || i.priority === TK.prio);
   // area chips with live counts
   const counts = {}; byStatus.forEach(i=>{ counts[i.cat] = (counts[i.cat] || 0) + 1; });
-  $('tkAreas').innerHTML = `<button type="button" class="tk-chip${TK.area === 'all' ? ' on' : ''}" data-tkarea="all" aria-pressed="${TK.area === 'all'}">All <span class="n">${byStatus.length}</span></button>` +
-    CAT_ORDER.map(k=>`<button type="button" class="tk-chip ${CATS[k].acc}${TK.area === k ? ' on' : ''}${counts[k] ? '' : ' is-empty'}" data-tkarea="${k}" aria-pressed="${TK.area === k}"><i></i>${CATS[k].label} <span class="n">${counts[k] || 0}</span></button>`).join('');
+  tkChips(counts, byStatus.length);
   $('tkQuickArea').textContent = TK.area === 'all' ? 'Today · Personal' : 'Today · ' + CATS[TK.area].label;
 
   let items = byStatus.filter(i=> TK.area === 'all' || i.cat === TK.area);
+  TK._shown = items.length;
   const byDue = (a, b)=> (a.due || '9999') < (b.due || '9999') ? -1 : (a.due || '9999') > (b.due || '9999') ? 1
     : (a.time || '99') < (b.time || '99') ? -1 : (a.time || '99') > (b.time || '99') ? 1
     : PRIO_RANK[a.priority] - PRIO_RANK[b.priority] || a.title.localeCompare(b.title);
@@ -7890,100 +8209,116 @@ function paintTasks(){
     groups = [['high','High priority'], ['normal','Normal'], ['low','Low priority']].map(([k, l])=>({ label:l, items: items.filter(i=>i.priority === k) }));
   } else if(TK.sort === 'area'){
     items.sort(byDue);
-    groups = CAT_ORDER.map(k=>({ label: CATS[k].label, items: items.filter(i=>i.cat === k) }));
+    groups = CAT_ORDER.map(k=>({ label: CATS[k].label, acc: CATS[k].acc, items: items.filter(i=>i.cat === k) }));
   } else if(TK.sort === 'new'){
     items.sort((a, b)=> (b.created || '').localeCompare(a.created || ''));
     groups = [{ label:'Newest first', items }];
   } else {
     items.sort(byDue);
-    const done = items.filter(i=>i.done).sort((a, b)=> (b.doneAt || '').localeCompare(a.doneAt || ''));
-    groups = BUCKETS.map(([k, l, cls])=>({ label:l, cls, items: k === 'done' ? done : items.filter(i=>!i.done && tkBucket(i, today) === k) }));
+    // in "Done", everything stays in one list, newest first; elsewhere a just-ticked task keeps its date group
+    const inDone = i=> i.done ? !keep.has(i.key) || TK.status === 'done' : TK.status === 'done' && keep.has(i.key);
+    const doneAt = i=> (keep.get(i.key) || {}).doneAt || i.doneAt || '';
+    const done = items.filter(inDone).sort((a, b)=> doneAt(b).localeCompare(doneAt(a)));
+    groups = BUCKETS.map(([k, l, cls])=>({ label:l, cls, done: k === 'done', items: k === 'done' ? done : items.filter(i=> !inDone(i) && tkBucket(i, today, true) === k) }));
   }
   groups = groups.filter(g=>g.items.length);
   const list = $('tkList');
   list._items = new Map(items.map(i=>[i.key, i]));
   if(!items.length){
-    const filtered = q || TK.area !== 'all';
-    list.innerHTML = `<div class="tk-empty">${typeof doodleSvg === 'function' ? doodleSvg(TK.status === 'done' ? 'calm' : 'done') : ''}
+    const filtered = q || TK.area !== 'all' || TK.prio !== 'all';
+    list.innerHTML = `<div class="at-empty">${typeof doodleSvg === 'function' ? doodleSvg(TK.status === 'done' ? 'calm' : 'done') : ''}
       <b>${filtered ? 'No tasks match' : TK.status === 'done' ? 'Nothing finished yet' : 'All clear'}</b>
-      ${filtered ? 'Try another area or search.' : TK.status === 'done' ? 'Tasks you finish in the last 60 days show here.' : 'Nothing left to do. Nice.'}
-      ${filtered ? '<button type="button" class="dz-ghost" data-tk="reset">Show all tasks</button>' : ''}</div>`;
+      <span>${filtered ? 'Try another area, priority or search.' : TK.status === 'done' ? 'Tasks you finish show here for 60 days.' : 'Nothing left to do. Nice.'}</span>
+      ${filtered ? '<button type="button" class="dz-ghost" data-tk="reset">Show all tasks</button>' : TK.status === 'done' ? '' : `<button type="button" class="dz-ghost" data-tk="add">${ico('plus', 'ico-sm')}Add a task</button>`}</div>`;
     return;
   }
-  list.innerHTML = `<div class="tk-cols" aria-hidden="true"><span></span><span>Task</span><span>Area</span><span>Due</span><span>Priority</span><span></span></div>` +
-    groups.map(g=>`<div class="tk-group ${g.cls || ''}">${esc(g.label)}<span class="n">${g.items.length}</span></div>` +
-      `<div role="list">${g.items.map(i=>tkRow(i, today)).join('')}</div>`).join('');
+  list.innerHTML = `<div class="at-cols" aria-hidden="true"><span></span><span>Task</span><span>Area</span><span>Due</span><span>Priority</span><span></span></div>` +
+    groups.map(g=>{
+      const open = g.items.filter(i=> !i.done).length;
+      const n = g.done ? g.items.length : open;
+      return `<div class="at-group ${g.cls || ''}">${g.acc ? `<i class="${g.acc}"></i>` : ''}<span>${esc(g.label)}</span>${n ? `<span class="n">${n}</span>` : `<span class="n ok">${ico('check')}</span>`}</div>` +
+        `<div role="list" aria-label="${esc(g.label)}">${g.items.map(i=>tkRow(i, today)).join('')}</div>`; }).join('');
+}
+
+// desktop area chips; the same choices live in the Filter sheet on small screens
+function tkChips(counts, total){
+  $('tkAreas').innerHTML = `<button type="button" class="at-chip${TK.area === 'all' ? ' on' : ''}" data-tkarea="all" aria-pressed="${TK.area === 'all'}">All<span class="n">${total}</span></button>` +
+    CAT_ORDER.map(k=>`<button type="button" class="at-chip ${CATS[k].acc}${TK.area === k ? ' on' : ''}${counts[k] ? '' : ' is-empty'}" data-tkarea="${k}" aria-pressed="${TK.area === k}"><i></i>${CATS[k].label}<span class="n">${counts[k] || 0}</span></button>`).join('');
 }
 
 function tkDue(it, today){
-  if(!it.due) return `<span class="tk-cell tk-due none">No date</span>`;
+  if(!it.due) return `<span class="at-due none">No date</span>`;
   const d = parseISO(it.due), diff = Math.round((d - today) / 86400000);
-  if(!it.done && diff < 0) return `<span class="tk-cell tk-due is-late" title="Due ${esc(d.toLocaleDateString())}">${diff === -1 ? 'Yesterday' : -diff + ' days late'}<small>${d.getDate()} ${MONTHS_SH[d.getMonth()]}</small></span>`;
+  const dm = `${d.getDate()} ${MONTHS_SH[d.getMonth()]}`;
+  if(!it.done && diff < 0) return `<span class="at-due is-late" title="Due ${esc(d.toLocaleDateString())}">${diff === -1 ? 'Yesterday' : -diff + ' days late'}<small>${dm}</small></span>`;
   const label = diff === 0 ? 'Today' : diff === 1 ? 'Tomorrow' : diff === -1 ? 'Yesterday'
-    : `${DAY_SHORT[(d.getDay() + 6) % 7]} ${d.getDate()} ${MONTHS_SH[d.getMonth()]}`;
-  return `<span class="tk-cell tk-due${diff === 0 ? ' is-today' : ''}">${label}${it.time ? `<small>${it.time}</small>` : ''}</span>`;
+    : `${DAY_SHORT[(d.getDay() + 6) % 7]} ${dm}`;
+  return `<span class="at-due${diff === 0 && !it.done ? ' is-today' : ''}">${label}${it.time ? `<small>${it.time}</small>` : ''}</span>`;
 }
 function tkRow(it, today){
   const c = CATS[it.cat] || CATS.personal;
-  const sub = [];
-  if(it.type === 'rec') sub.push(`<span>${ico('repeat')}${esc(freqLabel(it.raw))}</span>`);
+  let path = '';
   if(it.type === 'task' && it.raw.learning_path_id && typeof LEARN !== 'undefined' && LEARN && LEARN.paths){
-    const p = LEARN.paths.find(x=>x.id === it.raw.learning_path_id); if(p) sub.push(`<span>${ico('book')}${esc(p.title)}</span>`);
+    const p = LEARN.paths.find(x=>x.id === it.raw.learning_path_id); if(p) path = p.title;
   }
-  const prio = it.priority === 'high' ? `<span class="prio high">${ico('flag','ico-sm')}High</span>`
-    : it.priority === 'low' ? '<span class="prio low">Low</span>' : '<span class="prio normal">—</span>';
-  return `<div class="tk-row ${c.acc}${it.done ? ' done' : ''}" role="listitem" data-key="${esc(it.key)}">
-    <button type="button" class="tcheck" role="checkbox" aria-checked="${it.done}" data-act="toggle" aria-label="${it.done ? 'Mark not done' : 'Mark done'}: ${esc(it.title)}">${ico('check')}</button>
-    <button type="button" class="tk-main" data-act="open" aria-label="Edit ${esc(it.title)}"><span class="tk-title">${esc(it.title)}</span>${sub.length ? `<span class="tk-sub">${sub.join('')}</span>` : ''}</button>
-    <div class="tk-meta-line">
-      <span class="tk-cell"><span class="chip ${c.acc}"><i></i>${c.label}</span></span>
+  const rec = it.type === 'rec' ? `<span class="at-rec" title="Repeats: ${esc(freqLabel(it.raw))}">${ico('repeat')}<span>${esc(freqLabel(it.raw))}</span></span>` : '';
+  const prio = it.priority === 'high' ? `<span class="at-prio high">${ico('flag')}<span>High</span></span>`
+    : it.priority === 'low' ? '<span class="at-prio low"><span>Low</span></span>' : '<span class="at-prio"></span>';
+  return `<div class="at-row ${c.acc}${it.done ? ' done' : ''}${it.priority === 'high' ? ' is-high' : ''}" role="listitem" data-key="${esc(it.key)}">
+    <button type="button" class="tcheck at-check" role="checkbox" aria-checked="${it.done}" data-act="toggle" aria-label="${it.done ? 'Mark not done' : 'Mark done'}: ${esc(it.title)}">${ico('check')}</button>
+    <button type="button" class="at-main" data-act="open" aria-label="Open ${esc(it.title)}"><span class="at-title">${esc(it.title)}</span>${rec}${path ? `<span class="at-path">${ico('book')}${esc(path)}</span>` : ''}${it.priority === 'high' ? `<span class="at-hi" title="High priority">${ico('flag')}</span>` : ''}</button>
+    <div class="at-meta">
+      <span class="at-area"><i></i>${c.label}</span>
       ${tkDue(it, today)}
-      <span class="tk-cell">${prio}</span>
+      ${prio}
+      ${it.type === 'rec' ? `<span class="at-rec-m" title="Repeats: ${esc(freqLabel(it.raw))}">${ico('repeat')}</span>` : ''}
     </div>
-    <div class="tk-acts">
-      <button type="button" data-act="open" aria-label="Edit ${esc(it.title)}" title="Edit">${ico('pencil')}</button>
-      <button type="button" class="tk-del" data-act="del" aria-label="Delete ${esc(it.title)}" title="Delete">${ico('trash')}</button>
-    </div>
+    <button type="button" class="at-more" data-act="menu" aria-haspopup="menu" aria-expanded="false" aria-label="More actions: ${esc(it.title)}">${ico('dots')}</button>
   </div>`;
 }
 
-/* recurring rules: name, area, how often, next date */
+/* recurring rules: name, area, how often, next date; paused ones last */
 function paintRecurringRules(q){
   const today = _dayOnly(new Date());
-  const rules = TK_DATA.recState.rules.filter(r=> !q || r.title.toLowerCase().includes(q));
-  const counts = {}; rules.forEach(r=>{ const k = CATS[r.category] ? r.category : 'home'; counts[k] = (counts[k] || 0) + 1; });
-  $('tkAreas').innerHTML = `<button type="button" class="tk-chip${TK.area === 'all' ? ' on' : ''}" data-tkarea="all">All <span class="n">${rules.length}</span></button>` +
-    CAT_ORDER.map(k=>`<button type="button" class="tk-chip ${CATS[k].acc}${TK.area === k ? ' on' : ''}${counts[k] ? '' : ' is-empty'}" data-tkarea="${k}"><i></i>${CATS[k].label} <span class="n">${counts[k] || 0}</span></button>`).join('');
-  const shown = rules.filter(r=> TK.area === 'all' || (CATS[r.category] ? r.category : 'home') === TK.area);
+  const match = r=> !q || r.title.toLowerCase().includes(q);
+  const rules = TK_DATA.recState.rules.filter(match), paused = TK_DATA.paused.filter(match);
+  const counts = {}; rules.concat(paused).forEach(r=>{ const k = CATS[r.category] ? r.category : 'home'; counts[k] = (counts[k] || 0) + 1; });
+  tkChips(counts, rules.length + paused.length);
+  const inArea = r=> TK.area === 'all' || (CATS[r.category] ? r.category : 'home') === TK.area;
+  const shown = rules.filter(inArea), shownP = paused.filter(inArea);
+  TK._shown = shown.length + shownP.length;
   const doneToday = new Set(TK_DATA.recState.completions.filter(c=> c.date === iso(today)).map(c=> c.recurring_id));
   const list = $('tkList');
   list._items = new Map();
-  if(!shown.length){
-    list.innerHTML = `<div class="tk-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>${rules.length ? 'No recurring tasks match' : 'No recurring tasks yet'}</b>
-      <button type="button" class="dz-ghost" data-tk="add-rec">${ico('plus','ico-sm')}Add recurring task</button></div>`;
+  if(!shown.length && !shownP.length){
+    const any = TK_DATA.recState.rules.length + TK_DATA.paused.length;
+    list.innerHTML = `<div class="at-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>${any ? 'No recurring tasks match' : 'No recurring tasks yet'}</b>
+      <span>${any ? 'Try another area or search.' : 'Things you do every day, week or month. They show up in your lists on the right days.'}</span>
+      ${any ? '<button type="button" class="dz-ghost" data-tk="reset">Show all</button>' : `<button type="button" class="dz-ghost" data-tk="add-rec">${ico('plus','ico-sm')}Add recurring task</button>`}</div>`;
     return;
   }
-  const rows = shown.map(r=>{
+  const row = (r, isPaused)=>{
     const cat = CATS[r.category] ? r.category : 'home', c = CATS[cat];
-    const dueToday = occursOn(r, today), done = dueToday && doneToday.has(r.id);
-    const it = { key:'rr:' + r.id, type:'rec', id:r.id, date: iso(today), raw:r, title:r.title, cat, done, rule:true, dueToday };
+    const dueToday = !isPaused && occursOn(r, today), done = dueToday && doneToday.has(r.id);
+    const it = { key:'rr:' + r.id, type:'rec', id:r.id, date: iso(today), raw:r, title:r.title, cat, done, rule:true, dueToday, paused: isPaused };
     list._items.set(it.key, it);
-    const nx = nextOccurrence(r, done ? new Set([iso(today)]) : null);
-    return `<div class="tk-row ${c.acc}${done ? ' done' : ''}" role="listitem" data-key="${it.key}">
-      ${dueToday ? `<button type="button" class="tcheck" role="checkbox" aria-checked="${done}" data-act="toggle" aria-label="${done ? 'Mark not done' : 'Mark done'} for today: ${esc(r.title)}">${ico('check')}</button>`
-                 : `<span class="tcheck" aria-hidden="true" style="opacity:.35;cursor:default">${ico('repeat')}</span>`}
-      <button type="button" class="tk-main" data-act="open" aria-label="Edit ${esc(r.title)}"><span class="tk-title">${esc(r.title)}</span></button>
-      <div class="tk-meta-line">
-        <span class="tk-cell"><span class="chip ${c.acc}"><i></i>${c.label}</span></span>
-        <span class="tk-cell tk-due">${esc(freqLabel(r))}</span>
-        <span class="tk-cell tk-due${nx && sameDay(nx, today) ? ' is-today' : ''}">${nx ? (sameDay(nx, today) ? 'Today' : relDay(nx)) : '—'}</span>
+    const nx = isPaused ? null : nextOccurrence(r, done ? new Set([iso(today)]) : null);
+    const next = isPaused ? '<span class="at-due none">Paused</span>'
+      : `<span class="at-due${nx && sameDay(nx, today) ? ' is-today' : ''}">${!nx ? '—' : sameDay(nx, today) ? 'Today' : sameDay(nx, addDays(today, 1)) ? 'Tomorrow' : esc(shortDate(nx))}</span>`;
+    return `<div class="at-row ${c.acc}${done ? ' done' : ''}${isPaused ? ' is-paused' : ''}" role="listitem" data-key="${it.key}">
+      ${dueToday ? `<button type="button" class="tcheck at-check" role="checkbox" aria-checked="${done}" data-act="toggle" aria-label="${done ? 'Mark not done' : 'Mark done'} for today: ${esc(r.title)}">${ico('check')}</button>`
+                 : `<span class="at-check at-rec-ico" aria-hidden="true">${ico(isPaused ? 'pause' : 'repeat')}</span>`}
+      <button type="button" class="at-main" data-act="open" aria-label="Edit ${esc(r.title)}"><span class="at-title">${esc(r.title)}</span></button>
+      <div class="at-meta">
+        <span class="at-area"><i></i>${c.label}</span>
+        <span class="at-freq">${ico('repeat')}${esc(freqLabel(r))}</span>
+        ${next}
       </div>
-      <div class="tk-acts">
-        <button type="button" data-act="open" aria-label="Edit ${esc(r.title)}" title="Edit">${ico('pencil')}</button>
-        <button type="button" class="tk-del" data-act="del" aria-label="Delete ${esc(r.title)}" title="Delete">${ico('trash')}</button>
-      </div></div>`;
-  }).join('');
-  list.innerHTML = `<div class="tk-cols" aria-hidden="true"><span></span><span>Recurring task</span><span>Area</span><span>Repeats</span><span>Next</span><span></span></div><div role="list">${rows}</div>`;
+      <button type="button" class="at-more" data-act="menu" aria-haspopup="menu" aria-expanded="false" aria-label="More actions: ${esc(r.title)}">${ico('dots')}</button></div>`;
+  };
+  list.innerHTML = `<div class="at-cols" aria-hidden="true"><span></span><span>Recurring task</span><span>Area</span><span>Repeats</span><span>Next</span><span></span></div>` +
+    (shown.length ? `${shownP.length ? `<div class="at-group"><span>Active</span><span class="n">${shown.length}</span></div>` : ''}<div role="list" aria-label="Active recurring tasks">${shown.map(r=> row(r, false)).join('')}</div>` : '') +
+    (shownP.length ? `<div class="at-group g-muted"><span>Paused</span><span class="n">${shownP.length}</span></div><div role="list" aria-label="Paused recurring tasks">${shownP.map(r=> row(r, true)).join('')}</div>` : '');
 }
 
 async function tkDelete(it){
@@ -7995,15 +8330,162 @@ async function tkDelete(it){
   toast('Task deleted');
   dataChanged();
 }
+async function tkUpdate(it, patch, msg){
+  const { error } = await sb.from('tasks').update(patch).eq('id', it.id);
+  if(error){ fail(error, 'Could not save'); return; }
+  Object.assign(it.raw, patch);
+  if(msg) toast(msg);
+  dataChanged();
+}
+async function tkPause(it, pause){
+  const { error } = await sb.from('recurring_tasks').update({ active: !pause }).eq('id', it.id);
+  if(error){ fail(error, 'Could not save'); return; }
+  toast(pause ? 'Paused. It won’t show up until you resume it' : 'Resumed');
+  dataChanged();
+}
+function tkPickDate(it){
+  openForm({
+    title:'Move to another day',
+    rows: [[{ type:'note', text: `"${it.title}"` }], [{ id:'tkRsDate', type:'date', label:'Due date', value: it.due || iso(new Date()) }]],
+    actions: [{ label:'Save', value:'save' }],
+    onSubmit: async v=>{
+      if(!v.tkRsDate){ toast('Pick a date first'); return false; }
+      await tkUpdate(it, { due_date: v.tkRsDate }, 'Moved to ' + shortDate(parseISO(v.tkRsDate)));
+    }
+  });
+}
+
+/* ---------- the ⋯ menu: edit, move, priority, delete ---------- */
+let TK_MENU = null;
+function tkMenuOpen(it, btn){
+  tkMenuClose();
+  const m = $('tkMenu'), today = _dayOnly(new Date());
+  const nextMon = addDays(mondayOf(today), 7);
+  const item = (act, icon, label, extra)=> `<button type="button" role="menuitem" data-mact="${act}"${extra || ''}>${ico(icon)}<span>${label}</span></button>`;
+  let html = `<div class="at-menu-t">${esc(it.title)}</div>`;
+  if(it.rule){
+    html += item('open', 'pencil', 'Edit schedule') +
+      (it.paused ? item('resume', 'play', 'Resume') : item('pause', 'pause', 'Pause')) +
+      '<hr>' + item('del', 'trash', 'Delete', ' class="danger"');
+  } else if(it.type === 'rec'){
+    html += item('open', 'pencil', 'Edit recurring task') + '<hr>' + item('del', 'trash', 'Delete…', ' class="danger"');
+  } else {
+    const d = it.due;
+    html += item('open', 'pencil', 'Edit') + '<hr><div class="at-menu-l">Move to</div>' +
+      (d === iso(today) ? '' : item('due:' + iso(today), 'calendar', 'Today')) +
+      (d === iso(addDays(today, 1)) ? '' : item('due:' + iso(addDays(today, 1)), 'calendar', 'Tomorrow')) +
+      (d === iso(nextMon) ? '' : item('due:' + iso(nextMon), 'calendar', 'Next week', ` title="${esc(shortDate(nextMon))}"`)) +
+      item('pick', 'calendar', 'Pick a date…') +
+      (d ? item('due:', 'x', 'No date') : '') +
+      `<hr><div class="at-menu-l">Priority</div><div class="at-menu-seg" role="group" aria-label="Priority">${['high', 'normal', 'low'].map(p=>
+        `<button type="button" role="menuitemradio" aria-checked="${it.priority === p}" class="${it.priority === p ? 'on' : ''}" data-mact="prio:${p}">${p === 'high' ? ico('flag') : ''}${TK_PRIO_L[p]}</button>`).join('')}</div>` +
+      '<hr>' + item('del', 'trash', 'Delete', ' class="danger"');
+  }
+  m.innerHTML = html;
+  m.hidden = false;
+  TK_MENU = { it, btn };
+  btn.setAttribute('aria-expanded', 'true');
+  tkMenuPlace();
+  const first = m.querySelector('[data-mact]'); if(first) first.focus({ preventScroll:true });
+}
+// by the button on wide screens; on phones it is a sheet at the bottom (CSS)
+function tkMenuPlace(){
+  const m = $('tkMenu');
+  if(!TK_MENU || window.matchMedia('(max-width:760px)').matches){ m.style.top = ''; m.style.left = ''; return; }
+  const r = TK_MENU.btn.getBoundingClientRect(), mw = m.offsetWidth, mh = m.offsetHeight;
+  if(r.bottom < 0 || r.top > innerHeight) return tkMenuClose();
+  let top = r.bottom + 6; if(top + mh > innerHeight - 8) top = Math.max(8, r.top - mh - 6);
+  m.style.top = top + 'px'; m.style.left = Math.max(8, Math.min(innerWidth - mw - 8, r.right - mw)) + 'px';
+}
+function tkMenuClose(focusBack){
+  if(!TK_MENU) return;
+  $('tkMenu').hidden = true;
+  TK_MENU.btn.setAttribute('aria-expanded', 'false');
+  if(focusBack && document.contains(TK_MENU.btn)) TK_MENU.btn.focus({ preventScroll:true });
+  TK_MENU = null;
+}
+$('tkMenu').addEventListener('click', e=>{
+  const b = e.target.closest('[data-mact]'); if(!b || !TK_MENU) return;
+  e.stopPropagation();
+  const it = TK_MENU.it, a = b.dataset.mact;
+  tkMenuClose();
+  if(a === 'open') return it.rule ? openRecurringForm(it.raw) : openItem(it);
+  if(a === 'del') return tkDelete(it);
+  if(a === 'pause' || a === 'resume') return tkPause(it, a === 'pause');
+  if(a === 'pick') return tkPickDate(it);
+  if(a.startsWith('due:')){ const d = a.slice(4) || null; return tkUpdate(it, { due_date: d }, d ? 'Moved to ' + (d === iso(new Date()) ? 'today' : shortDate(parseISO(d))) : 'Date removed'); }
+  if(a.startsWith('prio:')){ const p = a.slice(5); if(p !== it.priority) tkUpdate(it, { priority: p === 'normal' ? null : p }, TK_PRIO_L[p] + ' priority'); }
+});
+$('tkMenu').addEventListener('keydown', e=>{
+  const items = [...$('tkMenu').querySelectorAll('[data-mact]')], i = items.indexOf(document.activeElement);
+  if(e.key === 'Escape'){ e.preventDefault(); tkMenuClose(true); }
+  else if(e.key === 'ArrowDown'){ e.preventDefault(); items[(i + 1) % items.length].focus(); }
+  else if(e.key === 'ArrowUp'){ e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+  else if(e.key === 'Tab'){ tkMenuClose(); }
+});
+document.addEventListener('click', e=>{ if(TK_MENU && !e.target.closest('#tkMenu') && !e.target.closest('[data-act="menu"]')) tkMenuClose(); });
+window.addEventListener('resize', ()=> tkMenuClose());
+window.addEventListener('scroll', ()=>{ if(TK_MENU) tkMenuPlace(); }, { passive:true });
+
+/* ---------- Filter sheet (narrow screens): status, area, priority, sort ---------- */
+function tkSheetPaint(){
+  const rec = TK.view === 'recurring';
+  const seg = (name, opts, cur)=> `<div class="cz-seg at-sheet-seg" role="group">${opts.map(([v, l])=>
+    `<button type="button" data-sf="${name}:${v}" class="${cur === v ? 'on' : ''}" aria-pressed="${cur === v}">${l}</button>`).join('')}</div>`;
+  $('tkSheetBody').innerHTML =
+    (rec ? '' : `<div class="at-sheet-l">Status</div>${seg('status', [['todo', 'To do'], ['done', 'Done'], ['all', 'All']], TK.status)}`) +
+    `<div class="at-sheet-l">Area</div><div class="at-chips at-sheet-chips">${$('tkAreas').innerHTML}</div>` +
+    (rec ? '' : `<div class="at-sheet-l">Priority</div>${seg('prio', [['all', 'Any'], ['high', 'High'], ['normal', 'Normal'], ['low', 'Low']], TK.prio)}
+      <div class="at-sheet-l">Sort by</div>${seg('sort', [['due', 'Due date'], ['priority', 'Priority'], ['area', 'Area'], ['new', 'Newest']], TK.sort)}`);
+  $('tkSheetDone').textContent = TK._shown === 1 ? 'Show 1 task' : `Show ${TK._shown || 0} ${rec ? 'recurring tasks' : 'tasks'}`;
+  $('tkSheet').querySelector('.at-clear').disabled = !tkActive().length;
+}
+function tkSheetOpen(){
+  tkSheetPaint();
+  $('tkSheet').hidden = false;
+  document.body.classList.add('at-sheet-open');
+  $('tkFilterBtn').setAttribute('aria-expanded', 'true');
+  setTimeout(()=>{ const f = $('tkSheet').querySelector('.at-sheet-card button'); if(f) f.focus({ preventScroll:true }); }, 30);
+}
+function tkSheetClose(){
+  if($('tkSheet').hidden) return;
+  $('tkSheet').hidden = true;
+  document.body.classList.remove('at-sheet-open');
+  $('tkFilterBtn').setAttribute('aria-expanded', 'false');
+  $('tkFilterBtn').focus({ preventScroll:true });
+}
+$('tkFilterBtn').addEventListener('click', tkSheetOpen);
+$('tkSheet').addEventListener('click', e=>{
+  const s = e.target.closest('[data-sheet]');
+  if(s){ if(s.dataset.sheet === 'clear'){ tkReset(); tkSheetPaint(); } else tkSheetClose(); return; }
+  const f = e.target.closest('[data-sf]');
+  if(f){ const [k, v] = f.dataset.sf.split(':'); if(k === 'status' && TK.status !== v) window.TK_KEEP.clear(); TK[k] = v; if(k === 'sort') $('tkSort').value = v; if(k === 'prio') $('tkPrio').value = v;
+    tkSave(); paintTasks(); tkSheetPaint(); return; }
+  const a = e.target.closest('[data-tkarea]');
+  if(a){ TK.area = a.dataset.tkarea; tkSave(); paintTasks(); tkSheetPaint(); }
+});
+$('tkSheet').addEventListener('keydown', e=>{
+  if(e.key === 'Escape'){ e.preventDefault(); tkSheetClose(); return; }
+  if(e.key !== 'Tab') return;
+  const f = [...$('tkSheet').querySelectorAll('.at-sheet-card button:not([disabled])')];
+  if(!f.length) return;
+  if(e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length - 1].focus(); }
+  else if(!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
+});
 
 /* ---------- wiring ---------- */
-$('addTaskBtn').addEventListener('click', ()=> openTaskForm(null, TK.area !== 'all' ? { category: TK.area } : {}));
-$('recAddBtn').addEventListener('click', ()=> openRecurringForm(null, TK.area !== 'all' ? TK.area : undefined));
-document.querySelectorAll('[data-tkview]').forEach(b=> b.addEventListener('click', ()=>{ TK.view = b.dataset.tkview; tkSave(); paintTasks(); }));
-document.querySelectorAll('[data-tkstatus]').forEach(b=> b.addEventListener('click', ()=>{ TK.status = b.dataset.tkstatus; tkSave(); paintTasks(); }));
+$('addTaskBtn').addEventListener('click', ()=> TK.view === 'recurring'
+  ? openRecurringForm(null, TK.area !== 'all' ? TK.area : undefined)
+  : openTaskForm(null, TK.area !== 'all' ? { category: TK.area } : {}));
+// switching view or status starts a clean list (ticked tasks were only kept to avoid jumps)
+document.querySelectorAll('[data-tkview]').forEach(b=> b.addEventListener('click', ()=>{ TK.view = b.dataset.tkview; window.TK_KEEP.clear(); tkSave(); paintTasks(); }));
+document.querySelectorAll('#tkStatus [data-tkstatus]').forEach(b=> b.addEventListener('click', ()=>{ TK.status = b.dataset.tkstatus; window.TK_KEEP.clear(); tkSave(); paintTasks(); }));
 $('tkSort').value = TK.sort;
+$('tkPrio').value = TK.prio;
 enhanceSelects($('tkSortWrap'));
+enhanceSelects($('tkPrioWrap'));
 $('tkSort').addEventListener('change', ()=>{ TK.sort = $('tkSort').value; tkSave(); paintTasks(); });
+$('tkPrio').addEventListener('change', ()=>{ TK.prio = $('tkPrio').value; tkSave(); paintTasks(); });
 $('tkSearch').addEventListener('input', ()=>{ TK.q = $('tkSearch').value; paintTasks(); });
 $('tkSearch').addEventListener('keydown', e=>{ if(e.key === 'Escape'){ $('tkSearch').value = ''; TK.q = ''; paintTasks(); } });
 $('tkSearchClear').addEventListener('click', ()=>{ $('tkSearch').value = ''; TK.q = ''; paintTasks(); $('tkSearch').focus(); });
@@ -8011,6 +8493,7 @@ $('tkAreas').addEventListener('click', e=>{
   const b = e.target.closest('[data-tkarea]'); if(!b) return;
   TK.area = b.dataset.tkarea; tkSave(); paintTasks();
 });
+$('tkActive').addEventListener('click', e=>{ const b = e.target.closest('[data-tkoff]'); if(b) tkReset(b.dataset.tkoff || null); });
 $('tkQuick').addEventListener('submit', async e=>{
   e.preventDefault();
   const title = $('tkQuickInput').value.trim();
@@ -8027,13 +8510,17 @@ $('tkList').addEventListener('click', e=>{
   const reset = e.target.closest('[data-tk]');
   if(reset){
     if(reset.dataset.tk === 'add-rec') return openRecurringForm();
-    TK.area = 'all'; TK.q = ''; $('tkSearch').value = ''; tkSave(); return paintTasks();
+    if(reset.dataset.tk === 'add') return openTaskForm(null, TK.area !== 'all' ? { category: TK.area } : {});
+    TK.area = 'all'; TK.prio = 'all'; TK.q = ''; $('tkSearch').value = ''; $('tkPrio').value = 'all'; tkSave(); return paintTasks();
   }
   const btn = e.target.closest('[data-act]'); if(!btn) return;
-  const row = btn.closest('.tk-row'), it = row && $('tkList')._items.get(row.dataset.key);
+  const row = btn.closest('.at-row'), it = row && $('tkList')._items.get(row.dataset.key);
   if(!it) return;
-  if(btn.dataset.act === 'toggle') return toggleItem(it, row, btn);
-  if(btn.dataset.act === 'del') return tkDelete(it);
+  if(btn.dataset.act === 'menu'){ e.stopPropagation(); return TK_MENU && TK_MENU.btn === btn ? tkMenuClose() : tkMenuOpen(it, btn); }
+  if(btn.dataset.act === 'toggle'){
+    if(!window.TK_KEEP.has(it.key)) window.TK_KEEP.set(it.key, { doneAt: it.doneAt });
+    return toggleItem(it, row, btn);
+  }
   if(it.rule) return openRecurringForm(it.raw);
   openItem(it);
 });
@@ -8382,6 +8869,9 @@ const ICONS = {
   clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
   alert:'<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.5"/>',
   flag:'<path d="M5 21V4M5 4h12l-2.5 4.5L17 13H5"/>',
+  dots:'<circle cx="5" cy="12" r="1.1"/><circle cx="12" cy="12" r="1.1"/><circle cx="19" cy="12" r="1.1"/>',
+  sliders:'<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
+  pause:'<path d="M9 6v12M15 6v12"/>',
   repeat:'<path d="M17 2l4 4-4 4"/><path d="M3 12V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4"/><path d="M21 12v3a3 3 0 0 1-3 3H3"/>',
   flame:'<path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-9-1 2-2 3-4 3 0-2-1-4-2-6-1 4-4 7-4 12 0 4 3 7 7 7z"/>',
   target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
@@ -8518,6 +9008,7 @@ function go(page, opts){
   opts = opts || {};
   if(!PAGE_TITLES[page]) page = 'dashboard';
   if(page !== 'dashboard' && typeof Fortune !== 'undefined') Fortune.close(false);
+  if(page === 'tasks' && currentPage !== 'tasks' && window.TK_KEEP) window.TK_KEEP.clear();
   currentPage = page;
   document.querySelectorAll('.sb-item[data-page]').forEach(b=>{
     const on = b.dataset.page === page;

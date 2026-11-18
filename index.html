@@ -5525,10 +5525,10 @@
           <div class="dz-card-head">
             <div>
               <h2 class="dz-title" id="dzTasksTitle">Today's tasks</h2>
-              <div class="dz-sub" id="dashTaskCount">—</div>
             </div>
             <span class="spacer"></span>
             <div class="dz-minibar" id="dzTaskBar" aria-hidden="true"><i></i></div>
+            <button class="dz-ghost" id="dashAddTask2"><i data-ico="plus" class="ico-sm"></i>Task</button>
           </div>
           <form class="dz-quick" id="dashQuickAdd" autocomplete="off">
             <span class="dz-quick-ico" aria-hidden="true"><i data-ico="plus"></i></span>
@@ -11189,7 +11189,6 @@ function paintSummary(){
 function paintTaskHead(){
   if(!DDATA || !DDATA.sel) return;
   const s = DDATA.sel;
-  $('dashTaskCount').textContent = s.planned ? `${s.done} of ${s.planned} done` : 'Nothing planned yet';
   $('dzTaskBar').firstElementChild.style.width = pct(s.done, s.planned) + '%';
 }
 
@@ -11200,6 +11199,7 @@ $('sumGrid').addEventListener('click', e=>{
   go('progress');
 });
 $('dashAddTask').addEventListener('click', ()=> openTaskForm(null, { date: iso(DSEL) }));
+$('dashAddTask2').addEventListener('click', ()=> openTaskForm(null, { date: iso(DSEL) }));
 $('dashAddEvent').addEventListener('click', ()=> openEventModal(iso(DSEL)));
 $('dashQuickAdd').addEventListener('submit', async e=>{
   e.preventDefault();

@@ -2814,134 +2814,84 @@
   @media (max-width:520px){ .theme-opt{padding:8px 8px 10px;} .theme-desc{display:none;} }
 
   /* ===================================================================
-     LEARNING — built only from the shared tokens, so both themes work
+     LEARNING — weekly study planner. Same card, bar and tints as the
+     Calendar; study blocks use the Learning colour (acc-learn).
      =================================================================== */
-  #page-learning .card{margin-bottom:16px;}
-  .ln-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;}
-  .ln-head .page-title{margin:0;}
-  .ln-intro{display:flex;align-items:center;gap:18px;min-width:0;}
-  .ln-intro .doodle{width:150px;height:auto;flex-shrink:0;}
-  .ln-sub{margin:6px 0 0;color:var(--muted-foreground);font-size:14px;line-height:1.45;max-width:60ch;}
-  .ln-cap{margin:6px 0 0;font-family:Lora,Georgia,serif;font-style:italic;font-size:14.5px;color:var(--muted-foreground);}
-  .ln-hint{margin:0 0 8px;color:var(--muted-foreground);font-size:13px;}
-  .ln-plain{all:unset;box-sizing:border-box;cursor:pointer;display:block;}
-  .ln-plain:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(var(--cat-work-rgb),.6);border-radius:8px;}
+  #page-learning .sw-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+  #page-learning .sw-head-t{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
+  #page-learning .page-title{margin:0;}
+  #page-learning .sw-sum{font-size:13px;font-weight:600;color:var(--muted-foreground);}
+  #page-learning .btn{border-radius:999px;padding:11px 18px 11px 14px;}
+  #page-learning .btn .ico{width:17px;height:17px;}
+  .sw-label span{color:var(--dz-ink-3, var(--muted-foreground));font-weight:600;}
+  .sw-hint{font-size:12px;font-weight:600;color:var(--muted-foreground);}
+  .sw-card #swBody{padding:14px 18px 18px;}
+  .sw-card #swBody > .skel{height:320px;}
 
-  .ln-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px;}
-  #page-learning .ln-stat{margin:0;padding:14px 16px;display:flex;flex-direction:column;gap:4px;}
-  .ln-stat > span{color:var(--muted-foreground);font-size:12.5px;}
-  .ln-stat b{font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--foreground);}
-  .ln-stat b small{font-size:13px;font-weight:600;color:var(--muted-foreground);}
-  .ln-week{display:flex;align-items:flex-end;gap:4px;height:30px;margin-top:4px;}
-  .ln-week i{flex:1;border-radius:4px;background:var(--muted);}
-  .ln-week i.on{background:var(--ring);}
-  .ln-week i.today{box-shadow:inset 0 0 0 1.5px var(--foreground);}
+  /* ---- the week grid (wide screens) ---- */
+  .sw-ghead, .sw-gbody{display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr));gap:6px;}
+  .sw-ghead{margin-bottom:8px;}
+  .sw-dh{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;}
+  .sw-dh span{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-foreground);}
+  .sw-dh b{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .sw-dh.is-today b{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .sw-gbody{position:relative;}
+  .sw-times{position:relative;height:calc(var(--rows) * var(--row));}
+  .sw-times span{position:absolute;right:8px;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--muted-foreground);font-variant-numeric:tabular-nums;}
+  .sw-col{position:relative;height:calc(var(--rows) * var(--row));border-radius:12px;cursor:copy;
+    background-color:rgba(var(--foreground-rgb),.012);
+    background-image:linear-gradient(to bottom, transparent calc(var(--row) - 1px), var(--border) calc(var(--row) - 1px));
+    background-size:100% var(--row);background-position:0 0;}
+  .sw-col:hover{background-color:rgba(var(--foreground-rgb),.03);}
+  .sw-col.is-today{background-color:rgba(var(--primary-rgb),.22);}
+  .sw-ev{position:absolute;border:none;font:inherit;text-align:left;cursor:grab;color:var(--foreground);overflow:hidden;
+    display:flex;flex-direction:column;gap:1px;padding:5px 9px 5px 11px;border-radius:10px;
+    background:rgba(var(--acc-rgb),.30);box-shadow:inset 3px 0 0 0 var(--acc);
+    transition:box-shadow .15s ease, transform .15s ease;z-index:2;touch-action:manipulation;}
+  .sw-ev:hover{transform:translateY(-1px);box-shadow:inset 3px 0 0 0 var(--acc), 0 8px 16px -10px rgba(var(--shadow-rgb),.35);z-index:3;}
+  .sw-ev b{font-size:12.5px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .sw-ev small{font-size:11px;font-weight:600;color:var(--muted-foreground);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sw-ev.is-mid b{-webkit-line-clamp:1;}
+  .sw-ev.is-short{flex-direction:row;align-items:center;gap:6px;padding-top:2px;padding-bottom:2px;}
+  .sw-ev.is-short b{-webkit-line-clamp:1;flex:1 1 auto;min-width:0;}
+  .sw-ev.is-short small{display:none;}
+  .sw-ev.is-short.is-drag small{display:inline;flex-shrink:0;}
+  .sw-ev.is-past{opacity:.72;}
+  .sw-ev.is-drag{cursor:grabbing;opacity:.92;transform:none;z-index:5;box-shadow:inset 3px 0 0 0 var(--acc), 0 0 0 2px var(--ring), 0 12px 22px -10px rgba(var(--shadow-rgb),.45);transition:none;}
+  body.sw-dragging, body.sw-dragging *{cursor:grabbing !important;user-select:none;}
+  .sw-now{position:absolute;left:-3px;right:0;height:2px;background:var(--danger);border-radius:2px;z-index:4;pointer-events:none;}
+  .sw-now::before{content:"";position:absolute;left:-2px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--danger);}
 
-  .ln-paths{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
-  .ln-path{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:16px;
-    background:var(--background);box-shadow:inset 0 0 0 1px var(--border);color:var(--foreground);transition:background .15s;}
-  .ln-path:hover{background:var(--muted);}
-  .ln-path:focus-visible{box-shadow:inset 0 0 0 2px var(--ring);}
-  .ln-path h3{margin:0;font-size:16px;font-weight:700;line-height:1.3;}
-  .ln-path p{margin:0;color:var(--muted-foreground);font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-  .ln-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted-foreground);}
-  .ln-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 9px;border-radius:999px;background:var(--muted);color:var(--muted-foreground);font-size:11.5px;font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .ln-pill.st-active{background:var(--primary);color:var(--primary-foreground);}
-  .ln-pill.st-completed{background:var(--success-soft);color:var(--success);}
-  .ln-prog{display:flex;align-items:center;gap:10px;}
-  .ln-prog .ln-bar{flex:1;}
-  .ln-bar{height:6px;border-radius:6px;background:var(--muted);overflow:hidden;}
-  .ln-bar i{display:block;height:100%;background:var(--ring);border-radius:6px;}
-  .ln-pct{font-size:12px;font-weight:700;color:var(--foreground);white-space:nowrap;}
+  /* ---- the week as a list (phones) ---- */
+  .sw-agenda{display:none;}
+  .sw-aday{display:grid;grid-template-columns:44px minmax(0,1fr) 36px;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--border);}
+  .sw-aday:first-child{border-top:none;padding-top:2px;}
+  .sw-adate{display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:2px;}
+  .sw-adate span{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-foreground);}
+  .sw-adate b{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .sw-aday.is-today .sw-adate b{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
+  .sw-aday.is-past{opacity:.7;}
+  .sw-alist{display:flex;flex-direction:column;gap:6px;min-width:0;}
+  .sw-acard{border:none;font:inherit;text-align:left;cursor:pointer;color:var(--foreground);display:flex;flex-direction:column;gap:2px;
+    padding:9px 12px 9px 14px;border-radius:12px;background:rgba(var(--acc-rgb),.30);box-shadow:inset 3px 0 0 0 var(--acc);min-width:0;}
+  .sw-acard b{font-size:14px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;}
+  .sw-atime{font-size:12px;font-weight:700;color:var(--muted-foreground);font-variant-numeric:tabular-nums;}
+  .sw-free{font-size:13px;font-weight:600;color:var(--muted-foreground);padding:8px 0;}
+  .sw-aadd{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    background:transparent;color:var(--muted-foreground);box-shadow:inset 0 0 0 1px var(--border);}
+  .sw-aadd:hover{background:var(--muted);color:var(--foreground);}
+  .sw-aadd .ico{width:16px;height:16px;}
 
-  .ln-cols{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start;}
-  .ln-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);}
-  .ln-row:first-of-type{border-top:none;}
-  .card-head + .ln-row{border-top:none;}
-  .ln-kind{width:34px;height:34px;flex-shrink:0;border-radius:10px;display:grid;place-items:center;background:var(--muted);color:var(--foreground);}
-  .ln-row-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
-  .ln-row-title{font-weight:600;font-size:14px;color:var(--foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ln-row-sub{font-size:12px;color:var(--muted-foreground);overflow:hidden;text-overflow:ellipsis;}
-  .ln-row-sub a{color:var(--primary-ink);}
-  #page-learning a.btn{text-decoration:none;}
-  .ln-links{display:flex;flex-wrap:wrap;gap:8px;}
-  .ln-link{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:10px;background:var(--background);box-shadow:inset 0 0 0 1px var(--border);
-    color:var(--foreground);text-decoration:none;font-size:13px;font-weight:600;max-width:100%;}
-  .ln-link span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .ln-link:hover{background:var(--muted);}
-
-  #page-learning .ln-timer{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;}
-  #page-learning .ln-timer.on{background:var(--primary) !important;box-shadow:inset 0 0 0 1.5px var(--ring) !important;}
-  .ln-timer-txt{display:flex;flex-direction:column;gap:2px;min-width:0;}
-  .ln-timer-txt b{font-size:14px;}
-  .ln-clock{font-variant-numeric:tabular-nums;font-weight:800;font-size:22px;letter-spacing:.01em;}
-  .ln-timer-sel{min-width:190px;}
-
-  .ln-back{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--muted-foreground);font-size:13px;font-weight:600;margin-bottom:12px;padding:4px 2px;border-radius:6px;}
-  .ln-back:hover{color:var(--foreground);}
-  .ln-back:focus-visible{box-shadow:0 0 0 3px rgba(var(--cat-work-rgb),.6);}
-  .ln-head-path .ln-meta{margin-bottom:8px;}
-  #page-learning .ln-summary{display:grid;grid-template-columns:auto 1fr;gap:12px 24px;align-items:center;}
-  .ln-summary .ln-bar{grid-column:1 / -1;}
-  .ln-big{display:flex;flex-direction:column;font-size:34px;font-weight:800;line-height:1;}
-  .ln-big span{font-size:12.5px;font-weight:600;color:var(--muted-foreground);margin-top:6px;}
-  .ln-sumgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
-  .ln-sumgrid div{display:flex;flex-direction:column;gap:2px;}
-  .ln-sumgrid b{font-size:16px;}
-  .ln-sumgrid span{font-size:12px;color:var(--muted-foreground);}
-  .ln-tabs{margin-bottom:14px;max-width:100%;overflow-x:auto;}
-  .ln-n{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--muted);font-size:11px;margin-left:4px;}
-  .ln-tabs button.on .ln-n{background:var(--primary);}
-
-  .ln-res{padding:14px 16px;border-radius:16px;background:var(--card);box-shadow:inset 0 0 0 1px var(--border);margin-bottom:10px;display:flex;flex-direction:column;gap:10px;}
-  .ln-res-head{display:flex;align-items:center;gap:12px;}
-  .ln-res-notes{margin:0;font-size:13px;color:var(--muted-foreground);white-space:pre-wrap;}
-  .ln-status{display:inline-flex;background:var(--muted);border-radius:10px;padding:3px;gap:2px;flex-shrink:0;}
-  .ln-status button{border:0;background:transparent;font:inherit;font-size:12px;font-weight:700;color:var(--muted-foreground);padding:6px 9px;border-radius:8px;cursor:pointer;white-space:nowrap;}
-  .ln-status button:hover{color:var(--foreground);}
-  .ln-status button.on{background:var(--card);color:var(--foreground);box-shadow:inset 0 0 0 1px var(--border);}
-  .ln-status button.on.s-in_progress{background:var(--primary);color:var(--primary-foreground);box-shadow:none;}
-  .ln-status button.on.s-completed{background:var(--success-soft);color:var(--success);box-shadow:none;}
-  .ln-fold summary{font-size:12.5px;font-weight:700;color:var(--muted-foreground);cursor:pointer;}
-  .ln-check{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:14px;}
-  .ln-box{width:22px;height:22px;border-radius:7px;border:0;background:var(--card);box-shadow:inset 0 0 0 1.5px var(--border);cursor:pointer;
-    display:grid;place-items:center;color:transparent;flex-shrink:0;padding:0;}
-  .ln-box:hover{box-shadow:inset 0 0 0 1.5px var(--ring);}
-  .ln-check.done .ln-box{background:var(--foreground);color:var(--card);box-shadow:none;}
-  .ln-ct{flex:1;min-width:0;}
-  .ln-check.done .ln-ct{color:var(--muted-foreground-2);text-decoration:line-through;}
-  .ln-x{border:0;background:transparent;color:var(--muted-foreground-2);cursor:pointer;padding:6px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;}
-  .ln-x:hover{color:var(--foreground);background:var(--muted);}
-  .ln-x[data-l^="del"]:hover, .ln-x.confirming{color:var(--danger);background:var(--danger-soft);}
-  .ln-add{display:flex;gap:8px;margin-top:8px;}
-  .ln-add input{flex:1;min-width:0;padding:9px 12px;border-radius:10px;font:inherit;font-size:13.5px;}
-  #page-learning input[type="url"], .modal input[type="url"]{background:var(--card) !important;color:var(--foreground) !important;box-shadow:inset 0 0 0 1px var(--input) !important;border:none;}
-
-  .ln-notes-bar{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;}
-  .ln-filter{margin:0;}
-  .ln-filter button{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  #page-learning .ln-note{padding:14px 16px;display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
-  .ln-note-head{display:flex;align-items:center;gap:8px;min-width:0;}
-  .ln-note-head b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .ln-note-body{white-space:pre-wrap;font-size:14px;line-height:1.55;margin:0;color:var(--foreground);}
-  .ln-note .ln-link{align-self:flex-start;}
-
-  #page-learning .ln-empty-hero{text-align:center;padding:30px 20px;display:flex;flex-direction:column;align-items:center;gap:8px;}
-  .ln-empty-hero b{font-size:16px;}
-  .ln-empty-hero p{margin:0 0 6px;color:var(--muted-foreground);font-size:14px;max-width:52ch;line-height:1.5;}
-
-  /* study tasks on the calendar: a task, not an event */
-  .event.ev-task{background:var(--card) !important;color:var(--foreground) !important;box-shadow:inset 0 0 0 1.5px rgba(var(--acc-rgb),.95) !important;
-    display:flex;align-items:flex-start;gap:4px;}
-  .event.ev-task.done{opacity:.6;text-decoration:line-through;}
-
-  @media (max-width:980px){ .ln-stats{grid-template-columns:repeat(2,minmax(0,1fr));} .ln-cols{grid-template-columns:1fr;} }
-  @media (max-width:600px){
-    .ln-intro{gap:12px;} .ln-intro .doodle{width:96px;}
-    .ln-res-head{flex-wrap:wrap;} .ln-res-head .ln-row-body{flex-basis:calc(100% - 100px);}
-    .ln-status{width:100%;order:3;} .ln-status button{flex:1;padding:7px 4px;}
-    .ln-sumgrid{grid-template-columns:repeat(3,minmax(0,1fr));} #page-learning .ln-summary{grid-template-columns:1fr;}
-    .ln-timer-sel{min-width:0;flex:1 1 100%;}
+  @media (max-width:1060px){ .sw-hint{display:none;} }
+  @media (max-width:760px){
+    #page-learning .sw-head{margin-bottom:12px;}
+    #page-learning .page-title{display:none;}              /* the top bar already says Learning */
+    #page-learning .sw-sum{font-size:13.5px;}
+    .sw-grid{display:none;}
+    .sw-agenda{display:block;}
+    .sw-card #swBody{padding:6px 14px 10px;}
+    .sw-card .cz-bar{padding:10px 12px 8px;}
+    .sw-label{font-size:16px;}
   }
 
   /* line-art illustrations follow the theme: light lines on charcoal in dark mode */
@@ -5281,7 +5231,24 @@
 
     <!-- ---------- LEARNING ---------- -->
     <section class="page" id="page-learning">
-      <div id="learnBody"><div class="skel"></div><div class="skel"></div></div>
+      <div class="sw-head">
+        <div class="sw-head-t">
+          <h1 class="page-title">Learning</h1>
+          <div class="sw-sum" id="swSum" aria-live="polite"></div>
+        </div>
+        <button type="button" class="btn btn-primary" id="swAdd"><i data-ico="plus"></i>Add session</button>
+      </div>
+      <div class="cz-card sw-card">
+        <div class="cz-bar">
+          <button type="button" class="ds-arrow" id="swPrev" aria-label="Previous week"><i data-ico="chevL"></i></button>
+          <h2 class="ds-month sw-label" id="swLabel" aria-live="polite">—</h2>
+          <button type="button" class="ds-arrow" id="swNext" aria-label="Next week"><i data-ico="chevR"></i></button>
+          <button type="button" class="ds-today" id="swToday" hidden>This week</button>
+          <span class="spacer"></span>
+          <span class="sw-hint">Click an empty spot to add · drag a block to move it</span>
+        </div>
+        <div id="swBody"><div class="skel"></div></div>
+      </div>
     </section>
 
     <!-- ---------- NOTIFICATIONS ---------- -->
@@ -8326,9 +8293,6 @@ function tkDue(it, today){
 function tkRow(it, today){
   const c = CATS[it.cat] || CATS.personal;
   let path = '';
-  if(it.type === 'task' && it.raw.learning_path_id && typeof LEARN !== 'undefined' && LEARN && LEARN.paths){
-    const p = LEARN.paths.find(x=>x.id === it.raw.learning_path_id); if(p) path = p.title;
-  }
   const rec = it.type === 'rec' ? `<span class="at-rec" title="Repeats: ${esc(freqLabel(it.raw))}">${ico('repeat')}<span>${esc(freqLabel(it.raw))}</span></span>` : '';
   const prio = it.priority === 'high' ? `<span class="at-prio high">${ico('flag')}<span>High</span></span>`
     : it.priority === 'low' ? '<span class="at-prio low"><span>Low</span></span>' : '<span class="at-prio"></span>';
@@ -9334,9 +9298,6 @@ function openTaskForm(task, defaults){
   const html =
     '<div class="fm-label">Area</div>' +
     chips('cat', CAT_ORDER.map(k=>({ value:k, label:CATS[k].label, acc:CATS[k].acc, dot:true })), st.cat) +
-    (LEARN && LEARN.paths.length ? '<div class="fm-label">Learning path (optional)</div>' +
-      chips('lp', [{ value:'', label:'None' }].concat(LEARN.paths.filter(p=>p.status !== 'completed' || p.id === st.lp)
-        .map(p=>({ value:p.id, label:p.title }))), st.lp || '') : '') +
     '<div class="fm-label">Priority</div>' +
     chips('prio', [{ value:'high', label:'High' }, { value:'normal', label:'Normal' }, { value:'low', label:'Low' }], st.prio) +
     chips('nodate', [{ value:'1', label:'No date (someday)' }], st.noDate ? '1' : '') +
@@ -10032,12 +9993,6 @@ async function renderCatTasksCard(cat){
 /* small shared helpers (dates, links, counts) */
 const longDate = d => d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long' });
 const plural = (n, one, many) => `${n} ${n === 1 ? one : (many || one + 's')}`;
-function safeUrl(u){
-  if(!u) return '';
-  let s = String(u).trim();
-  if(!/^[a-z][a-z0-9+.-]*:/i.test(s)) s = 'https://' + s;
-  try{ const x = new URL(s); return /^https?:$/.test(x.protocol) ? x.href : ''; }catch(e){ return ''; }
-}
 function agoLabel(ts){
   if(!ts) return '';
   const d = new Date(ts), mins = Math.round((Date.now() - d) / 60000);
@@ -13227,35 +13182,14 @@ function paintMoney(M){
    SETTINGS
    =================================================================== */
 /* ===================================================================
-   LEARNING — paths, materials (with lessons), goals, notes, study time.
-   Data: learning_paths, learning_resources, learning_sessions,
-   learning_notes. Study tasks are ordinary rows in `tasks`
-   (category 'learning' + learning_path_id), so they show on the
-   dashboard, in All tasks and on the calendar with no copies, and
-   follow the same date and carry-over rules as every other task.
-   Progress is only ever counted from what is stored: lessons ticked,
-   materials marked done, goals reached, minutes logged.
+   LEARNING — a simple weekly study planner (2026-11-18)
+   One week, Monday to Sunday, with each study session as a time block.
+   A session is a calendar event with category 'learning', so it also
+   shows on the Calendar and the Dashboard with no copies. The older
+   learning tables (paths, materials, notes, study time) are left as
+   they are in the database; nothing here reads them any more.
    =================================================================== */
-let LEARN = null, LSEL = null, LTAB = 'materials', LNOTE_FILTER = 'all';
-const LKINDS = {
-  course:   { label:'Online course',  icon:'grid' },
-  video:    { label:'YouTube / video', icon:'play' },
-  book:     { label:'Book',           icon:'book' },
-  article:  { label:'Article',        icon:'note' },
-  website:  { label:'Website',        icon:'link' },
-  material: { label:'My own material', icon:'pencil' }
-};
-const LSTATUS = { not_started:'Not started', in_progress:'In progress', completed:'Completed' };
-const PSTATUS = { active:'Active', paused:'Paused', completed:'Completed' };
-const LTIMER_KEY = 'pa_study_timer';
 const lid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-
-function fmtMins(m){
-  m = Math.round(m || 0);
-  if(m < 60) return m + ' min';
-  const h = Math.floor(m / 60), r = m % 60;
-  return h + ' h' + (r ? ' ' + r + ' min' : '');
-}
 function safeUrl(u){
   u = (u || '').trim();
   if(!u) return '';
@@ -13265,626 +13199,243 @@ function safeUrl(u){
 }
 const urlHost = u => { try{ return new URL(u).hostname.replace(/^www\./, ''); }catch(e){ return u; } };
 
-async function fetchLearning(){
-  const res = await Promise.all([
-    sb.from('learning_paths').select('*').order('created_at'),
-    sb.from('learning_resources').select('*').order('created_at'),
-    sb.from('learning_sessions').select('*').order('started_at', { ascending:false }),
-    sb.from('learning_notes').select('*').order('updated_at', { ascending:false }),
-    sb.from('tasks').select('*').eq('category', 'learning')
-  ]);
-  const bad = res.find(r=>r.error);
-  if(bad) throw bad.error;
-  const [paths, rs, sess, notes, tasks] = res.map(r=>r.data || []);
-  LEARN = { paths, res: rs, sess, notes, tasks };
-  return LEARN;
+const SW = { mon: null, rows: [], items: [], drag: null, justDragged: false };
+const SW_ROW = 58;                                   // px per hour in the week grid
+const SW_SNAP = .25;                                 // drag in 15-minute steps
+
+function swDur(min){
+  min = Math.round(min);
+  if(min < 60) return min + ' min';
+  const h = Math.floor(min / 60), m = min % 60;
+  return h + ' h' + (m ? ' ' + m + ' min' : '');
+}
+// one stored event -> one block on its start day (a session past midnight stops at 24:00)
+function swItem(e){
+  const s = new Date(e.starts_at), en = e.ends_at ? new Date(e.ends_at) : new Date(s.getTime() + 3600000);
+  const day = iso(s), sh = s.getHours() + s.getMinutes() / 60;
+  const eh = iso(en) === day ? en.getHours() + en.getMinutes() / 60 : 24;
+  const endTxt = iso(en) === day ? hhmm(en) : '00:00';
+  return { id:e.id, ev:e, day, sh, eh: Math.max(eh, sh + .25), title:e.title || 'Study', time: hhmm(s) + ' – ' + endTxt,
+           mins: Math.max(15, Math.round((en - s) / 60000)) };
+}
+function swLanes(list){
+  list.sort((a, b)=> a.sh - b.sh || b.eh - a.eh);
+  let cluster = [], end = -1;
+  const flush = ()=>{ const lanes = []; cluster.forEach(it=>{ let l = lanes.findIndex(x=> x <= it.sh); if(l < 0){ l = lanes.length; lanes.push(0); } lanes[l] = it.eh; it.lane = l; }); cluster.forEach(it=> it.lanes = lanes.length); cluster = []; };
+  list.forEach(it=>{ if(it.sh >= end) flush(); cluster.push(it); end = Math.max(end, it.eh); });
+  flush();
+  return list;
 }
 
-/* ---------- progress, all from stored data ---------- */
-// a material with lessons counts each lesson; without lessons it is one unit, done when marked Completed
-function resUnits(r){
-  const L = r.lessons || [];
-  return L.length ? { total:L.length, done:L.filter(l=>l.done).length } : { total:1, done: r.status === 'completed' ? 1 : 0 };
-}
-function resPct(r){
-  const L = r.lessons || [];
-  if(L.length) return Math.round(L.filter(l=>l.done).length / L.length * 100);
-  return r.status === 'completed' ? 100 : null;      // no lessons, not finished: no made-up percentage
-}
-function pathStats(p){
-  const rs = LEARN.res.filter(r=>r.path_id === p.id);
-  let total = 0, done = 0;
-  rs.forEach(r=>{ const u = resUnits(r); total += u.total; done += u.done; });
-  const goals = p.goals || [];
-  const sess = LEARN.sess.filter(s=>s.path_id === p.id);
-  const last = sess[0] ? new Date(sess[0].started_at) : null;
-  return { rs, total, done, pct: total ? Math.round(done / total * 100) : null,
-    goals: goals.length, goalsDone: goals.filter(g=>g.done).length,
-    mins: sess.reduce((a, s)=>a + (s.minutes || 0), 0), sess, last };
-}
-function weekStudy(){
-  const mon = mondayOf(new Date());
-  const days = Array.from({ length:7 }, (_, i)=>({ d: addDays(mon, i), mins:0 }));
-  LEARN.sess.forEach(s=>{
-    const d = _dayOnly(new Date(s.started_at)), i = Math.round((d - mon) / 86400000);
-    if(i >= 0 && i < 7) days[i].mins += s.minutes || 0;
-  });
-  return { days, total: days.reduce((a, x)=>a + x.mins, 0) };
-}
-function lessonsDone(){
-  const mon = mondayOf(new Date()).toISOString();
-  let all = 0, week = 0;
-  LEARN.res.forEach(r=>(r.lessons || []).forEach(l=>{ if(l.done){ all++; if(l.done_at && l.done_at >= mon) week++; } }));
-  return { all, week };
-}
-const pathOf = id => LEARN && LEARN.paths.find(p=>p.id === id);
-const resOf = id => LEARN && LEARN.res.find(r=>r.id === id);
-
-/* ---------- study timer: survives reloads, never required ---------- */
-function readTimer(){ try{ return JSON.parse(localStorage.getItem(LTIMER_KEY) || 'null'); }catch(e){ return null; } }
-function writeTimer(t){ try{ t ? localStorage.setItem(LTIMER_KEY, JSON.stringify(t)) : localStorage.removeItem(LTIMER_KEY); }catch(e){} }
-function clockText(ms){
-  const s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
-  return (h ? h + ':' + pad2(m) : m) + ':' + pad2(sec);
-}
-setInterval(()=>{
-  const t = readTimer();
-  if(!t) return;
-  document.querySelectorAll('[data-timer-clock]').forEach(el=>{ el.textContent = clockText(Date.now() - t.startedAt); });
-}, 1000);
-function startTimer(pathId){
-  if(readTimer()){ toast('A timer is already running', true); return; }
-  writeTimer({ pathId: pathId || null, startedAt: Date.now() });
-  toast('Timer started. Have a good session');
-  renderLearn();
-}
-async function stopTimer(save){
-  const t = readTimer();
-  if(!t) return;
-  const mins = Math.round((Date.now() - t.startedAt) / 60000);
-  writeTimer(null);
-  if(!save){ toast('Timer discarded'); renderLearn(); return; }
-  if(mins < 1){ toast('Under a minute, so nothing was logged'); renderLearn(); return; }
-  const { error } = await sb.from('learning_sessions').insert({ user_id: USER.id, path_id: t.pathId, started_at: new Date(t.startedAt).toISOString(), minutes: Math.min(mins, 1440) });
-  if(error){ writeTimer(t); fail(error, 'Could not save the session'); return; }
-  toast('Logged ' + fmtMins(mins) + ' of study');
-  loadLearning();
-}
-
-/* ---------- page ---------- */
 async function loadLearning(){
-  if(!USER) return;
-  const body = $('learnBody');
-  try{ await fetchLearning(); renderLearn(); }
-  catch(err){ showError(body, err, loadLearning); }
-}
-function renderLearn(){
-  if(!LEARN) return;
-  const p = LSEL && pathOf(LSEL);
-  if(!p) LSEL = null;
-  const body = $('learnBody');
-  body.innerHTML = p ? learnPathHtml(p) : learnHomeHtml();
-  enhanceSelects(body);
-  paintTimer();
-  if(p) renderPathTasks(p);
-  else renderLearnTasks();
-}
-function paintTimer(){
-  const t = readTimer();
-  document.querySelectorAll('[data-timer-clock]').forEach(el=>{ el.textContent = t ? clockText(Date.now() - t.startedAt) : '0:00'; });
+  if(!SW.mon) SW.mon = mondayOf(new Date());
+  const from = SW.mon, to = addDays(SW.mon, 7);
+  try{
+    const { data, error } = await sb.from('schedule_events').select('*').eq('category', 'learning')
+      .gte('starts_at', from.toISOString()).lt('starts_at', to.toISOString()).order('starts_at');
+    if(error) throw error;
+    SW.rows = data || [];
+    SW.items = SW.rows.map(swItem);
+    swPaint();
+  }catch(err){ showError($('swBody'), err, loadLearning); }
 }
 
-function timerCardHtml(pathId){
-  const t = readTimer();
-  if(t){
-    const tp = t.pathId && pathOf(t.pathId);
-    return `<div class="card ln-timer on" role="status">
-      <span class="card-icon">${ico('clock')}</span>
-      <div class="ln-timer-txt"><span class="ln-clock" data-timer-clock>0:00</span><span class="ln-row-sub">Studying${tp ? ' · ' + esc(tp.title) : ''}</span></div>
-      <span class="spacer"></span>
-      <button class="btn btn-ghost btn-sm" data-l="timer-discard">Discard</button>
-      <button class="btn btn-primary btn-sm" data-l="timer-stop">${ico('check','ico-sm')}Stop and save</button>
-    </div>`;
-  }
-  const active = LEARN.paths.filter(p=>p.status !== 'completed');
-  return `<div class="card ln-timer">
-    <span class="card-icon">${ico('clock')}</span>
-    <div class="ln-timer-txt"><b>Study timer</b><span class="ln-row-sub">Optional. Start it when you sit down, stop it when you're done.</span></div>
-    <span class="spacer"></span>
-    ${pathId ? '' : `<div class="sel-wrap ln-timer-sel"><select id="lTimerPath" aria-label="Learning path for this session">
-      <option value="">No specific path</option>${active.map(p=>`<option value="${p.id}">${esc(p.title)}</option>`).join('')}</select></div>`}
-    <button class="btn btn-ghost btn-sm" data-l="log"${pathId ? ` data-path="${pathId}"` : ''}>${ico('pencil','ico-sm')}Log manually</button>
-    <button class="btn btn-primary btn-sm" data-l="timer-start"${pathId ? ` data-path="${pathId}"` : ''}>${ico('clock','ico-sm')}Start</button>
-  </div>`;
+function swWeekLabel(mon){
+  const sun = addDays(mon, 6), y = sun.getFullYear();
+  return mon.getMonth() === sun.getMonth()
+    ? `${mon.getDate()} – ${sun.getDate()} <span>${MONTHS_FULL[sun.getMonth()]} ${y}</span>`
+    : `${mon.getDate()} ${MONTHS_FULL[mon.getMonth()].slice(0, 3)} – ${sun.getDate()} ${MONTHS_FULL[sun.getMonth()].slice(0, 3)} <span>${y}</span>`;
 }
 
-function progressBar(pctV){
-  return pctV == null ? '<div class="ln-bar is-empty" aria-hidden="true"><i style="width:0"></i></div>'
-    : `<div class="ln-bar" role="progressbar" aria-valuenow="${pctV}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pctV}%"></i></div>`;
-}
-function pathCardHtml(p){
-  const s = pathStats(p);
-  const due = p.target_date ? 'Target ' + parseISO(p.target_date).toLocaleDateString(undefined,{ day:'numeric', month:'short', year:'numeric' }) : '';
-  return `<button class="ln-path" data-l="open-path" data-path="${p.id}" aria-label="Open ${esc(p.title)}">
-    <div class="ln-meta">${p.category ? `<span class="ln-pill">${esc(p.category)}</span>` : ''}<span class="ln-pill st-${p.status}">${PSTATUS[p.status] || 'Active'}</span></div>
-    <h3>${esc(p.title)}</h3>
-    ${p.description ? `<p>${esc(p.description)}</p>` : ''}
-    <div class="ln-prog">${progressBar(s.pct)}<span class="ln-pct">${s.pct == null ? 'No materials yet' : s.pct + '%'}</span></div>
-    <div class="ln-meta">
-      <span>${s.rs.length} material${s.rs.length === 1 ? '' : 's'}</span>
-      ${s.goals ? `<span>· ${s.goalsDone}/${s.goals} goals</span>` : ''}
-      ${s.mins ? `<span>· ${fmtMins(s.mins)} studied</span>` : ''}
-      ${due ? `<span>· ${due}</span>` : ''}
-    </div>
-  </button>`;
-}
+function swPaint(){
+  const mon = SW.mon, today = _dayOnly(new Date()), thisMon = mondayOf(today);
+  const days = Array.from({ length:7 }, (_, i)=> addDays(mon, i));
+  const byDay = days.map(d=> swLanes(SW.items.filter(it=> it.day === iso(d))));
+  const total = SW.items.reduce((n, it)=> n + it.mins, 0);
 
-// "what should I study next": materials you've started, then the next untouched one per active path
-function nextUp(){
-  const activePaths = LEARN.paths.filter(p=>p.status === 'active');
-  const ids = new Set(activePaths.map(p=>p.id));
-  const started = LEARN.res.filter(r=>ids.has(r.path_id) && r.status !== 'completed' &&
-    (r.status === 'in_progress' || (r.lessons || []).some(l=>l.done)))
-    .sort((a, b)=>(b.updated_at || '').localeCompare(a.updated_at || ''));
-  const out = started.map(r=>({ r, why:'In progress' }));
-  activePaths.forEach(p=>{
-    if(out.some(x=>x.r.path_id === p.id)) return;
-    const r = LEARN.res.find(x=>x.path_id === p.id && x.status === 'not_started');
-    if(r) out.push({ r, why:'Up next' });
+  $('swLabel').innerHTML = swWeekLabel(mon);
+  $('swToday').hidden = sameDay(mon, thisMon);
+  $('swSum').textContent = SW.items.length
+    ? `${SW.items.length} session${SW.items.length === 1 ? '' : 's'} · ${swDur(total)} planned`
+    : (mon < thisMon ? 'Nothing was planned this week' : 'Nothing planned yet');
+
+  // hours shown: 8:00–22:00, stretched to fit anything earlier or later
+  let h0 = 8, h1 = 22;
+  SW.items.forEach(it=>{ h0 = Math.min(h0, Math.floor(it.sh)); h1 = Math.max(h1, Math.ceil(it.eh)); });
+  h0 = Math.max(0, h0); h1 = Math.min(24, h1);
+  SW.h0 = h0; SW.h1 = h1;
+  const rows = h1 - h0, now = new Date(), nowH = now.getHours() + now.getMinutes() / 60;
+  const dayName = d => d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long' });
+
+  // ---- wide screens: the week as a time grid ----
+  let g = `<div class="sw-grid" style="--rows:${rows};--row:${SW_ROW}px"><div class="sw-ghead"><span></span>` +
+    days.map((d, i)=> `<div class="sw-dh${sameDay(d, today) ? ' is-today' : ''}"><span>${DAY_SHORT[i]}</span><b>${d.getDate()}</b></div>`).join('') +
+    '</div><div class="sw-gbody"><div class="sw-times">' +
+    Array.from({ length: rows - 1 }, (_, i)=> `<span style="top:${(i + 1) * SW_ROW}px">${pad2(h0 + i + 1)}:00</span>`).join('') + '</div>';
+  days.forEach((d, i)=>{
+    g += `<div class="sw-col${sameDay(d, today) ? ' is-today' : ''}${d < today ? ' is-past' : ''}" data-day="${iso(d)}" aria-label="${esc(dayName(d))}">`;
+    byDay[i].forEach(it=>{
+      const top = (Math.max(it.sh, h0) - h0) * SW_ROW + 1, h = Math.max(24, (Math.min(it.eh, h1) - Math.max(it.sh, h0)) * SW_ROW - 3), w = 100 / it.lanes;
+      const size = h < 40 ? ' is-short' : h < 52 ? ' is-mid' : '';
+      g += `<button type="button" class="sw-ev acc-learn${size}${new Date(SW.rows.find(r=> r.id === it.id).ends_at || 0) < now ? ' is-past' : ''}" data-sid="${esc(it.id)}"
+        style="top:${top}px;height:${h}px;left:calc(${it.lane * w}% + 3px);width:calc(${w}% - 6px)"
+        title="${esc(it.title)} · ${it.time}" aria-label="${esc(it.title)}, ${esc(dayName(d))}, ${it.time}. Open to edit"><b>${esc(it.title)}</b><small>${it.time}</small></button>`;
+    });
+    if(sameDay(d, today) && nowH >= h0 && nowH <= h1) g += `<div class="sw-now" style="top:${(nowH - h0) * SW_ROW}px"></div>`;
+    g += '</div>';
   });
-  return out.slice(0, 6);
-}
-function resRowHtml(x){
-  const r = x.r, p = pathOf(r.path_id), k = LKINDS[r.kind] || LKINDS.course, pc = resPct(r);
-  const next = (r.lessons || []).find(l=>!l.done);
-  const url = safeUrl(r.url);
-  return `<div class="ln-row">
-    <span class="ln-kind" title="${k.label}">${ico(k.icon)}</span>
-    <button class="ln-row-body ln-plain" data-l="open-path" data-path="${r.path_id}" data-tab="materials">
-      <span class="ln-row-title">${esc(r.title)}</span>
-      <span class="ln-row-sub">${esc(p ? p.title : '')} · ${x.why}${next ? ' · Next: ' + esc(next.title) : ''}</span>
-    </button>
-    ${pc != null ? `<span class="ln-pct">${pc}%</span>` : ''}
-    ${url ? `<a class="btn btn-ghost btn-sm" href="${esc(url)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${esc(r.title)} in a new tab">${ico('link','ico-sm')}Open</a>` : ''}
-  </div>`;
+  g += '</div></div>';
+
+  // ---- phones: the week as a list, one row per day ----
+  let a = '<div class="sw-agenda">';
+  days.forEach((d, i)=>{
+    const list = byDay[i].slice().sort((x, y)=> x.sh - y.sh);
+    a += `<section class="sw-aday${sameDay(d, today) ? ' is-today' : ''}${d < today ? ' is-past' : ''}">
+      <div class="sw-adate"><span>${DAY_SHORT[i]}</span><b>${d.getDate()}</b></div>
+      <div class="sw-alist">${list.length
+        ? list.map(it=> `<button type="button" class="sw-acard acc-learn" data-sid="${esc(it.id)}" aria-label="${esc(it.title)}, ${it.time}. Open to edit">
+            <span class="sw-atime">${it.time}</span><b>${esc(it.title)}</b></button>`).join('')
+        : '<span class="sw-free">Free</span>'}</div>
+      <button type="button" class="sw-aadd" data-addday="${iso(d)}" aria-label="Add a study session on ${esc(dayName(d))}">${ico('plus')}</button>
+    </section>`;
+  });
+  a += '</div>';
+
+  $('swBody').innerHTML = g + a;
 }
 
-function learnHomeHtml(){
-  const L = LEARN, wk = weekStudy(), ls = lessonsDone();
-  const goalsAll = L.paths.reduce((a, p)=>a + (p.goals || []).length, 0);
-  const goalsDone = L.paths.reduce((a, p)=>a + (p.goals || []).filter(g=>g.done).length, 0);
-  const active = L.paths.filter(p=>p.status !== 'completed'), finished = L.paths.filter(p=>p.status === 'completed');
-  const maxD = Math.max(1, ...wk.days.map(x=>x.mins));
-  const tIso = iso(new Date());
-  const head = `<div class="ln-head">
-      <div class="ln-intro">${doodleSvg('study', 'ln-doodle')}
-        <div><h1 class="page-title">Learning</h1>
-          <p class="ln-sub">Your paths, courses and study time, all in one place.</p>
-          <p class="ln-cap">Collecting knowledge. Occasionally using it.</p></div></div>
-      <div class="ph-actions"><button class="btn btn-primary" data-l="add-path">${ico('plus')}Add learning path</button></div>
-    </div>`;
-  if(!L.paths.length){
-    return head + `<div class="card ln-empty-hero">
-      <b>Nothing on the reading list yet</b>
-      <p>Make a learning path for anything you want to get better at, like Figma, English or brand strategy.
-        Then add the courses, videos and books that go with it.</p>
-      <button class="btn btn-primary" data-l="add-path">${ico('plus')}Add your first learning path</button>
-    </div>` + (L.sess.length ? `<div class="card"><div class="empty">You've logged ${fmtMins(L.sess.reduce((a, s)=>a + s.minutes, 0))} of study so far.</div></div>` : '');
-  }
-  const up = nextUp();
-  const links = L.res.filter(r=>safeUrl(r.url)).sort((a, b)=>(b.updated_at || '').localeCompare(a.updated_at || '')).slice(0, 8);
-  return head + timerCardHtml() + `
-    <div class="ln-stats">
-      <div class="card ln-stat"><span>Studied this week</span><b>${fmtMins(wk.total)}</b>
-        <div class="ln-week" aria-label="Minutes per day this week">${wk.days.map((x, i)=>`<i class="${x.mins ? 'on' : ''}${iso(x.d) === tIso ? ' today' : ''}" style="height:${x.mins ? Math.max(18, x.mins / maxD * 100) : 12}%" title="${DAY_SHORT[i]}: ${fmtMins(x.mins)}"></i>`).join('')}</div></div>
-      <div class="card ln-stat"><span>Lessons done</span><b>${ls.week} <small>this week</small></b><span>${ls.all} in total</span></div>
-      <div class="card ln-stat"><span>Goals reached</span><b>${goalsDone}<small> / ${goalsAll}</small></b><span>${goalsAll ? pct(goalsDone, goalsAll) + '% of your goals' : 'Add goals inside a path'}</span></div>
-      <div class="card ln-stat"><span>Learning paths</span><b>${active.length} <small>active</small></b><span>${finished.length} completed</span></div>
-    </div>
-    <div class="card">
-      <div class="card-head"><span class="card-icon acc-learn">${ico('book')}</span><h2 class="card-title">What you're learning</h2>
-        <span class="card-count">${L.paths.length}</span></div>
-      <div class="ln-paths">${active.concat(finished).map(pathCardHtml).join('')}</div>
-    </div>
-    <div class="ln-cols">
-      <div>
-        <div class="card">
-          <div class="card-head"><span class="card-icon acc-learn">${ico('play')}</span><h2 class="card-title">Continue learning</h2></div>
-          ${up.length ? up.map(resRowHtml).join('') : '<div class="empty">Add a course or video to a path, and it will show up here when you start it.</div>'}
-        </div>
-        <div class="card">
-          <div class="card-head"><span class="card-icon acc-learn">${ico('calendar')}</span><h2 class="card-title">Planned study</h2>
-            <span class="spacer"></span><button class="btn btn-ghost btn-sm" data-l="add-task">${ico('plus','ico-sm')}Study task</button></div>
-          <div class="ln-tasks"></div>
-        </div>
-      </div>
-      <div>
-        <div class="card">
-          <div class="card-head"><span class="card-icon acc-learn">${ico('link')}</span><h2 class="card-title">Quick access</h2></div>
-          ${links.length ? `<div class="ln-links">${links.map(r=>`<a class="ln-link" href="${esc(safeUrl(r.url))}" target="_blank" rel="noopener noreferrer" title="${esc(r.title)}">${ico((LKINDS[r.kind] || LKINDS.course).icon, 'ico-sm')}<span>${esc(r.title)}</span></a>`).join('')}</div>`
-            : '<div class="empty">Materials with a link land here for one-tap access.</div>'}
-        </div>
-        <div class="card">
-          <div class="card-head"><span class="card-icon acc-learn">${ico('clock')}</span><h2 class="card-title">Recent sessions</h2>
-            <span class="spacer"></span><button class="btn btn-ghost btn-sm" data-l="log">${ico('plus','ico-sm')}Log</button></div>
-          ${L.sess.length ? L.sess.slice(0, 5).map(sessRowHtml).join('') : '<div class="empty">No study sessions yet. The timer and manual log are both optional.</div>'}
-        </div>
-      </div>
-    </div>`;
-}
-function sessRowHtml(s){
-  const p = s.path_id && pathOf(s.path_id), d = new Date(s.started_at);
-  return `<div class="ln-row"><span class="ln-kind">${ico('clock','ico-sm')}</span>
-    <span class="ln-row-body"><span class="ln-row-title">${fmtMins(s.minutes)}${p ? ' · ' + esc(p.title) : ''}</span>
-      <span class="ln-row-sub">${relDay(d)} · ${fmtT(d)}${s.note ? ' · ' + esc(s.note) : ''}</span></span>
-    <button class="ln-x" data-l="del-session" data-id="${s.id}" aria-label="Delete this session">${ico('x','ico-sm')}</button></div>`;
-}
-
-// study tasks reuse the shared task rows, so ticking them off works the same everywhere
-function learnTaskItems(tasks){
-  const t0 = iso(new Date());
-  const toItem = t => ({ key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat:'learning', done:!!t.completed, hideCat:true,
-    priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t,
-    dateLabel: t.due_date ? (t.due_date === t0 ? 'Today' : relDay(parseISO(t.due_date))) : 'No date',
-    missed: !t.completed && t.due_date && t.due_date < t0 });
-  const open = tasks.filter(t=>!t.completed).sort((a, b)=>(a.due_date || '9999').localeCompare(b.due_date || '9999') || (a.due_time || '').localeCompare(b.due_time || ''));
-  const done = tasks.filter(t=>t.completed).sort((a, b)=>(b.completed_at || '').localeCompare(a.completed_at || '')).slice(0, 5);
-  return [{ label:'To do', items: open.map(toItem) }, { label:'Done', cls:'g-done', items: done.map(toItem) }];
-}
-function renderLearnTasks(){
-  const el = $('learnBody').querySelector('.ln-tasks');
-  if(!el) return;
-  const tasks = LEARN.tasks.filter(t=>!t.completed || (t.completed_at && new Date(t.completed_at) >= addDays(_dayOnly(new Date()), -7)));
-  renderTaskList(el, learnTaskItems(tasks).map(g=>({ ...g, items: g.items.map(it=>{ const p = pathOf(it.raw.learning_path_id);
-    return p ? { ...it, dateLabel: it.dateLabel + ' · ' + p.title } : it; }) })),
-    '<div class="empty">Plan a session, like "Auto Layout tutorial, Thursday 4 PM". It will also show on your dashboard and calendar.</div>');
-}
-function renderPathTasks(p){
-  const el = $('learnBody').querySelector('.ln-tasks');
-  if(!el) return;
-  renderTaskList(el, learnTaskItems(LEARN.tasks.filter(t=>t.learning_path_id === p.id)),
-    '<div class="empty">No study tasks for this path yet.</div>');
-}
-
-/* ---------- one path, opened ---------- */
-function learnPathHtml(p){
-  const s = pathStats(p);
-  const tabs = [['materials', 'Materials', s.rs.length], ['goals', 'Goals', s.goals], ['notes', 'Notes', LEARN.notes.filter(n=>n.path_id === p.id).length], ['study', 'Study', s.sess.length]];
-  const due = p.target_date ? parseISO(p.target_date).toLocaleDateString(undefined,{ day:'numeric', month:'long', year:'numeric' }) : '';
-  return `<button class="ln-back" data-l="home">${ico('chevL','ico-sm')}All learning paths</button>
-    <div class="ln-head ln-head-path">
-      <div><div class="ln-meta">${p.category ? `<span class="ln-pill">${esc(p.category)}</span>` : ''}<span class="ln-pill st-${p.status}">${PSTATUS[p.status] || 'Active'}</span>${due ? `<span>Target: ${due}</span>` : ''}</div>
-        <h1 class="page-title">${esc(p.title)}</h1>
-        ${p.description ? `<p class="ln-sub">${esc(p.description)}</p>` : ''}</div>
-      <div class="ph-actions"><button class="btn btn-ghost" data-l="edit-path" data-path="${p.id}">${ico('pencil')}Edit</button>
-        <button class="btn btn-primary" data-l="add-res" data-path="${p.id}">${ico('plus')}Add material</button></div>
-    </div>
-    <div class="card ln-summary">
-      <div class="ln-big">${s.pct == null ? '—' : s.pct + '%'}<span>${s.total ? `${s.done} of ${s.total} lessons and materials done` : 'Add materials to see progress'}</span></div>
-      <div class="ln-sumgrid">
-        <div><b>${s.goalsDone}/${s.goals}</b><span>goals reached</span></div>
-        <div><b>${fmtMins(s.mins)}</b><span>studied in total</span></div>
-        <div><b>${s.last ? relDay(s.last) : '—'}</b><span>last session</span></div>
-      </div>
-      ${progressBar(s.pct)}
-    </div>
-    ${timerCardHtml(p.id)}
-    <div class="seg ln-tabs" role="tablist" aria-label="Path sections">${tabs.map(([k, l, n])=>
-      `<button role="tab" aria-selected="${LTAB === k}" class="${LTAB === k ? 'on' : ''}" data-l="tab" data-tab="${k}">${l}${n ? ` <span class="ln-n">${n}</span>` : ''}</button>`).join('')}</div>
-    <div class="ln-tab">${LTAB === 'goals' ? goalsHtml(p) : LTAB === 'notes' ? notesHtml(p) : LTAB === 'study' ? studyHtml(p, s) : materialsHtml(p, s)}</div>`;
-}
-
-function materialsHtml(p, s){
-  if(!s.rs.length) return `<div class="card ln-empty-hero"><b>No materials yet</b>
-    <p>Add the course, playlist, book or article you're working through. Break it into lessons if you'd like to tick them off one by one.</p>
-    <button class="btn btn-primary" data-l="add-res" data-path="${p.id}">${ico('plus')}Add material</button></div>`;
-  const order = { in_progress:0, not_started:1, completed:2 };
-  return s.rs.slice().sort((a, b)=>order[a.status] - order[b.status]).map(r=>{
-    const k = LKINDS[r.kind] || LKINDS.course, L = r.lessons || [], pc = resPct(r), url = safeUrl(r.url);
-    const dn = L.filter(l=>l.done).length;
-    return `<div class="ln-res" data-res="${r.id}">
-      <div class="ln-res-head">
-        <span class="ln-kind" title="${k.label}">${ico(k.icon)}</span>
-        <div class="ln-row-body"><span class="ln-row-title">${esc(r.title)}</span>
-          <span class="ln-row-sub">${k.label}${url ? ` · <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(urlHost(url))}</a>` : ''}${L.length ? ` · ${dn}/${L.length} lessons` : ''}</span></div>
-        <div class="ln-status" role="radiogroup" aria-label="Status of ${esc(r.title)}">${Object.entries(LSTATUS).map(([v, l])=>
-          `<button role="radio" aria-checked="${r.status === v}" class="s-${v}${r.status === v ? ' on' : ''}" data-l="res-status" data-id="${r.id}" data-v="${v}">${l}</button>`).join('')}</div>
-        <button class="ln-x" data-l="edit-res" data-id="${r.id}" aria-label="Edit ${esc(r.title)}">${ico('pencil','ico-sm')}</button>
-      </div>
-      ${pc != null ? `<div class="ln-prog">${progressBar(pc)}<span class="ln-pct">${pc}%</span></div>` : ''}
-      ${r.notes ? `<p class="ln-res-notes">${esc(r.notes)}</p>` : ''}
-      <details class="fold ln-fold"${L.length && r.status !== 'completed' ? ' open' : ''}><summary>${L.length ? `Lessons (${dn}/${L.length})` : 'Lessons or modules (optional)'}</summary>
-        ${L.map(l=>`<div class="ln-check${l.done ? ' done' : ''}">
-          <button class="ln-box" role="checkbox" aria-checked="${!!l.done}" data-l="lesson" data-id="${r.id}" data-lesson="${l.id}" aria-label="${l.done ? 'Mark not done' : 'Mark done'}: ${esc(l.title)}">${ico('check','ico-sm')}</button>
-          <span class="ln-ct">${esc(l.title)}</span>
-          <button class="ln-x" data-l="del-lesson" data-id="${r.id}" data-lesson="${l.id}" aria-label="Remove lesson ${esc(l.title)}">${ico('x','ico-sm')}</button></div>`).join('')}
-        <form class="ln-add" data-l-form="lesson" data-id="${r.id}" autocomplete="off"><input type="text" placeholder="Add a lesson or module…" aria-label="New lesson for ${esc(r.title)}" maxlength="140" />
-          <button class="btn btn-ghost btn-sm" type="submit">Add</button></form>
-      </details>
-    </div>`;
-  }).join('');
-}
-
-function goalsHtml(p){
-  const G = p.goals || [];
-  return `<div class="card">
-    <p class="ln-hint">What do you want to be able to do? Tick each one off when you get there.</p>
-    ${G.map(g=>`<div class="ln-check${g.done ? ' done' : ''}">
-      <button class="ln-box" role="checkbox" aria-checked="${!!g.done}" data-l="goal" data-id="${g.id}" aria-label="${g.done ? 'Mark not reached' : 'Mark reached'}: ${esc(g.text)}">${ico('check','ico-sm')}</button>
-      <span class="ln-ct">${esc(g.text)}${g.done && g.done_at ? ` <span class="ln-row-sub">· reached ${relDayLc(new Date(g.done_at))}</span>` : ''}</span>
-      <button class="ln-x" data-l="del-goal" data-id="${g.id}" aria-label="Remove goal">${ico('x','ico-sm')}</button></div>`).join('') || '<div class="empty">No goals yet.</div>'}
-    <form class="ln-add" data-l-form="goal" autocomplete="off"><input type="text" placeholder="e.g. Build a responsive card with Auto Layout" aria-label="New goal" maxlength="200" />
-      <button class="btn btn-ghost btn-sm" type="submit">Add goal</button></form>
-  </div>`;
-}
-
-function notesHtml(p){
-  const rs = LEARN.res.filter(r=>r.path_id === p.id);
-  let notes = LEARN.notes.filter(n=>n.path_id === p.id);
-  if(LNOTE_FILTER === 'general') notes = notes.filter(n=>!n.resource_id);
-  else if(LNOTE_FILTER !== 'all') notes = notes.filter(n=>n.resource_id === LNOTE_FILTER);
-  const f = (v, l) => `<button class="${LNOTE_FILTER === v ? 'on' : ''}" data-l="note-filter" data-v="${v}" aria-pressed="${LNOTE_FILTER === v}">${esc(l)}</button>`;
-  return `<div class="ln-notes-bar">
-      <div class="chip-pick ln-filter">${f('all', 'All')}${f('general', 'General')}${rs.map(r=>f(r.id, r.title)).join('')}</div>
-      <button class="btn btn-primary btn-sm" data-l="add-note">${ico('plus','ico-sm')}New note</button></div>
-    ${notes.length ? notes.map(n=>{ const r = n.resource_id && resOf(n.resource_id), url = safeUrl(n.url);
-      return `<div class="card ln-note">
-        <div class="ln-note-head"><b>${esc(n.title || 'Untitled note')}</b>${r ? `<span class="ln-pill">${esc(r.title)}</span>` : ''}
-          <span class="spacer"></span><span class="ln-row-sub">${relDay(new Date(n.updated_at || n.created_at))}</span>
-          <button class="ln-x" data-l="edit-note" data-id="${n.id}" aria-label="Edit note">${ico('pencil','ico-sm')}</button></div>
-        ${n.body ? `<p class="ln-note-body">${esc(n.body)}</p>` : ''}
-        ${url ? `<a class="ln-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${ico('link','ico-sm')}<span>${esc(urlHost(url))}</span></a>` : ''}
-      </div>`; }).join('')
-      : `<div class="card"><div class="empty">${LNOTE_FILTER === 'all' ? 'Jot down what clicked, shortcuts worth remembering, or links to come back to.' : 'No notes here yet.'}</div></div>`}`;
-}
-
-function studyHtml(p, s){
-  return `<div class="ln-cols">
-    <div class="card">
-      <div class="card-head"><span class="card-icon acc-learn">${ico('calendar')}</span><h2 class="card-title">Study tasks</h2>
-        <span class="spacer"></span><button class="btn btn-ghost btn-sm" data-l="add-task" data-path="${p.id}">${ico('plus','ico-sm')}Study task</button></div>
-      <div class="ln-tasks"></div>
-    </div>
-    <div class="card">
-      <div class="card-head"><span class="card-icon acc-learn">${ico('clock')}</span><h2 class="card-title">Sessions</h2>
-        <span class="card-count">${fmtMins(s.mins)}</span><span class="spacer"></span>
-        <button class="btn btn-ghost btn-sm" data-l="log" data-path="${p.id}">${ico('plus','ico-sm')}Log</button></div>
-      ${s.sess.length ? s.sess.map(sessRowHtml).join('') : '<div class="empty">No sessions logged for this path yet.</div>'}
-    </div>
-  </div>`;
-}
-
-/* ---------- forms ---------- */
-function openPathForm(p){
-  const st = { confirmDel:false };
+/* ---------- add / edit ---------- */
+function swOpen(ev, preset){
+  preset = preset || {};
+  const s = ev ? new Date(ev.starts_at) : null, en = ev && ev.ends_at ? new Date(ev.ends_at) : null;
+  const date = ev ? iso(s) : (preset.date || iso(new Date()));
+  const st = ev ? hhmm(s) : (preset.start || '17:00');
+  const et = ev ? (en && iso(en) === iso(s) ? hhmm(en) : '00:00') : (preset.end || swPlus(st, 60));
   openForm({
-    title: p ? 'Edit learning path' : 'New learning path',
-    wide: true,
+    title: ev ? 'Edit study session' : 'New study session',
     rows: [
-      [{ id:'lpTitle', placeholder:'What are you learning? e.g. Figma & UI/UX', value: p ? p.title : '' }],
-      [{ id:'lpDesc', type:'textarea', rows:2, placeholder:'Why, or what for (optional)', value: (p && p.description) || '' }],
-      [{ id:'lpCat', placeholder:'Category, e.g. Design, Language (optional)', value: (p && p.category) || '' },
-       { id:'lpDate', type:'date', value: (p && p.target_date) || '' }],
-      p ? [{ id:'lpStatus', type:'select', value: p.status, options: Object.entries(PSTATUS).map(([value, label])=>({ value, label })) }]
-        : [{ id:'lpGoals', type:'textarea', rows:3, placeholder:'Learning goals, one per line (optional)' }],
-      [{ type:'note', text:'Target date is optional. Leave it as "No date" if there\'s no deadline.' }]
+      [{ id:'swTitle', label:'What will you study?', placeholder:'e.g. English: speaking practice', value: ev ? ev.title : '' }],
+      [{ id:'swDate', type:'date', label:'Day', value: date }],
+      [{ id:'swStart', type:'time', label:'Starts', value: st }, { id:'swEnd', type:'time', label:'Ends', value: et }]
     ],
-    actions: p ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Create path', value:'save' }],
+    actions: ev ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add session', value:'save' }],
     onSubmit: async (v, act)=>{
-      if(act === 'delete'){
-        if(!st.confirmDel){
-          st.confirmDel = true;
-          const b = $('fmActions').querySelector('.modal-danger');
-          b.textContent = 'Tap again: deletes its materials and notes'; b.classList.add('confirming');
-          return false;
-        }
-        const { error } = await sb.from('learning_paths').delete().eq('id', p.id);
-        if(error){ fail(error, 'Could not delete'); return false; }
-        LSEL = null; toast('Learning path deleted'); loadLearning(); return;
-      }
-      if(!v.lpTitle){ toast('Give the path a name', true); return false; }
-      const payload = { title: v.lpTitle, description: v.lpDesc || null, category: v.lpCat || null, target_date: v.lpDate || null };
-      if(p){
-        payload.status = v.lpStatus || 'active';
-        payload.completed_at = payload.status === 'completed' ? (p.completed_at || new Date().toISOString()) : null;
-        const { error } = await sb.from('learning_paths').update(payload).eq('id', p.id);
-        if(error){ fail(error, 'Could not save'); return false; }
-        toast('Saved');
-      } else {
-        payload.goals = (v.lpGoals || '').split('\n').map(x=>x.trim()).filter(Boolean).map(text=>({ id: lid(), text, done:false }));
-        const { data, error } = await sb.from('learning_paths').insert({ user_id: USER.id, ...payload }).select().single();
-        if(error){ fail(error, 'Could not create the path'); return false; }
-        LSEL = data && data.id; LTAB = 'materials'; toast('Learning path created');
-      }
-      loadLearning();
+      if(act === 'delete'){ setTimeout(()=> swDelete(ev), 0); return; }
+      if(!v.swTitle){ toast('Add what you will study', true); return false; }
+      if(!v.swDate || !v.swStart || !v.swEnd){ toast('Pick a day and both times', true); return false; }
+      const mid = v.swEnd === '00:00';
+      if(!mid && v.swEnd <= v.swStart){ toast('The session has to end after it starts', true); return false; }
+      const payload = {
+        title: v.swTitle,
+        starts_at: new Date(v.swDate + 'T' + v.swStart).toISOString(),
+        ends_at: mid ? addDays(new Date(v.swDate + 'T00:00'), 1).toISOString() : new Date(v.swDate + 'T' + v.swEnd).toISOString(),
+        category: 'learning'
+      };
+      const { error } = ev
+        ? await sb.from('schedule_events').update(payload).eq('id', ev.id)
+        : await sb.from('schedule_events').insert({ user_id: USER.id, ...payload });
+      if(error){ fail(error, ev ? 'Could not save the session' : 'Could not add the session'); return false; }
+      toast(ev ? 'Session updated' : 'Session added');
+      // jump to the week the session is in, so you see it land
+      SW.mon = mondayOf(parseISO(v.swDate));
+      dataChanged();
     }
   });
+  // moving the start keeps the length the same
+  const len = ev && en ? Math.max(15, Math.round((en - s) / 60000)) : (preset.len || 60);
+  $('swStart').addEventListener('change', ()=>{ if($('swStart').value) $('swEnd').value = swPlus($('swStart').value, len); });
 }
+function swPlus(hm, mins){
+  const [h, m] = hm.split(':').map(Number), t = Math.min(24 * 60, h * 60 + m + mins);
+  return t >= 24 * 60 ? '00:00' : pad2(Math.floor(t / 60)) + ':' + pad2(t % 60);
+}
+async function swDelete(ev){
+  const yes = await askConfirm({ title:'Delete this study session?', message:`"${ev.title}" will be removed from your week and the calendar.`, ok:'Delete session' });
+  if(!yes) return;
+  const { error } = await sb.from('schedule_events').delete().eq('id', ev.id);
+  if(error) return fail(error, 'Could not delete the session');
+  toast('Session deleted');
+  dataChanged();
+}
+const swRow = id => SW.rows.find(r=> r.id === id);
 
-function openResForm(r, pathId){
-  const st = { kind: r ? r.kind : 'course', confirmDel:false };
-  const kinds = `<div class="fm-label">Type</div><div class="chip-pick" data-pick="kind">${Object.entries(LKINDS).map(([v, k])=>
-    `<button type="button" class="${v === st.kind ? 'on' : ''}" data-v="${v}" aria-pressed="${v === st.kind}">${k.label}</button>`).join('')}</div>`;
-  openForm({
-    title: r ? 'Edit material' : 'Add material',
-    wide: true,
-    rows: [
-      [{ id:'lrTitle', placeholder:'Title, e.g. Auto Layout masterclass', value: r ? r.title : '' }],
-      [{ type:'html', html: kinds }],
-      [{ id:'lrUrl', type:'url', placeholder:'Link (optional)', value: (r && r.url) || '' }],
-      r ? [{ type:'note', text:'Add or tick off lessons right on the material card.' }]
-        : [{ id:'lrLessons', type:'textarea', rows:3, placeholder:'Lessons or modules, one per line (optional)' }],
-      [{ id:'lrNotes', type:'textarea', rows:2, placeholder:'Notes (optional)', value: (r && r.notes) || '' }]
-    ],
-    actions: r ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add material', value:'save' }],
-    onBodyClick: e=>{
-      const b = e.target.closest('.chip-pick button'); if(!b) return;
-      b.parentNode.querySelectorAll('button').forEach(x=>{ x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); });
-      st.kind = b.dataset.v;
-    },
-    onSubmit: async (v, act)=>{
-      if(act === 'delete'){
-        if(!st.confirmDel){ st.confirmDel = true; const b = $('fmActions').querySelector('.modal-danger'); b.textContent = 'Tap again to delete'; b.classList.add('confirming'); return false; }
-        const { error } = await sb.from('learning_resources').delete().eq('id', r.id);
-        if(error){ fail(error, 'Could not delete'); return false; }
-        toast('Material deleted'); loadLearning(); return;
-      }
-      if(!v.lrTitle){ toast('Give it a title', true); return false; }
-      if(v.lrUrl && !safeUrl(v.lrUrl)){ toast('That link doesn\'t look right. Start it with https://', true); return false; }
-      const payload = { title: v.lrTitle, kind: st.kind, url: safeUrl(v.lrUrl) || null, notes: v.lrNotes || null, updated_at: new Date().toISOString() };
-      if(r){
-        const { error } = await sb.from('learning_resources').update(payload).eq('id', r.id);
-        if(error){ fail(error, 'Could not save'); return false; }
-      } else {
-        payload.lessons = (v.lrLessons || '').split('\n').map(x=>x.trim()).filter(Boolean).map(title=>({ id: lid(), title, done:false }));
-        const { error } = await sb.from('learning_resources').insert({ user_id: USER.id, path_id: pathId, status:'not_started', ...payload });
-        if(error){ fail(error, 'Could not add'); return false; }
-      }
-      toast(r ? 'Saved' : 'Material added'); LTAB = 'materials'; loadLearning();
-    }
-  });
-}
-
-function openNoteForm(n, pathId){
-  const rs = LEARN.res.filter(r=>r.path_id === pathId);
-  const st = { confirmDel:false };
-  const def = n ? (n.resource_id || '') : (LNOTE_FILTER !== 'all' && LNOTE_FILTER !== 'general' ? LNOTE_FILTER : '');
-  openForm({
-    title: n ? 'Edit note' : 'New note',
-    wide: true,
-    rows: [
-      [{ id:'lnTitle', placeholder:'Title (optional)', value: (n && n.title) || '' }],
-      [{ id:'lnBody', type:'textarea', rows:7, placeholder:'Write anything…', value: (n && n.body) || '' }],
-      [{ id:'lnUrl', type:'url', placeholder:'Useful link (optional)', value: (n && n.url) || '' }],
-      [{ id:'lnRes', type:'select', value: def, options: [{ value:'', label:'General (whole path)' }].concat(rs.map(r=>({ value:r.id, label:r.title }))) }]
-    ],
-    actions: n ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Save note', value:'save' }],
-    onSubmit: async (v, act)=>{
-      if(act === 'delete'){
-        if(!st.confirmDel){ st.confirmDel = true; const b = $('fmActions').querySelector('.modal-danger'); b.textContent = 'Tap again to delete'; b.classList.add('confirming'); return false; }
-        const { error } = await sb.from('learning_notes').delete().eq('id', n.id);
-        if(error){ fail(error, 'Could not delete'); return false; }
-        toast('Note deleted'); loadLearning(); return;
-      }
-      if(!v.lnTitle && !v.lnBody && !v.lnUrl){ toast('Write something first', true); return false; }
-      if(v.lnUrl && !safeUrl(v.lnUrl)){ toast('That link doesn\'t look right. Start it with https://', true); return false; }
-      const payload = { title: v.lnTitle || null, body: v.lnBody || null, url: safeUrl(v.lnUrl) || null, resource_id: v.lnRes || null, updated_at: new Date().toISOString() };
-      const { error } = n ? await sb.from('learning_notes').update(payload).eq('id', n.id)
-                          : await sb.from('learning_notes').insert({ user_id: USER.id, path_id: pathId, ...payload });
-      if(error){ fail(error, 'Could not save the note'); return false; }
-      toast('Note saved'); loadLearning();
-    }
-  });
-}
-
-function openSessionForm(pathId){
-  const active = LEARN.paths.filter(p=>p.status !== 'completed' || p.id === pathId);
-  const now = new Date();
-  openForm({
-    title: 'Log study time',
-    rows: [
-      [{ id:'lsPath', type:'select', value: pathId || '', options: [{ value:'', label:'No specific path' }].concat(active.map(p=>({ value:p.id, label:p.title }))) }],
-      [{ id:'lsDate', type:'date', value: iso(now) }, { id:'lsMin', type:'number', step:'5', placeholder:'Minutes', value:'30' }],
-      [{ id:'lsNote', placeholder:'What did you cover? (optional)' }]
-    ],
-    actions: [{ label:'Log session', value:'save' }],
-    onSubmit: async v=>{
-      const mins = Math.round(Number(v.lsMin));
-      if(!(mins > 0 && mins <= 1440)){ toast('Enter the minutes you studied (1 to 1440)', true); return false; }
-      if(!v.lsDate){ toast('Pick a day', true); return false; }
-      const d = parseISO(v.lsDate);
-      if(d > now){ toast('That day hasn\'t happened yet', true); return false; }
-      const at = iso(d) === iso(now) ? new Date(now.getTime() - mins * 60000) : new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12, 0);
-      const { error } = await sb.from('learning_sessions').insert({ user_id: USER.id, path_id: v.lsPath || null, started_at: at.toISOString(), minutes: mins, note: v.lsNote || null });
-      if(error){ fail(error, 'Could not log the session'); return false; }
-      toast('Logged ' + fmtMins(mins)); loadLearning();
-    }
-  });
-}
-
-/* ---------- saving checklists (lessons, goals) ---------- */
-async function saveLessons(r, lessons){
-  const allDone = lessons.length && lessons.every(l=>l.done), any = lessons.some(l=>l.done);
-  const status = allDone ? 'completed' : (any || r.status === 'in_progress') ? 'in_progress' : r.status === 'completed' ? 'in_progress' : 'not_started';
-  const patch = { lessons, status, completed_at: status === 'completed' ? (r.completed_at || new Date().toISOString()) : null, updated_at: new Date().toISOString() };
-  Object.assign(r, patch); renderLearn();                    // instant
-  const { error } = await sb.from('learning_resources').update(patch).eq('id', r.id);
-  if(error){ fail(error, 'Could not save'); loadLearning(); }
-  else if(status === 'completed' && allDone) toast('Material finished. Nice work');
-}
-async function saveGoals(p, goals){
-  p.goals = goals; renderLearn();
-  const { error } = await sb.from('learning_paths').update({ goals }).eq('id', p.id);
-  if(error){ fail(error, 'Could not save'); loadLearning(); }
-}
-
-/* ---------- one listener for the whole page ---------- */
-$('learnBody').addEventListener('click', async e=>{
-  const b = e.target.closest('[data-l]');
-  if(!b || !LEARN) return;
-  const act = b.dataset.l, p = LSEL && pathOf(LSEL);
-  if(act === 'open-path'){ LSEL = b.dataset.path; LTAB = b.dataset.tab || 'materials'; LNOTE_FILTER = 'all'; renderLearn(); window.scrollTo(0, 0); return; }
-  if(act === 'home'){ LSEL = null; renderLearn(); window.scrollTo(0, 0); return; }
-  if(act === 'tab'){ LTAB = b.dataset.tab; renderLearn(); return; }
-  if(act === 'add-path') return openPathForm(null);
-  if(act === 'edit-path') return openPathForm(pathOf(b.dataset.path));
-  if(act === 'add-res') return openResForm(null, b.dataset.path);
-  if(act === 'edit-res') return openResForm(resOf(b.dataset.id));
-  if(act === 'add-note') return p && openNoteForm(null, p.id);
-  if(act === 'edit-note') return p && openNoteForm(LEARN.notes.find(n=>n.id === b.dataset.id), p.id);
-  if(act === 'note-filter'){ LNOTE_FILTER = b.dataset.v; renderLearn(); return; }
-  if(act === 'log') return openSessionForm(b.dataset.path || (p && p.id) || '');
-  if(act === 'add-task') return openTaskForm(null, { category:'learning', learningPathId: b.dataset.path || (p && p.id) || null, date: iso(new Date()) });
-  if(act === 'timer-start'){ const sel = $('lTimerPath'); return startTimer(b.dataset.path || (sel && sel.value) || null); }
-  if(act === 'timer-stop') return stopTimer(true);
-  if(act === 'timer-discard') return stopTimer(false);
-  if(act === 'del-session'){
-    if(b.dataset.confirm !== '1'){ b.dataset.confirm = '1'; b.classList.add('confirming'); b.setAttribute('aria-label', 'Tap again to delete'); toast('Tap the × again to delete this session'); return; }
-    const { error } = await sb.from('learning_sessions').delete().eq('id', b.dataset.id);
-    if(error) return fail(error, 'Could not delete');
-    toast('Session deleted'); return loadLearning();
-  }
-  if(act === 'res-status'){
-    const r = resOf(b.dataset.id), v = b.dataset.v;
-    if(!r || r.status === v) return;
-    const lessons = v === 'completed' ? (r.lessons || []).map(l=>l.done ? l : { ...l, done:true, done_at: new Date().toISOString() }) : r.lessons || [];
-    const patch = { status: v, lessons, completed_at: v === 'completed' ? new Date().toISOString() : null, updated_at: new Date().toISOString() };
-    Object.assign(r, patch); renderLearn();
-    const { error } = await sb.from('learning_resources').update(patch).eq('id', r.id);
-    if(error){ fail(error, 'Could not save'); loadLearning(); }
-    return;
-  }
-  if(act === 'lesson' || act === 'del-lesson'){
-    const r = resOf(b.dataset.id); if(!r) return;
-    const lessons = act === 'lesson'
-      ? (r.lessons || []).map(l=>l.id === b.dataset.lesson ? { ...l, done: !l.done, done_at: !l.done ? new Date().toISOString() : null } : l)
-      : (r.lessons || []).filter(l=>l.id !== b.dataset.lesson);
-    return saveLessons(r, lessons);
-  }
-  if((act === 'goal' || act === 'del-goal') && p){
-    const goals = act === 'goal'
-      ? (p.goals || []).map(g=>g.id === b.dataset.id ? { ...g, done: !g.done, done_at: !g.done ? new Date().toISOString() : null } : g)
-      : (p.goals || []).filter(g=>g.id !== b.dataset.id);
-    return saveGoals(p, goals);
+/* ---------- clicks: open a block, add on an empty slot or a day ---------- */
+$('swAdd').addEventListener('click', ()=>{
+  const today = _dayOnly(new Date()), inWeek = today >= SW.mon && today < addDays(SW.mon, 7);
+  swOpen(null, { date: iso(inWeek ? today : SW.mon) });
+});
+$('swPrev').addEventListener('click', ()=>{ SW.mon = addDays(SW.mon, -7); loadLearning(); });
+$('swNext').addEventListener('click', ()=>{ SW.mon = addDays(SW.mon, 7); loadLearning(); });
+$('swToday').addEventListener('click', ()=>{ SW.mon = mondayOf(new Date()); loadLearning(); });
+$('swBody').addEventListener('click', e=>{
+  if(SW.justDragged){ SW.justDragged = false; return; }
+  const b = e.target.closest('[data-sid]');
+  if(b){ const r = swRow(b.dataset.sid); if(r) swOpen(r); return; }
+  const add = e.target.closest('[data-addday]');
+  if(add) return swOpen(null, { date: add.dataset.addday });
+  const col = e.target.closest('.sw-col');
+  if(col){
+    // an empty spot in the grid: start there (rounded to the half hour), one hour long
+    const y = e.clientY - col.getBoundingClientRect().top, h = SW.h0 + Math.floor(y / SW_ROW * 2) / 2;
+    const hh = Math.min(23, Math.max(0, h)), start = pad2(Math.floor(hh)) + ':' + (hh % 1 ? '30' : '00');
+    swOpen(null, { date: col.dataset.day, start });
   }
 });
-$('learnBody').addEventListener('submit', e=>{
-  const f = e.target.closest('[data-l-form]');
-  if(!f) return;
+
+/* ---------- drag a block to another day or time (mouse and pen) ---------- */
+$('swBody').addEventListener('pointerdown', e=>{
+  const b = e.target.closest('.sw-ev');
+  if(!b || e.button !== 0 || e.pointerType === 'touch') return;
+  const it = SW.items.find(x=> x.id === b.dataset.sid); if(!it) return;
+  SW.drag = { b, it, x0: e.clientX, y0: e.clientY, top0: parseFloat(b.style.top), on: false, day: it.day, sh: it.sh, pid: e.pointerId };
+});
+document.addEventListener('pointermove', e=>{
+  const D = SW.drag; if(!D || e.pointerId !== D.pid) return;
+  const dx = e.clientX - D.x0, dy = e.clientY - D.y0;
+  if(!D.on){
+    if(Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
+    D.on = true; D.b.classList.add('is-drag'); document.body.classList.add('sw-dragging');
+    D.b.style.left = '3px'; D.b.style.width = 'calc(100% - 6px)';
+  }
   e.preventDefault();
-  const inp = f.querySelector('input'), text = inp.value.trim();
-  if(!text) return inp.focus();
-  if(f.dataset.lForm === 'lesson'){
-    const r = resOf(f.dataset.id); if(!r) return;
-    saveLessons(r, (r.lessons || []).concat({ id: lid(), title: text, done:false }));
-  } else {
-    const p = LSEL && pathOf(LSEL); if(!p) return;
-    saveGoals(p, (p.goals || []).concat({ id: lid(), text, done:false }));
-  }
-  // keep typing: put the cursor back in the same box after the redraw
-  const sel = f.dataset.lForm === 'lesson' ? `[data-l-form="lesson"][data-id="${f.dataset.id}"] input` : '[data-l-form="goal"] input';
-  setTimeout(()=>{ const x = $('learnBody').querySelector(sel); if(x) x.focus(); }, 0);
+  // which day column is under the pointer
+  const cols = [...$('swBody').querySelectorAll('.sw-col')];
+  const col = cols.find(c=>{ const r = c.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right; }) ||
+    (e.clientX < cols[0].getBoundingClientRect().left ? cols[0] : cols[cols.length - 1]);
+  if(D.b.parentNode !== col) col.appendChild(D.b);
+  D.day = col.dataset.day;
+  // the new start, in 15-minute steps, kept inside the visible hours
+  const len = D.it.eh - D.it.sh;
+  let sh = D.it.sh + Math.round(dy / SW_ROW / SW_SNAP) * SW_SNAP;
+  sh = Math.max(SW.h0, Math.min(SW.h1 - Math.min(len, SW.h1 - SW.h0), sh));
+  D.sh = sh;
+  D.b.style.top = ((sh - SW.h0) * SW_ROW + 1) + 'px';
+  const st = pad2(Math.floor(sh)) + ':' + pad2(Math.round(sh % 1 * 60));
+  D.b.querySelector('small').textContent = st + ' – ' + swPlus(st, D.it.mins);
 });
+async function swDrop(e){
+  const D = SW.drag; if(!D || (e && e.pointerId !== D.pid)) return;
+  SW.drag = null;
+  document.body.classList.remove('sw-dragging');
+  if(!D.on) return;                                   // a plain click: the click handler opens it
+  SW.justDragged = true; setTimeout(()=>{ SW.justDragged = false; }, 0);
+  D.b.classList.remove('is-drag');
+  if(D.day === D.it.day && Math.abs(D.sh - D.it.sh) < .01) return swPaint();
+  const r = swRow(D.it.id), s = new Date(r.starts_at), en = r.ends_at ? new Date(r.ends_at) : new Date(s.getTime() + 3600000);
+  const ns = parseISO(D.day); ns.setHours(Math.floor(D.sh), Math.round(D.sh % 1 * 60), 0, 0);
+  const ne = new Date(ns.getTime() + (en - s));
+  const patch = { starts_at: ns.toISOString(), ends_at: ne.toISOString() };
+  Object.assign(r, patch); SW.items = SW.rows.map(swItem); swPaint();       // show it moved right away
+  const { error } = await sb.from('schedule_events').update(patch).eq('id', r.id);
+  if(error){ fail(error, 'Could not move the session'); return loadLearning(); }
+  toast(`Moved to ${ns.toLocaleDateString(undefined, { weekday:'long' })} ${hhmm(ns)}`);
+  refreshBadge();
+}
+document.addEventListener('pointerup', swDrop);
+// cancelled (or Escape mid-drag): put the block back where it was
+function swCancelDrag(){ const on = SW.drag && SW.drag.on; SW.drag = null; document.body.classList.remove('sw-dragging'); if(on) swPaint(); }
+document.addEventListener('pointercancel', swCancelDrag);
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && SW.drag && SW.drag.on) swCancelDrag(); });
 
 function loadSettings(){
   const P = PREFS;

@@ -12976,7 +12976,8 @@ function buildActs(plan, doneTasks, comps){
   const rulesById = new Map(plan.rules.map(r=>[r.id, r]));
   const acts = [];
   doneTasks.forEach(t=> acts.push({ day: iso(new Date(t.completed_at)), title:t.title, cat:taskCat(t) }));
-  comps.forEach(c=>{ const r = rulesById.get(c.recurring_id); if(r) acts.push({ day: iso(new Date(c.created_at)), title:r.title, cat: CATS[r.category] ? r.category : 'home' }); });
+  // a repeating task counts for the day it was meant for, even when ticked late (e.g. just after midnight)
+  comps.forEach(c=>{ const r = rulesById.get(c.recurring_id); if(r) acts.push({ day: c.date || iso(new Date(c.created_at)), title:r.title, cat: CATS[r.category] ? r.category : 'home' }); });
   plan.sess.filter(s=>s.status === 'completed').forEach(s=> acts.push({ day: s.date, title: s.label || 'Training', cat:'training' }));
   const actByDay = new Map();
   acts.forEach(a=>{ if(!actByDay.has(a.day)) actByDay.set(a.day, []); actByDay.get(a.day).push(a); });

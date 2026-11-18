@@ -14463,21 +14463,22 @@ async function loadProgress(){
   const to = hmEnd > monthEnd ? hmEnd : monthEnd;
   try{
     const fromTs = from.toISOString();
-    const [plan, doneTasks, comps, meals, budget, budRec, openTasks] = await Promise.all([
+    const [plan, doneTasks, comps, meals, budget, budRec, openTasks, lplans] = await Promise.all([
       fetchPlan(iso(from), iso(to)),
       sb.from('tasks').select('*').eq('completed', true).gte('completed_at', fromTs),
       sb.from('recurring_completions').select('*').gte('created_at', fromTs),
       sb.from('fit_food_log').select('date').gte('date', iso(from)),
       sb.from('budget_entries').select('*'),
       sb.from('budget_recurring').select('*'),
-      sb.from('tasks').select('*').eq('completed', false)
+      sb.from('tasks').select('*').eq('completed', false),
+      sb.from('learn_plans').select('id,name,archived').order('position').order('created_at')
     ]);
     [doneTasks, comps, meals, budget, budRec, openTasks].forEach(r=>{ if(r.error) throw r.error; });
 
     const { acts, actByDay } = buildActs(plan, doneTasks.data || [], comps.data || []);
 
     PROG = { plan, acts, actByDay, meals: meals.data || [], budget: budget.data || [], budRec: budRec.data || [],
-             openTasks: openTasks.data || [], from, to };
+             openTasks: openTasks.data || [], lplans: ((lplans && lplans.data) || []).filter(x=> !x.archived), from, to };
     computeStreaks();
     paintProgress();
   }catch(err){ showError($('progKpis'), err, loadProgress); }
@@ -14567,6 +14568,14 @@ function paintProgress(){
   const M = moneyStats();
   const sideProjects = openOf('side').filter(t=>t.kind === 'long-term').length;
   const sideDeadlines = openOf('side').filter(t=>t.due_date && t.due_date >= t0 && t.due_date <= iso(addDays(today, 14))).length;
+  // learning: study time from sessions with a start and end, per plan from the same items
+  const learnItems = [];
+  for(let d = _dayOnly(R.from); d <= R.to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{ if(it.cat === 'learning') learnItems.push(it); });
+  const lMin = it => { const r = it.raw || {}, a = r.due_time || r.start_time, b = r.end_time; if(!a || !b) return 0;
+    const m = x => { const [h, mm] = String(x).split(':').map(Number); return h * 60 + mm; }; return Math.max(0, m(b) - m(a)); };
+  const lHours = min => { const h = Math.floor(min / 60), m = min % 60; return min ? (h ? h + ' h' + (m ? ' ' + m + ' min' : '') : m + ' min') : '0 h'; };
+  const lDone = learnItems.filter(it=> it.done).reduce((a, it)=> a + lMin(it), 0), lPlan = learnItems.reduce((a, it)=> a + lMin(it), 0);
+  const lPlanRows = PROG.lplans.map(p=>{ const its = learnItems.filter(it=> it.raw && it.raw.learn_plan_id === p.id); return { p, n: its.length, d: its.filter(it=> it.done).length }; }).filter(x=> x.n).slice(0, 3);
 
   $('progCats').innerHTML =
     card('side', big(ct.side.done, ct.side.planned, 'planned activities') + bar(ct.side.done, ct.side.planned) +
@@ -14580,7 +14589,11 @@ function paintProgress(){
         ? `<div class="catp-big"><b>${pct(M.savedTotal, PREFS.savingsGoal)}%</b><span>of savings goal</span></div>${bar(M.savedTotal, PREFS.savingsGoal)}`
         : `<div class="catp-big"><b>${money(M.savedTotal)}</b><span>saved in total</span></div>`) +
       `<div class="catp-rows"><div>Spent this month <b>${money(M.cur.spent)}</b></div>
-       <div>Budget used <b>${M.limit ? pct(M.cur.spent, M.limit) + '%' : '—'}</b></div><div>Money tasks open <b>${openOf('money').length}</b></div></div>`);
+       <div>Budget used <b>${M.limit ? pct(M.cur.spent, M.limit) + '%' : '—'}</b></div><div>Money tasks open <b>${openOf('money').length}</b></div></div>`) +
+    card('learning', big(ct.learning.done, ct.learning.planned, 'sessions & tasks') + bar(ct.learning.done, ct.learning.planned) +
+      `<div class="catp-rows"><div>Study time <b>${lHours(lDone)}${lPlan ? ' of ' + lHours(lPlan) : ''}</b></div>
+       ${lPlanRows.map(x=> `<div>${esc(x.p.name.length > 22 ? x.p.name.slice(0, 21) + '…' : x.p.name)} <b>${x.d}/${x.n}</b></div>`).join('')}
+       <div>Open study tasks <b>${openOf('learning').length}</b></div></div>`);
 
   paintHeat();
   paintWeeks();

@@ -2814,84 +2814,186 @@
   @media (max-width:520px){ .theme-opt{padding:8px 8px 10px;} .theme-desc{display:none;} }
 
   /* ===================================================================
-     LEARNING — weekly study planner. Same card, bar and tints as the
-     Calendar; study blocks use the Learning colour (acc-learn).
+     LEARNING (2026-11-18, v2) — learning plans with their own calendar,
+     focus areas and statistics. Built from the Fitness kit (.fx-*),
+     plus a few ln2-* pieces; only theme tokens, light and dark.
      =================================================================== */
-  #page-learning .sw-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
-  #page-learning .sw-head-t{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0;}
-  #page-learning .page-title{margin:0;}
-  #page-learning .sw-sum{font-size:13px;font-weight:600;color:var(--muted-foreground);}
-  #page-learning .btn{border-radius:999px;padding:11px 18px 11px 14px;}
-  #page-learning .btn .ico{width:17px;height:17px;}
-  .sw-label span{color:var(--dz-ink-3, var(--muted-foreground));font-weight:600;}
-  .sw-hint{font-size:12px;font-weight:600;color:var(--muted-foreground);}
-  .sw-card #swBody{padding:14px 18px 18px;}
-  .sw-card #swBody > .skel{height:320px;}
+  #page-learning{--fx-r:26px;--fx-r-sm:18px;--fx-gap:16px;}
+  #page-learning .ico-xs{width:12px;height:12px;}
+  #page-learning .spacer{flex:1 1 auto;min-width:0;}
+  #page-learning .fx-head .btn{border-radius:999px;}
+  #lnBody > .skel{height:220px;border-radius:var(--fx-r);}
 
-  /* ---- the week grid (wide screens) ---- */
-  .sw-ghead, .sw-gbody{display:grid;grid-template-columns:52px repeat(7,minmax(0,1fr));gap:6px;}
-  .sw-ghead{margin-bottom:8px;}
-  .sw-dh{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;}
-  .sw-dh span{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-foreground);}
-  .sw-dh b{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
-  .sw-dh.is-today b{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
-  .sw-gbody{position:relative;}
-  .sw-times{position:relative;height:calc(var(--rows) * var(--row));}
-  .sw-times span{position:absolute;right:8px;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--muted-foreground);font-variant-numeric:tabular-nums;}
-  .sw-col{position:relative;height:calc(var(--rows) * var(--row));border-radius:12px;cursor:copy;
-    background-color:rgba(var(--foreground-rgb),.012);
-    background-image:linear-gradient(to bottom, transparent calc(var(--row) - 1px), var(--border) calc(var(--row) - 1px));
-    background-size:100% var(--row);background-position:0 0;}
-  .sw-col:hover{background-color:rgba(var(--foreground-rgb),.03);}
-  .sw-col.is-today{background-color:rgba(var(--primary-rgb),.22);}
-  .sw-ev{position:absolute;border:none;font:inherit;text-align:left;cursor:grab;color:var(--foreground);overflow:hidden;
-    display:flex;flex-direction:column;gap:1px;padding:5px 9px 5px 11px;border-radius:10px;
-    background:rgba(var(--acc-rgb),.30);box-shadow:inset 3px 0 0 0 var(--acc);
-    transition:box-shadow .15s ease, transform .15s ease;z-index:2;touch-action:manipulation;}
-  .sw-ev:hover{transform:translateY(-1px);box-shadow:inset 3px 0 0 0 var(--acc), 0 8px 16px -10px rgba(var(--shadow-rgb),.35);z-index:3;}
-  .sw-ev b{font-size:12.5px;font-weight:700;line-height:1.2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-  .sw-ev small{font-size:11px;font-weight:600;color:var(--muted-foreground);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .sw-ev.is-mid b{-webkit-line-clamp:1;}
-  .sw-ev.is-short{flex-direction:row;align-items:center;gap:6px;padding-top:2px;padding-bottom:2px;}
-  .sw-ev.is-short b{-webkit-line-clamp:1;flex:1 1 auto;min-width:0;}
-  .sw-ev.is-short small{display:none;}
-  .sw-ev.is-short.is-drag small{display:inline;flex-shrink:0;}
-  .sw-ev.is-past{opacity:.72;}
-  .sw-ev.is-drag{cursor:grabbing;opacity:.92;transform:none;z-index:5;box-shadow:inset 3px 0 0 0 var(--acc), 0 0 0 2px var(--ring), 0 12px 22px -10px rgba(var(--shadow-rgb),.45);transition:none;}
-  body.sw-dragging, body.sw-dragging *{cursor:grabbing !important;user-select:none;}
-  .sw-now{position:absolute;left:-3px;right:0;height:2px;background:var(--danger);border-radius:2px;z-index:4;pointer-events:none;}
-  .sw-now::before{content:"";position:absolute;left:-2px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--danger);}
+  /* overview */
+  .ln2-ov{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:var(--fx-gap);align-items:start;}
+  .ln2-side{display:flex;flex-direction:column;gap:var(--fx-gap);min-width:0;}
+  .ln2-side > .fx-card + .fx-card{margin-top:0;}
+  .ln2-plan-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:12px;}
+  .ln2-plan{position:relative;display:flex;flex-direction:column;gap:6px;min-width:0;min-height:236px;padding:16px 16px 14px;border-radius:22px;cursor:pointer;color:var(--foreground);
+    background:color-mix(in srgb, var(--fx-tone, var(--ring)) 20%, var(--card));background-image:var(--sheen-sm);
+    box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 10px 22px -18px rgba(var(--shadow-rgb),.45);transition:box-shadow .15s;}
+  .ln2-plan:hover{box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px rgba(var(--shadow-rgb),.12), 0 14px 26px -16px rgba(var(--shadow-rgb),.45);}
+  .ln2-plan-top{display:flex;align-items:flex-start;justify-content:space-between;}
+  .ln2-plan-ico{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:var(--card);
+    color:var(--foreground);box-shadow:inset 0 0 0 1px var(--edge), inset 4px 0 0 var(--fx-tone, var(--ring));}
+  .ln2-plan-name{margin:10px 0 0;font-size:18px;font-weight:800;letter-spacing:-.01em;line-height:1.2;overflow-wrap:anywhere;}
+  .ln2-plan-focus{margin:0;font-size:12.5px;color:var(--muted-foreground);line-height:1.35;overflow-wrap:anywhere;}
+  .ln2-plan-focus span{font-weight:700;}
+  .ln2-plan-kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+  .ln2-plan-kv > div{display:flex;flex-direction:column;gap:1px;padding:8px 10px;border-radius:14px;background:rgba(var(--foreground-rgb),.045);}
+  .ln2-plan-kv small{font-size:11px;font-weight:600;color:var(--muted-foreground);}
+  .ln2-plan-kv b{font-size:15px;font-weight:800;white-space:nowrap;}
+  .ln2-plan-kv b em{font-style:normal;font-size:12px;font-weight:700;opacity:.55;}
+  .ln2-prog{margin-top:auto;padding-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .ln2-prog > span{font-size:12px;color:var(--muted-foreground);font-weight:600;}
+  .ln2-prog > span b{color:var(--foreground);}
+  .ln2-plan .fx-bar{background:rgba(var(--foreground-rgb),.08);}
+  .ln2-plan .fx-bar i{background:var(--foreground);}
+  .ln2-plan-next{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted-foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:16px;}
+  .ln2-plan-next .ico{flex-shrink:0;}
+  .ln2-add{align-items:center;justify-content:center;gap:8px;font:inherit;font-size:13px;font-weight:700;color:var(--muted-foreground);border:0;
+    background:transparent !important;background-image:none !important;box-shadow:none !important;outline:1.5px dashed var(--border);outline-offset:-1.5px;}
+  .ln2-add span{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--muted);color:var(--foreground);}
+  .ln2-add:hover{outline-color:var(--ring);color:var(--foreground);}
+  .ln2-week .fx-hero-g b{font-size:22px;}
 
-  /* ---- the week as a list (phones) ---- */
-  .sw-agenda{display:none;}
-  .sw-aday{display:grid;grid-template-columns:44px minmax(0,1fr) 36px;gap:10px;align-items:start;padding:10px 0;border-top:1px solid var(--border);}
-  .sw-aday:first-child{border-top:none;padding-top:2px;}
-  .sw-adate{display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:2px;}
-  .sw-adate span{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-foreground);}
-  .sw-adate b{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
-  .sw-aday.is-today .sw-adate b{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
-  .sw-aday.is-past{opacity:.7;}
-  .sw-alist{display:flex;flex-direction:column;gap:6px;min-width:0;}
-  .sw-acard{border:none;font:inherit;text-align:left;cursor:pointer;color:var(--foreground);display:flex;flex-direction:column;gap:2px;
-    padding:9px 12px 9px 14px;border-radius:12px;background:rgba(var(--acc-rgb),.30);box-shadow:inset 3px 0 0 0 var(--acc);min-width:0;}
-  .sw-acard b{font-size:14px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;}
-  .sw-atime{font-size:12px;font-weight:700;color:var(--muted-foreground);font-variant-numeric:tabular-nums;}
-  .sw-free{font-size:13px;font-weight:600;color:var(--muted-foreground);padding:8px 0;}
-  .sw-aadd{width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-    background:transparent;color:var(--muted-foreground);box-shadow:inset 0 0 0 1px var(--border);}
-  .sw-aadd:hover{background:var(--muted);color:var(--foreground);}
-  .sw-aadd .ico{width:16px;height:16px;}
+  /* a session / task row */
+  .ln2-day{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;}
+  .ln2-row{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 12px;border-radius:18px;background:var(--card);
+    box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 1px 2px rgba(var(--shadow-rgb),.04);}
+  .ln2-row[draggable="true"]{cursor:grab;}
+  .ln2-row.is-drag{opacity:.55;}
+  .ln2-time{flex:0 0 86px;font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.3;}
+  .ln2-time.any{color:var(--muted-foreground);font-weight:600;}
+  .ln2-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;border:0;background:transparent;padding:2px 0;font:inherit;text-align:left;color:var(--foreground);cursor:pointer;}
+  .ln2-main b{font-size:14px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;}
+  .ln2-main:hover b{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;}
+  .ln2-row.done .ln2-main b{color:var(--muted-foreground);text-decoration:line-through;}
+  .ln2-row.done .ln2-time{color:var(--muted-foreground);}
+  .ln2-tags{display:flex;flex-wrap:wrap;gap:5px;align-items:center;}
+  .ln2-tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;
+    background:color-mix(in srgb, var(--fx-tone, var(--ring)) 26%, var(--card));color:var(--foreground);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ln2-tag .fx-cdot{width:6px;height:6px;margin-right:5px;}
+  .ln2-tag.soft{background:var(--muted);color:var(--muted-foreground);}
+  .ln2-rep{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--muted-foreground);}
+  .ln2-none{margin:4px 0 0;font-size:13px;color:var(--muted-foreground);}
+  .ln2-hint{margin:12px 0 0;font-size:11.5px;color:var(--muted-foreground);}
 
-  @media (max-width:1060px){ .sw-hint{display:none;} }
+  /* plan dashboard */
+  .ln2-ph{align-items:center;}
+  .ln2-ph-t{display:flex;flex-direction:column;gap:0;min-width:0;}
+  .ln2-ph-t .page-title{overflow-wrap:anywhere;}
+  .ln2-crumb{font-size:12px;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:.05em;}
+  .ln2-focusbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;border-radius:var(--fx-r-sm);margin-bottom:var(--fx-gap);
+    background:color-mix(in srgb, var(--fx-tone, var(--ring)) 18%, var(--card));box-shadow:inset 0 0 0 1px var(--edge), inset 4px 0 0 var(--fx-tone, var(--ring));}
+  .ln2-focusbar > span{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-foreground);}
+  .ln2-focusbar > b{flex:1;min-width:0;font-size:14.5px;overflow-wrap:break-word;}
+  .ln2-focusbar > b em{font-style:normal;font-weight:600;color:var(--muted-foreground);}
+  .ln2-sched{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(320px,1fr);gap:var(--fx-gap);align-items:start;}
+  .ln2-sched > .fx-card + .fx-card{margin-top:0;}
+  .ln2-strip{margin-bottom:12px;}
+  .fx-sday.is-over b, .fx-mday.is-over{outline:2px dashed var(--foreground) !important;outline-offset:3px;}
+  body.ln2-dragging .fx-sday, body.ln2-dragging .fx-mday{cursor:copy;}
+  .ln2-wk{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;border-top:1px solid var(--border);padding-top:12px;}
+  .ln2-wkd{display:flex;flex-direction:column;gap:5px;min-width:0;min-height:44px;border-radius:12px;cursor:pointer;}
+  .ln2-wkd.sel{background:rgba(var(--foreground-rgb),.03);}
+  .ln2-wkc{display:flex;flex-direction:column;gap:1px;min-width:0;border:0;text-align:left;font:inherit;color:var(--foreground);cursor:pointer;padding:6px 7px;border-radius:10px;
+    background:color-mix(in srgb, var(--ring) 22%, var(--card));box-shadow:inset 3px 0 0 var(--ring);}
+  .ln2-wkc small{font-size:10.5px;font-weight:700;color:var(--muted-foreground);font-variant-numeric:tabular-nums;}
+  .ln2-wkc b{font-size:11.5px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere;}
+  .ln2-wkc.done{background:var(--foreground);color:var(--card);box-shadow:none;}
+  .ln2-wkc.done small{color:var(--card);opacity:.7;}
+
+  /* focus areas */
+  .ln2-area-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;}
+  .ln2-area{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:132px;padding:14px;border:0;border-radius:20px;text-align:left;font:inherit;color:var(--foreground);cursor:pointer;
+    background:var(--muted);background-image:var(--sheen-sm);box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge);}
+  .ln2-area:hover{box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px rgba(var(--shadow-rgb),.14);}
+  .ln2-area.on{background-color:var(--primary);box-shadow:inset 0 0 0 2px var(--ring);}
+  .ln2-area.none{background-color:transparent;box-shadow:inset 0 0 0 1px var(--border);}
+  .ln2-area.none.on{background-color:var(--primary);box-shadow:inset 0 0 0 2px var(--ring);}
+  .ln2-area-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;}
+  .ln2-area-h b{font-size:15px;font-weight:800;line-height:1.25;overflow-wrap:break-word;min-width:0;}
+  .ln2-area-h em{font-style:normal;font-size:15px;font-weight:800;}
+  .ln2-area .fx-bar{background:rgba(var(--foreground-rgb),.08);}
+  .ln2-area .fx-bar i{background:var(--foreground);}
+  .ln2-area-m{font-size:12px;font-weight:600;color:var(--muted-foreground);}
+  .ln2-area-n{margin-top:auto;display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted-foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ln2-area-n .ico{flex-shrink:0;}
+  .ln2-area.ln2-add{min-height:132px;}
+  .ln2-apanel{margin-top:var(--fx-gap);}
+  .ln2-quick{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;margin-bottom:12px;border-radius:14px;background:var(--card);box-shadow:inset 0 0 0 1px var(--input, var(--border));}
+  .ln2-quick > .ico{width:16px;height:16px;color:var(--muted-foreground);flex-shrink:0;}
+  .ln2-quick input{flex:1;min-width:0;border:0 !important;box-shadow:none !important;background:transparent !important;padding:9px 0;font:inherit;font-size:14px;color:var(--foreground);outline:none;}
+  .ln2-quick button{height:34px;padding:0 14px;border:0;border-radius:10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;background:var(--primary);color:var(--foreground);}
+  .ln2-h3{margin:18px 0 8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-foreground);}
+  .ln2-reps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .ln2-repc{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:0;text-align:left;font:inherit;color:var(--foreground);cursor:pointer;padding:10px 12px;border-radius:14px;background:var(--muted);}
+  .ln2-repc:hover{background:var(--primary-soft);}
+  .ln2-repc b{font-size:13.5px;}
+  .ln2-repc span{font-size:12px;color:var(--muted-foreground);font-weight:600;}
+  .ln2-donef{margin-top:14px;}
+  .ln2-donef summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--muted-foreground);padding:4px 0 8px;}
+
+  /* statistics */
+  .ln2-chart{margin-top:18px;}
+  .ln2-mchart{gap:2px;}
+  .ln2-mchart .fx-col-plot{max-width:14px;}
+  .ln2-mchart .fx-col-plot i{border-radius:4px 4px 2px 2px;}
+  .ln2-mchart .fx-col-plot .dn{left:1px;right:1px;}
+  #page-learning .fx-col[data-tip]:focus-visible{outline:2px solid var(--ring);outline-offset:2px;}
+
+  /* dialogs */
+  .ln2-tones{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
+  .ln2-tone{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;background:var(--fx-tone);box-shadow:inset 0 0 0 1px rgba(var(--shadow-rgb),.12);}
+  .ln2-tone.on{outline:2px solid var(--foreground);outline-offset:3px;}
+  .ln2-wd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;}
+  .ln2-wd button{height:36px;border:0;border-radius:12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted-foreground);
+    background:rgba(var(--foreground-rgb),.035);box-shadow:inset 0 0 0 1px rgba(var(--foreground-rgb),.09);}
+  .ln2-wd button.on{background:var(--foreground);color:var(--card);box-shadow:none;}
+  .modal-card .ln2-wdn{text-align:left;margin:8px 0 0;font-size:12px;}
+  .ln2-notime{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:12px;font-weight:700;
+    color:var(--muted-foreground);background:rgba(var(--foreground-rgb),.035);box-shadow:inset 0 0 0 1px rgba(var(--foreground-rgb),.09);}
+  .ln2-notime.on{background:var(--foreground);color:var(--card);box-shadow:none;}
+
+  @media (max-width:1180px){
+    .ln2-ov{grid-template-columns:minmax(0,1fr);}
+    .ln2-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;}
+    .ln2-sched{grid-template-columns:minmax(0,1fr);}
+  }
   @media (max-width:760px){
-    #page-learning .sw-head{margin-bottom:12px;}
-    #page-learning .page-title{display:none;}              /* the top bar already says Learning */
-    #page-learning .sw-sum{font-size:13.5px;}
-    .sw-grid{display:none;}
-    .sw-agenda{display:block;}
-    .sw-card #swBody{padding:6px 14px 10px;}
-    .sw-card .cz-bar{padding:10px 12px 8px;}
-    .sw-label{font-size:16px;}
+    #page-learning{--fx-r:22px;--fx-gap:12px;}
+    #page-learning .fx-head > .page-title{display:none;}      /* the top bar already says Learning */
+    #page-learning .fx-head > .spacer{display:none;}
+    #page-learning .fx-head > .btn{flex:1;justify-content:center;padding-left:8px;padding-right:8px;}
+    .ln2-ph{flex-wrap:wrap;}
+    .ln2-ph .ln2-ph-t{flex:1 1 calc(100% - 52px);}
+    .ln2-ph .ln2-ph-t .page-title{display:block;font-size:20px;}
+    #page-learning .ln2-ph > .btn{flex:1 1 40%;}
+    .ln2-side{grid-template-columns:minmax(0,1fr);}
+    .ln2-plan-g{grid-template-columns:minmax(0,1fr);}
+    .ln2-plan{min-height:0;}
+    .ln2-plan.ln2-add{min-height:84px;flex-direction:row;}
+    .ln2-area-g{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+    .ln2-area{min-height:120px;padding:12px;}
+    .ln2-area-n{display:none;}
+    .ln2-area-h{flex-direction:column;align-items:flex-start;gap:0;}
+    .ln2-area-h em{font-size:13px;color:var(--muted-foreground);}
+    .ln2-focusbar > span{flex:1;}
+    .ln2-focusbar > b{order:3;flex:1 1 100%;}
+    .ln2-area.ln2-add{min-height:120px;}
+    .ln2-wk{display:none;}
+    .ln2-row{flex-wrap:wrap;align-items:flex-start;gap:4px 10px;padding:10px;}
+    .ln2-time{flex:0 0 auto;order:2;width:calc(100% - 40px - 72px);padding-top:6px;}
+    .ln2-row > .fx-check{order:1;}
+    .ln2-row > .fx-acts{order:3;margin-left:auto;max-width:none;flex-wrap:nowrap;}
+    .ln2-main{order:4;flex:1 1 100%;padding-left:40px;}
+    .ln2-hint{display:none;}
+    .ln2-week .fx-hero-g b{font-size:19px;}
+  }
+  @media (max-width:360px){
+    .ln2-area-g{grid-template-columns:minmax(0,1fr);}
+    .ln2-area{min-height:0;}
   }
 
   /* line-art illustrations follow the theme: light lines on charcoal in dark mode */
@@ -5659,24 +5761,7 @@
 
     <!-- ---------- LEARNING ---------- -->
     <section class="page" id="page-learning">
-      <div class="sw-head">
-        <div class="sw-head-t">
-          <h1 class="page-title">Learning</h1>
-          <div class="sw-sum" id="swSum" aria-live="polite"></div>
-        </div>
-        <button type="button" class="btn btn-primary" id="swAdd"><i data-ico="plus"></i>Add session</button>
-      </div>
-      <div class="cz-card sw-card">
-        <div class="cz-bar">
-          <button type="button" class="ds-arrow" id="swPrev" aria-label="Previous week"><i data-ico="chevL"></i></button>
-          <h2 class="ds-month sw-label" id="swLabel" aria-live="polite">—</h2>
-          <button type="button" class="ds-arrow" id="swNext" aria-label="Next week"><i data-ico="chevR"></i></button>
-          <button type="button" class="ds-today" id="swToday" hidden>This week</button>
-          <span class="spacer"></span>
-          <span class="sw-hint">Click an empty spot to add · drag a block to move it</span>
-        </div>
-        <div id="swBody"><div class="skel"></div></div>
-      </div>
+      <div id="lnBody"><div class="skel"></div></div>
     </section>
 
     <!-- ---------- NOTIFICATIONS ---------- -->
@@ -7179,6 +7264,7 @@ const BACKUP_TABLES = [
   'schedule_events','budget_entries','budget_recurring','birthdays',
   'meals','notification_state','user_prefs',
   'fit_sessions','fit_templates','fit_weeks','fit_injuries','fit_foods','fit_food_log','fit_saved_meals','fit_cycles','fit_cycle_days',
+  'learn_plans','learn_areas',
   'biz_goals','biz_milestones','biz_projects','biz_content','biz_posts','biz_profiles','biz_leads','biz_opps','biz_months'
 ];
 const LAST_BACKUP_KEY = 'pa_last_backup';
@@ -7244,6 +7330,7 @@ const BACKUP_LABELS = {
   meals:'Meals', notification_state:'Notification states', user_prefs:'Settings',
   fit_sessions:'Workouts & runs', fit_templates:'Workout templates', fit_weeks:'Planned weeks', fit_injuries:'Injury breaks',
   fit_foods:'Foods', fit_food_log:'Food log', fit_saved_meals:'Saved meals', fit_cycles:'Cycles', fit_cycle_days:'Cycle notes',
+  learn_plans:'Learning plans', learn_areas:'Learning focus areas',
   biz_goals:'Business goals', biz_milestones:'Milestones', biz_projects:'Portfolio projects', biz_content:'Content ideas', biz_posts:'Content per platform',
   biz_profiles:'Freelance profiles', biz_leads:'Freelance leads', biz_opps:'Opportunities', biz_months:'Monthly reviews'
 };
@@ -7475,7 +7562,28 @@ async function calFetch(from, to){
   ]);
   if(ev.error) throw ev.error;
   if(bd.error) throw bd.error;
-  return { events: ev.data || [], bdays: bd.data || [], ltasks: (lt && lt.data) || [], biz: biz ? bizCalItems(biz, from, to) : [] };
+  return { events: ev.data || [], bdays: bd.data || [], ltasks: ((lt && lt.data) || []).concat(await calLearnRepeats(from, to)), biz: biz ? bizCalItems(biz, from, to) : [] };
+}
+// repeating study sessions from the Learning plans, one entry per day they fall on
+async function calLearnRepeats(from, to){
+  try{
+    const r = await sb.from('recurring_tasks').select('*').eq('category', 'learning');
+    const rules = (r.data || []).filter(x=> x.learn_plan_id && x.active !== false);
+    if(!rules.length) return [];
+    const c = await sb.from('recurring_completions').select('recurring_id,date').in('recurring_id', rules.map(x=> x.id)).gte('date', iso(from)).lte('date', iso(to));
+    const done = new Set((c.data || []).map(x=> x.recurring_id + '|' + x.date)), out = [];
+    rules.forEach(x=>{
+      for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) if(occursOn(x, d)){
+        const k = iso(d);
+        out.push({ id:'r:' + x.id + '|' + k, rule:x, title:x.title, due_date:k, due_time:x.start_time, end_time:x.end_time, completed: done.has(x.id + '|' + k) });
+      }
+    });
+    return out;
+  }catch(e){ return []; }
+}
+function calOpenLTask(t){
+  if(t.rule) return openRecurringForm(t.rule, 'learning', t.due_date);
+  openTaskForm(t);
 }
 
 async function renderCalendar(){
@@ -7558,7 +7666,9 @@ function weekItems(d){
   });
   CAL.ltasks.filter(t=> t.due_date === k && t.due_time).forEach(t=>{
     const [hh, mm] = t.due_time.split(':').map(Number), sh = hh + mm / 60;
-    out.push({ kind:'task', id:t.id, sh, eh: Math.min(24, sh + .75), title:t.title, cat:'learning', done:t.completed, time: t.due_time.slice(0, 5) });
+    const [h2, m2] = t.end_time ? t.end_time.split(':').map(Number) : [0, 0], eh = t.end_time ? h2 + m2 / 60 : 0;
+    out.push({ kind:'task', id:t.id, sh, eh: eh > sh ? eh : Math.min(24, sh + .75), title:t.title, cat:'learning', done:t.completed,
+      time: t.due_time.slice(0, 5) + (t.end_time && eh > sh ? '–' + t.end_time.slice(0, 5) : '') });
   });
   out.sort((a, b)=> a.sh - b.sh || b.eh - a.eh);
   // side by side when they overlap
@@ -7640,10 +7750,10 @@ function paintCalDay(){
   });
   CAL.ltasks.filter(t=> t.due_date === k).forEach(t=>{
     items.push({ kind:'task', s: t.due_time ? new Date(k + 'T' + t.due_time) : null, html: `<li class="cd-item is-task acc-learn${t.completed ? ' done' : ''}">
-      <div class="cd-time"><b>${t.due_time ? t.due_time.slice(0, 5) : 'Any'}</b><small>${t.due_time ? '' : 'time'}</small></div>
+      <div class="cd-time"><b>${t.due_time ? t.due_time.slice(0, 5) : 'Any'}</b><small>${t.due_time ? (t.end_time ? t.end_time.slice(0, 5) : '') : 'time'}</small></div>
       <div class="cd-card" data-ltask="${t.id}" data-act="open" tabindex="0" role="button" aria-label="Study task: ${esc(t.title)}">
         <div class="cd-title">${esc(t.title)}</div>
-        <div class="cd-meta"><i></i>Learning · study task${t.completed ? ' · done' : ''}</div>
+        <div class="cd-meta"><i></i>Learning · ${t.rule ? 'repeating session' : t.end_time ? 'study session' : 'study task'}${t.completed ? ' · done' : ''}</div>
       </div></li>` });
   });
   (CAL.biz || []).filter(x=> x.date === k).forEach(x=>{
@@ -7791,7 +7901,7 @@ $('calMain').addEventListener('click', e=>{
   const ev = e.target.closest('[data-ev]');
   if(ev){ const x = CAL.events.find(z=> z.id === ev.dataset.ev); if(x) openEditEvent(x); return; }
   const lt = e.target.closest('[data-ltask]');
-  if(lt){ const t = CAL.ltasks.find(z=> z.id === lt.dataset.ltask); if(t) openTaskForm(t); return; }
+  if(lt){ const t = CAL.ltasks.find(z=> z.id === lt.dataset.ltask); if(t) calOpenLTask(t); return; }
   const bz = e.target.closest('[data-biz]');
   if(bz){ bizCalOpen(bz.dataset.biz); return; }
   const day = e.target.closest('[data-day]');
@@ -7807,7 +7917,7 @@ function calDayAction(e){
   if(el.dataset.biz) return bizCalOpen(el.dataset.biz);
   if(evId){ const x = CAL.events.find(z=> z.id === evId); if(!x) return; return act === 'del' ? deleteEvent(x) : openEditEvent(x); }
   if(bdId){ const b = CAL.bdays.find(z=> z.id === bdId); if(!b) return; return act === 'del' ? deleteBirthday(b) : openBirthdayForm(b); }
-  if(ltId){ const t = CAL.ltasks.find(z=> z.id === ltId); if(t) openTaskForm(t); }
+  if(ltId){ const t = CAL.ltasks.find(z=> z.id === ltId); if(t) calOpenLTask(t); }
 }
 $('calDay').addEventListener('click', e=>{
   const day = e.target.closest('.cb-date[data-day]');
@@ -9616,11 +9726,13 @@ $('fxBody').addEventListener('click', async e=>{
     tip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
   };
   const hide = ()=>{ tip.hidden = true; };
-  const host = $('page-training');
-  host.addEventListener('mouseover', e=>{ const el = e.target.closest('[data-tip]'); if(el) show(el); });
-  host.addEventListener('mouseout', e=>{ if(e.target.closest('[data-tip]')) hide(); });
-  host.addEventListener('focusin', e=>{ const el = e.target.closest('[data-tip]'); if(el) show(el); });
-  host.addEventListener('focusout', hide);
+  ['page-training', 'page-learning'].forEach(id=>{
+    const host = $(id);
+    host.addEventListener('mouseover', e=>{ const el = e.target.closest('[data-tip]'); if(el) show(el); });
+    host.addEventListener('mouseout', e=>{ if(e.target.closest('[data-tip]')) hide(); });
+    host.addEventListener('focusin', e=>{ const el = e.target.closest('[data-tip]'); if(el) show(el); });
+    host.addEventListener('focusout', hide);
+  });
   window.addEventListener('scroll', hide, { passive:true });
 })();
 
@@ -10691,7 +10803,8 @@ function planDay(plan, d){
   }));
   plan.rules.filter(r=>occursOn(r, d)).forEach(r=>out.push({
     key:'r:' + r.id + '|' + day, type:'rec', id:r.id, date:day, title:r.title,
-    cat: CATS[r.category] ? r.category : 'home', done: plan.doneRec.has(r.id + '|' + day), raw:r
+    cat: CATS[r.category] ? r.category : 'home', done: plan.doneRec.has(r.id + '|' + day),
+    time: r.start_time ? r.start_time.slice(0,5) : '', raw:r
   }));
   // Injury Mode: a paused day has no training planned, so nothing can be missed
   if(PREFS.countTraining && !fxPausedIn(plan.fx.inj, day)){
@@ -11324,7 +11437,10 @@ function renderDash(){
   const timed = day.own.concat(day.late.filter(x=>x.type === 'task' && x.raw.due_date === iso(d))).filter(t=>t.time).map(t=>{
     const [h, m] = t.time.split(':').map(Number);
     const s = new Date(d); s.setHours(h, m, 0, 0);
-    return { kind:'task', start:s, end:null, title:t.title, cat:t.cat, done:t.done, star:t.priority === 'high', task:t.raw };
+    // study sessions carry an end time
+    const et = t.raw && t.raw.end_time, e = et ? new Date(d) : null;
+    if(e){ const [eh, em] = et.split(':').map(Number); e.setHours(eh, em, 0, 0); }
+    return { kind:'task', start:s, end: e && e > s ? e : null, title:t.title, cat:t.cat, done:t.done, star:t.priority === 'high', task:t.raw, rec: t.type === 'rec' ? t : null };
   });
   const items = evs.concat(timed).sort((a, b)=> a.start - b.start);
   $('dashSchedCount').textContent = items.length
@@ -11365,7 +11481,7 @@ function renderDash(){
   const ee = $('dzEmptyEvent'); if(ee) ee.addEventListener('click', ()=> openEventModal(iso(DSEL)));
   $('schedBlocks').querySelectorAll('[data-si]').forEach(el=>{
     const x = items[Number(el.dataset.si)];
-    el.addEventListener('click', ()=> x.kind === 'event' ? openEditEvent(x.ev) : openTaskForm(x.task));
+    el.addEventListener('click', ()=> x.kind === 'event' ? openEditEvent(x.ev) : x.rec ? openRecurringForm(x.rec.raw, x.rec.cat, x.rec.date) : openTaskForm(x.task));
   });
 }
 
@@ -14646,12 +14762,18 @@ function paintMoney(M){
    SETTINGS
    =================================================================== */
 /* ===================================================================
-   LEARNING — a simple weekly study planner (2026-11-18)
-   One week, Monday to Sunday, with each study session as a time block.
-   A session is a calendar event with category 'learning', so it also
-   shows on the Calendar and the Dashboard with no copies. The older
-   learning tables (paths, materials, notes, study time) are left as
-   they are in the database; nothing here reads them any more.
+   LEARNING — study plans (2026-11-18, v2). Same look and logic as Fitness.
+   Overview: one card per learning plan (a field Katarina studies) plus
+   today's sessions across all plans. A plan opens its own dashboard:
+   Schedule (week / month calendar, the chosen day's sessions),
+   Focus areas (her own categories, each with its tasks), Statistics.
+   Data: learn_plans, learn_areas. Sessions and tasks are ordinary rows
+   in `tasks` (category 'learning', learn_plan_id, learn_area_id,
+   due_date, due_time = start, end_time); repeating weekly sessions are
+   rows in `recurring_tasks` (weekdays, start_time, end_time) ticked off
+   through recurring_completions. So they also show on the Dashboard,
+   in All tasks and on the Calendar, and count for the streak.
+   Every number is counted from those rows; nothing is estimated.
    =================================================================== */
 const lid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 function safeUrl(u){
@@ -14663,243 +14785,664 @@ function safeUrl(u){
 }
 const urlHost = u => { try{ return new URL(u).hostname.replace(/^www\./, ''); }catch(e){ return u; } };
 
-const SW = { mon: null, rows: [], items: [], drag: null, justDragged: false };
-const SW_ROW = 58;                                   // px per hour in the week grid
-const SW_SNAP = .25;                                 // drag in 15-minute steps
-
-function swDur(min){
-  min = Math.round(min);
-  if(min < 60) return min + ' min';
-  const h = Math.floor(min / 60), m = min % 60;
-  return h + ' h' + (m ? ' ' + m + ' min' : '');
+const LN = { plans:[], areas:[], tasks:[], rules:[], comps:[], view:'overview', planId:null, tab:'schedule',
+             cal:'week', ref:null, sel:null, stat:'week', statRef:null, area:null, loaded:false };
+const LN_TONES = [1, 2, 3, 4, 5, 6];
+const LN_TONE_NAMES = { 1:'Amber', 2:'Sky', 3:'Rose', 4:'Sage', 5:'Sand', 6:'Stone' };
+const lnT5 = t => t ? String(t).slice(0, 5) : '';
+const lnMin = t => { if(!t) return null; const [h, m] = String(t).split(':').map(Number); return h * 60 + m; };
+const lnDur = it => (it.start && it.end && lnMin(it.end) > lnMin(it.start)) ? lnMin(it.end) - lnMin(it.start) : 0;
+function lnHours(min){
+  if(!min) return '0 h';
+  const h = Math.floor(min / 60), m = Math.round(min % 60);
+  return h ? (m ? `${h} h ${m} min` : `${h} h`) : `${m} min`;
 }
-// one stored event -> one block on its start day (a session past midnight stops at 24:00)
-function swItem(e){
-  const s = new Date(e.starts_at), en = e.ends_at ? new Date(e.ends_at) : new Date(s.getTime() + 3600000);
-  const day = iso(s), sh = s.getHours() + s.getMinutes() / 60;
-  const eh = iso(en) === day ? en.getHours() + en.getMinutes() / 60 : 24;
-  const endTxt = iso(en) === day ? hhmm(en) : '00:00';
-  return { id:e.id, ev:e, day, sh, eh: Math.max(eh, sh + .25), title:e.title || 'Study', time: hhmm(s) + ' – ' + endTxt,
-           mins: Math.max(15, Math.round((en - s) / 60000)) };
-}
-function swLanes(list){
-  list.sort((a, b)=> a.sh - b.sh || b.eh - a.eh);
-  let cluster = [], end = -1;
-  const flush = ()=>{ const lanes = []; cluster.forEach(it=>{ let l = lanes.findIndex(x=> x <= it.sh); if(l < 0){ l = lanes.length; lanes.push(0); } lanes[l] = it.eh; it.lane = l; }); cluster.forEach(it=> it.lanes = lanes.length); cluster = []; };
-  list.forEach(it=>{ if(it.sh >= end) flush(); cluster.push(it); end = Math.max(end, it.eh); });
-  flush();
-  return list;
-}
+const lnPlan = id => LN.plans.find(p=> p.id === id) || null;
+const lnArea = id => LN.areas.find(a=> a.id === id) || null;
+const lnAreasOf = pid => LN.areas.filter(a=> a.plan_id === pid);
+const lnDayName = d => d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long' });
+const lnShort = d => d.toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' });
 
 async function loadLearning(){
-  if(!SW.mon) SW.mon = mondayOf(new Date());
-  const from = SW.mon, to = addDays(SW.mon, 7);
+  const body = $('lnBody');
   try{
-    const { data, error } = await sb.from('schedule_events').select('*').eq('category', 'learning')
-      .gte('starts_at', from.toISOString()).lt('starts_at', to.toISOString()).order('starts_at');
-    if(error) throw error;
-    SW.rows = data || [];
-    SW.items = SW.rows.map(swItem);
-    swPaint();
-  }catch(err){ showError($('swBody'), err, loadLearning); }
+    const [plans, areas, tasks, rules] = await Promise.all([
+      sb.from('learn_plans').select('*').order('position').order('created_at'),
+      sb.from('learn_areas').select('*').order('position').order('created_at'),
+      sb.from('tasks').select('*').eq('category', 'learning'),
+      sb.from('recurring_tasks').select('*').eq('category', 'learning')
+    ]);
+    [plans, areas, tasks, rules].forEach(r=>{ if(r.error) throw r.error; });
+    LN.plans = (plans.data || []).filter(p=> !p.archived);
+    LN.areas = areas.data || [];
+    LN.tasks = (tasks.data || []).filter(t=> t.learn_plan_id);
+    LN.rules = (rules.data || []).filter(r=> r.learn_plan_id && r.active !== false);
+    const ids = LN.rules.map(r=> r.id);
+    if(ids.length){
+      const c = await sb.from('recurring_completions').select('*').in('recurring_id', ids);
+      if(c.error) throw c.error;
+      LN.comps = c.data || [];
+    } else LN.comps = [];
+    LN.done = new Set(LN.comps.map(c=> c.recurring_id + '|' + c.date));
+    if(!LN.ref){ LN.ref = _dayOnly(new Date()); LN.sel = _dayOnly(new Date()); LN.statRef = _dayOnly(new Date()); }
+    if(LN.view === 'plan' && !lnPlan(LN.planId)) LN.view = 'overview';
+    LN.loaded = true;
+    lnPaint();
+  }catch(err){ showError(body, err, loadLearning); }
 }
 
-function swWeekLabel(mon){
-  const sun = addDays(mon, 6), y = sun.getFullYear();
-  return mon.getMonth() === sun.getMonth()
-    ? `${mon.getDate()} – ${sun.getDate()} <span>${MONTHS_FULL[sun.getMonth()]} ${y}</span>`
-    : `${mon.getDate()} ${MONTHS_FULL[mon.getMonth()].slice(0, 3)} – ${sun.getDate()} ${MONTHS_FULL[sun.getMonth()].slice(0, 3)} <span>${y}</span>`;
+/* ---------- items: one-off sessions/tasks + repeating occurrences ---------- */
+function lnTaskItem(t){
+  return { key:'t:' + t.id, type:'task', id:t.id, title:t.title, date:t.due_date || null, start:lnT5(t.due_time), end:lnT5(t.end_time),
+           done:!!t.completed, plan:t.learn_plan_id, area:t.learn_area_id || null, raw:t };
 }
-
-function swPaint(){
-  const mon = SW.mon, today = _dayOnly(new Date()), thisMon = mondayOf(today);
-  const days = Array.from({ length:7 }, (_, i)=> addDays(mon, i));
-  const byDay = days.map(d=> swLanes(SW.items.filter(it=> it.day === iso(d))));
-  const total = SW.items.reduce((n, it)=> n + it.mins, 0);
-
-  $('swLabel').innerHTML = swWeekLabel(mon);
-  $('swToday').hidden = sameDay(mon, thisMon);
-  $('swSum').textContent = SW.items.length
-    ? `${SW.items.length} session${SW.items.length === 1 ? '' : 's'} · ${swDur(total)} planned`
-    : (mon < thisMon ? 'Nothing was planned this week' : 'Nothing planned yet');
-
-  // hours shown: 8:00–22:00, stretched to fit anything earlier or later
-  let h0 = 8, h1 = 22;
-  SW.items.forEach(it=>{ h0 = Math.min(h0, Math.floor(it.sh)); h1 = Math.max(h1, Math.ceil(it.eh)); });
-  h0 = Math.max(0, h0); h1 = Math.min(24, h1);
-  SW.h0 = h0; SW.h1 = h1;
-  const rows = h1 - h0, now = new Date(), nowH = now.getHours() + now.getMinutes() / 60;
-  const dayName = d => d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long' });
-
-  // ---- wide screens: the week as a time grid ----
-  let g = `<div class="sw-grid" style="--rows:${rows};--row:${SW_ROW}px"><div class="sw-ghead"><span></span>` +
-    days.map((d, i)=> `<div class="sw-dh${sameDay(d, today) ? ' is-today' : ''}"><span>${DAY_SHORT[i]}</span><b>${d.getDate()}</b></div>`).join('') +
-    '</div><div class="sw-gbody"><div class="sw-times">' +
-    Array.from({ length: rows - 1 }, (_, i)=> `<span style="top:${(i + 1) * SW_ROW}px">${pad2(h0 + i + 1)}:00</span>`).join('') + '</div>';
-  days.forEach((d, i)=>{
-    g += `<div class="sw-col${sameDay(d, today) ? ' is-today' : ''}${d < today ? ' is-past' : ''}" data-day="${iso(d)}" aria-label="${esc(dayName(d))}">`;
-    byDay[i].forEach(it=>{
-      const top = (Math.max(it.sh, h0) - h0) * SW_ROW + 1, h = Math.max(24, (Math.min(it.eh, h1) - Math.max(it.sh, h0)) * SW_ROW - 3), w = 100 / it.lanes;
-      const size = h < 40 ? ' is-short' : h < 52 ? ' is-mid' : '';
-      g += `<button type="button" class="sw-ev acc-learn${size}${new Date(SW.rows.find(r=> r.id === it.id).ends_at || 0) < now ? ' is-past' : ''}" data-sid="${esc(it.id)}"
-        style="top:${top}px;height:${h}px;left:calc(${it.lane * w}% + 3px);width:calc(${w}% - 6px)"
-        title="${esc(it.title)} · ${it.time}" aria-label="${esc(it.title)}, ${esc(dayName(d))}, ${it.time}. Open to edit"><b>${esc(it.title)}</b><small>${it.time}</small></button>`;
-    });
-    if(sameDay(d, today) && nowH >= h0 && nowH <= h1) g += `<div class="sw-now" style="top:${(nowH - h0) * SW_ROW}px"></div>`;
-    g += '</div>';
+function lnRecItem(r, d){
+  const k = iso(d);
+  return { key:'r:' + r.id + '|' + k, type:'rec', id:r.id, title:r.title, date:k, start:lnT5(r.start_time), end:lnT5(r.end_time),
+           done: LN.done.has(r.id + '|' + k), plan:r.learn_plan_id, area:r.learn_area_id || null, raw:r };
+}
+function lnItems(from, to, planId){
+  const a = iso(from), b = iso(to), out = [];
+  LN.tasks.forEach(t=>{ if(t.due_date && t.due_date >= a && t.due_date <= b && (!planId || t.learn_plan_id === planId)) out.push(lnTaskItem(t)); });
+  LN.rules.forEach(r=>{
+    if(planId && r.learn_plan_id !== planId) return;
+    for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) if(occursOn(r, d)) out.push(lnRecItem(r, d));
   });
-  g += '</div></div>';
+  return out.sort((x, y)=> (x.date || '').localeCompare(y.date || '') || (x.start || '99').localeCompare(y.start || '99') || x.title.localeCompare(y.title));
+}
+// progress of a plan or a focus area: every task plus every repeat that has come round so far
+function lnProgress(planId, areaId){
+  const today = _dayOnly(new Date());
+  let total = 0, done = 0;
+  LN.tasks.forEach(t=>{
+    if(t.learn_plan_id !== planId) return;
+    if(areaId !== undefined && (t.learn_area_id || null) !== areaId) return;
+    total++; if(t.completed) done++;
+  });
+  LN.rules.forEach(r=>{
+    if(r.learn_plan_id !== planId) return;
+    if(areaId !== undefined && (r.learn_area_id || null) !== areaId) return;
+    const start = _dayOnly(new Date(r.created_at));
+    for(let d = start; d <= today; d = addDays(d, 1)) if(occursOn(r, d)){ total++; if(LN.done.has(r.id + '|' + iso(d))) done++; }
+  });
+  return { total, done, pct: total ? Math.round(done / total * 100) : null };
+}
+function lnSum(items){
+  const timed = items.filter(i=> lnDur(i));
+  return {
+    n: items.length, nDone: items.filter(i=> i.done).length,
+    sess: timed.length, sessDone: timed.filter(i=> i.done).length,
+    min: timed.reduce((s, i)=> s + lnDur(i), 0), minDone: timed.filter(i=> i.done).reduce((s, i)=> s + lnDur(i), 0)
+  };
+}
 
-  // ---- phones: the week as a list, one row per day ----
-  let a = '<div class="sw-agenda">';
-  days.forEach((d, i)=>{
-    const list = byDay[i].slice().sort((x, y)=> x.sh - y.sh);
-    a += `<section class="sw-aday${sameDay(d, today) ? ' is-today' : ''}${d < today ? ' is-past' : ''}">
-      <div class="sw-adate"><span>${DAY_SHORT[i]}</span><b>${d.getDate()}</b></div>
-      <div class="sw-alist">${list.length
-        ? list.map(it=> `<button type="button" class="sw-acard acc-learn" data-sid="${esc(it.id)}" aria-label="${esc(it.title)}, ${it.time}. Open to edit">
-            <span class="sw-atime">${it.time}</span><b>${esc(it.title)}</b></button>`).join('')
-        : '<span class="sw-free">Free</span>'}</div>
-      <button type="button" class="sw-aadd" data-addday="${iso(d)}" aria-label="Add a study session on ${esc(dayName(d))}">${ico('plus')}</button>
+/* ---------- painting ---------- */
+function lnPaint(){
+  if(!LN.loaded) return;
+  $('lnBody').innerHTML = LN.view === 'plan' ? lnPlanHtml() : lnOverviewHtml();
+}
+
+function lnOverviewHtml(){
+  const today = _dayOnly(new Date()), mon = mondayOf(today), sun = addDays(mon, 6);
+  const todayItems = lnItems(today, today);
+  const week = lnSum(lnItems(mon, sun));
+  const cards = LN.plans.map(p=>{
+    const wk = lnSum(lnItems(mon, sun, p.id)), pr = lnProgress(p.id), nA = lnAreasOf(p.id).length;
+    const next = lnItems(today, addDays(today, 13), p.id).find(i=> !i.done && (i.date > iso(today) || !i.end || i.end > hhmm(new Date())));
+    return `<article class="ln2-plan t${p.tone || 2}" data-ln="open" data-id="${p.id}">
+      <div class="ln2-plan-top"><span class="ln2-plan-ico">${ico('book')}</span>
+        <button type="button" class="fx-go" data-ln="open" data-id="${p.id}" aria-label="Open ${esc(p.name)}">${ico('arrowUR')}</button></div>
+      <h3 class="ln2-plan-name">${esc(p.name)}</h3>
+      <p class="ln2-plan-focus">${p.focus ? `<span>Now:</span> ${esc(p.focus)}` : `<span>${nA ? plural(nA, 'focus area') : 'No focus set yet'}</span>`}</p>
+      <div class="ln2-plan-kv">
+        <div><small>Sessions this week</small><b>${wk.sess || '—'}</b></div>
+        <div><small>Done this week</small><b>${wk.n ? `${wk.nDone}<em>/${wk.n}</em>` : '—'}</b></div>
+      </div>
+      <div class="ln2-prog"><div class="fx-bar"><i style="width:${pr.pct || 0}%"></i></div>
+        <span>${pr.total ? `<b>${pr.pct}%</b> · ${pr.done} of ${plural(pr.total, 'task')} done` : 'No tasks yet'}</span></div>
+      <div class="ln2-plan-next">${next ? `${ico('clock', 'ico-xs')}Next: ${sameDay(parseISO(next.date), today) ? 'Today' : lnShort(parseISO(next.date))}${next.start ? ' ' + next.start : ''} · ${esc(next.title)}` : '&nbsp;'}</div>
+    </article>`;
+  }).join('');
+  const addCard = `<button type="button" class="ln2-plan ln2-add" data-ln="add-plan"><span>${ico('plus')}</span>Add learning plan</button>`;
+
+  const todayHtml = todayItems.length
+    ? `<ul class="ln2-day">${todayItems.map(i=> lnRow(i, true)).join('')}</ul>`
+    : `<div class="fx-empty">${typeof doodleSvg === 'function' ? doodleSvg('free') : ''}<b>Nothing planned today</b><span>${LN.plans.length ? 'Add a study session to one of your plans.' : 'Start with a learning plan, then schedule sessions.'}</span></div>`;
+
+  return `<div class="fx-head"><h1 class="page-title">Learning</h1><span class="spacer"></span>
+      <button type="button" class="btn btn-ghost" data-ln="add-session"${LN.plans.length ? '' : ' hidden'}>${ico('plus')}Study session</button>
+      <button type="button" class="btn btn-primary" data-ln="add-plan">${ico('plus')}Add learning plan</button></div>
+    <div class="ln2-ov">
+      <section class="fx-card ln2-plans"><div class="fx-card-h"><div><h2>Your learning plans</h2><p class="fx-sub">${LN.plans.length ? 'Open a plan to schedule sessions and track its focus areas' : 'Create one for each field you are learning'}</p></div></div>
+        <div class="ln2-plan-g">${cards}${addCard}</div></section>
+      <aside class="ln2-side">
+        <section class="fx-card ln2-today"><div class="fx-card-h"><div><h2>Today</h2><p class="fx-sub">${lnDayName(today)}</p></div><span class="spacer"></span>
+          <span class="fx-count">${todayItems.length ? `${todayItems.filter(i=>i.done).length} of ${todayItems.length} done` : ''}</span></div>${todayHtml}</section>
+        <section class="fx-hero ln2-week"><div class="fx-hero-h"><b>This week</b><span>${lnShort(mon)} – ${lnShort(sun)}, all plans</span></div>
+          <div class="fx-hero-g">
+            <div><small>Study time</small><b>${lnHours(week.minDone)}</b><small>of ${lnHours(week.min)} planned</small></div>
+            <div><small>Sessions</small><b>${week.sessDone}<em>/${week.sess}</em></b><small>done</small></div>
+            <div><small>Tasks</small><b>${week.nDone}<em>/${week.n}</em></b><small>done</small></div>
+          </div>
+          <div class="fx-bar"><i style="width:${week.n ? Math.round(week.nDone / week.n * 100) : 0}%"></i></div></section>
+      </aside>
+    </div>`;
+}
+
+// one session / task row (day lists, today, focus areas)
+function lnRow(i, showPlan){
+  const p = lnPlan(i.plan), a = lnArea(i.area);
+  const time = i.start ? `${i.start}${i.end ? '–' + i.end : ''}` : 'Any time';
+  const tags = [showPlan && p ? `<span class="ln2-tag t${p.tone || 2}"><i class="fx-cdot"></i>${esc(p.name)}</span>` : '',
+                a ? `<span class="ln2-tag soft">${esc(a.name)}</span>` : '',
+                i.type === 'rec' ? `<span class="ln2-rep" title="${esc(freqLabel(i.raw))}">${ico('repeat', 'ico-xs')}${esc(freqLabel(i.raw))}</span>` : ''].join('');
+  return `<li class="ln2-row${i.done ? ' done' : ''}" data-key="${esc(i.key)}" draggable="true">
+    <button type="button" class="fx-check${i.done ? ' on' : ''}" data-ln="tick" role="checkbox" aria-checked="${i.done}" aria-label="${i.done ? 'Mark not done' : 'Mark done'}: ${esc(i.title)}">${ico('check')}</button>
+    <span class="ln2-time${i.start ? '' : ' any'}">${time}</span>
+    <button type="button" class="ln2-main" data-ln="edit" aria-label="Edit ${esc(i.title)}"><b>${esc(i.title)}</b>${tags ? `<span class="ln2-tags">${tags}</span>` : ''}</button>
+    <span class="fx-acts"><button type="button" data-ln="move" aria-label="Move ${esc(i.title)} to another day" title="Move to another day">${ico('swap')}</button>
+      <button type="button" data-ln="del" aria-label="Delete ${esc(i.title)}" title="Delete">${ico('trash')}</button></span>
+  </li>`;
+}
+
+function lnPlanHtml(){
+  const p = lnPlan(LN.planId);
+  const tabs = [['schedule', 'Schedule'], ['areas', 'Focus areas'], ['stats', 'Statistics']];
+  const body = LN.tab === 'areas' ? lnAreasHtml(p) : LN.tab === 'stats' ? lnStatsHtml(p) : lnSchedHtml(p);
+  return `<div class="fx-head ln2-ph">
+      <button type="button" class="fx-arrow-btn" data-ln="back" aria-label="All learning plans" title="All learning plans">${ico('chevL')}</button>
+      <div class="ln2-ph-t"><span class="ln2-crumb">Learning</span><h1 class="page-title">${esc(p.name)}</h1></div>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-ghost" data-ln="edit-plan">${ico('pencil')}Edit plan</button>
+      <button type="button" class="btn btn-primary" data-ln="add-session">${ico('plus')}Add session</button></div>
+    <div class="ln2-focusbar t${p.tone || 2}"><span>Current focus</span><b>${p.focus ? esc(p.focus) : '<em>Not set</em>'}</b>
+      <button type="button" class="fx-link" data-ln="edit-plan">${p.focus ? 'Change' : 'Set focus'}</button></div>
+    <nav class="fx-tabs" role="tablist" aria-label="${esc(p.name)}">${tabs.map(([k, l])=>
+      `<button type="button" role="tab" data-lntab="${k}" class="${LN.tab === k ? 'on' : ''}" aria-selected="${LN.tab === k}">${l}</button>`).join('')}</nav>
+    <div class="ln2-tab">${body}</div>`;
+}
+
+/* ---------- A. schedule ---------- */
+function lnDayState(items, d, today){
+  if(!items.length) return '';
+  const done = items.filter(i=> i.done).length;
+  if(done === items.length) return 's-done';
+  if(done) return 's-part';
+  return d < today ? 's-miss' : 's-plan';
+}
+function lnSchedHtml(p){
+  const today = _dayOnly(new Date()), sel = LN.sel;
+  let cal, label;
+  if(LN.cal === 'month'){
+    const first = new Date(LN.ref.getFullYear(), LN.ref.getMonth(), 1), start = mondayOf(first);
+    const last = new Date(LN.ref.getFullYear(), LN.ref.getMonth() + 1, 0), end = addDays(mondayOf(last), 6);
+    const items = lnItems(start, end, p.id);
+    label = `${MONTHS_FULL[first.getMonth()]} ${first.getFullYear()}`;
+    cal = `<div class="fx-mgrid">${DAY_SHORT.map(d=>`<span class="fx-mh">${d}</span>`).join('')}` +
+      Array.from({ length: Math.round((end - start) / 864e5) + 1 }, (_, i)=>{
+        const d = addDays(start, i), k = iso(d), its = items.filter(x=> x.date === k), other = d.getMonth() !== first.getMonth();
+        return `<button type="button" class="fx-mday ${lnDayState(its, d, today)}${other ? ' other' : ''}${sameDay(d, today) ? ' today' : ''}${sameDay(d, sel) ? ' sel' : ''}"
+          data-lnday="${k}" aria-pressed="${sameDay(d, sel)}" aria-label="${esc(lnDayName(d))}${its.length ? ', ' + plural(its.length, 'item') : ''}">${d.getDate()}</button>`;
+      }).join('') + '</div>';
+  } else {
+    const mon = mondayOf(LN.ref), sun = addDays(mon, 6), items = lnItems(mon, sun, p.id);
+    label = `${lnShort(mon)} – ${lnShort(sun)}`;
+    cal = `<div class="fx-strip ln2-strip">` + Array.from({ length:7 }, (_, i)=>{
+      const d = addDays(mon, i), k = iso(d), its = items.filter(x=> x.date === k);
+      return `<button type="button" class="fx-sday ${lnDayState(its, d, today)}${sameDay(d, today) ? ' today' : ''}${sameDay(d, sel) ? ' sel' : ''}" data-lnday="${k}"
+        aria-pressed="${sameDay(d, sel)}" aria-label="${esc(lnDayName(d))}${its.length ? ', ' + plural(its.length, 'item') : ''}"><small>${DAY_SHORT[i]}</small><b>${d.getDate()}</b>
+        <span class="fx-dots">${its.slice(0, 4).map(x=> `<i class="${x.done ? 'on' : ''}"></i>`).join('')}</span></button>`;
+    }).join('') + '</div>' + lnWeekList(p, mon, items);
+  }
+  const dayItems = lnItems(sel, sel, p.id), s = lnSum(dayItems);
+  const showToday = LN.cal === 'month' ? !(LN.ref.getMonth() === today.getMonth() && LN.ref.getFullYear() === today.getFullYear()) : !sameDay(mondayOf(LN.ref), mondayOf(today));
+  return `<div class="ln2-sched">
+    <section class="fx-card"><div class="fx-card-h wrap"><h2>Calendar</h2><span class="spacer"></span>
+      <div class="fx-seg sm" role="group" aria-label="Calendar view"><button type="button" data-lncal="week" class="${LN.cal === 'week' ? 'on' : ''}">Week</button><button type="button" data-lncal="month" class="${LN.cal === 'month' ? 'on' : ''}">Month</button></div></div>
+      <div class="fx-nav"><button type="button" class="fx-arrow-btn" data-ln="prev" aria-label="Previous ${LN.cal}">${ico('chevL')}</button>
+        <span class="fx-nav-l" aria-live="polite">${label}</span>
+        <button type="button" class="fx-arrow-btn" data-ln="next" aria-label="Next ${LN.cal}">${ico('chevR')}</button>
+        ${showToday ? `<button type="button" class="fx-pill-btn" data-ln="today">Today</button>` : ''}</div>
+      ${cal}
+      <div class="fx-legend"><span><i class="lg-done"></i>All done</span><span><i class="lg-plan"></i>Planned</span><span><i class="lg-miss"></i>Missed</span></div>
+    </section>
+    <section class="fx-card ln2-dayc"><div class="fx-card-h"><div><h2>${sameDay(sel, today) ? 'Today' : esc(sel.toLocaleDateString(undefined, { weekday:'long' }))}</h2>
+        <p class="fx-sub">${esc(sel.toLocaleDateString(undefined, { day:'numeric', month:'long', year:'numeric' }))}${s.min ? ' · ' + lnHours(s.min) + ' planned' : ''}</p></div><span class="spacer"></span>
+        <button type="button" class="btn btn-ghost btn-sm" data-ln="add-session" data-date="${iso(sel)}">${ico('plus')}Add</button></div>
+      ${dayItems.length ? `<ul class="ln2-day">${dayItems.map(i=> lnRow(i, false)).join('')}</ul>`
+        : `<div class="fx-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>Nothing on this day</b><span>Add a session with a start and end time.</span>
+           <button type="button" class="btn btn-ghost btn-sm" data-ln="add-session" data-date="${iso(sel)}">${ico('plus')}Add session</button></div>`}
+      <p class="ln2-hint">Tip: drag a session onto another day in the calendar to move it.</p>
+    </section></div>`;
+}
+// the whole week at a glance, under the strip (wide screens)
+function lnWeekList(p, mon, items){
+  if(!items.length) return '';
+  return `<div class="ln2-wk">${Array.from({ length:7 }, (_, i)=>{
+    const d = addDays(mon, i), its = items.filter(x=> x.date === iso(d));
+    return `<div class="ln2-wkd${sameDay(d, LN.sel) ? ' sel' : ''}" data-lnday="${iso(d)}">${its.map(x=>
+      `<button type="button" class="ln2-wkc${x.done ? ' done' : ''}" data-lnday="${iso(d)}" title="${esc(x.title)}${x.start ? ' · ' + x.start + (x.end ? '–' + x.end : '') : ''}">
+        <small>${x.start || 'Any time'}</small><b>${esc(x.title)}</b></button>`).join('')}</div>`;
+  }).join('')}</div>`;
+}
+
+/* ---------- B. focus areas ---------- */
+function lnAreasHtml(p){
+  const areas = lnAreasOf(p.id), today = _dayOnly(new Date());
+  const loose = LN.tasks.some(t=> t.learn_plan_id === p.id && !t.learn_area_id) || LN.rules.some(r=> r.learn_plan_id === p.id && !r.learn_area_id);
+  const list = areas.map(a=> ({ id:a.id, name:a.name, a })).concat(loose ? [{ id:null, name:'No focus area', a:null }] : []);
+  if(!list.some(x=> x.id === LN.area)) LN.area = list.length ? list[0].id : undefined;
+  const cards = list.map(x=>{
+    const pr = lnProgress(p.id, x.id);
+    const next = lnItems(today, addDays(today, 20), p.id).find(i=> (i.area || null) === x.id && !i.done);
+    const nOpen = LN.tasks.filter(t=> t.learn_plan_id === p.id && (t.learn_area_id || null) === x.id && !t.completed).length;
+    return `<button type="button" class="ln2-area${LN.area === x.id ? ' on' : ''}${x.a ? '' : ' none'}" data-lnarea="${x.id || ''}" aria-pressed="${LN.area === x.id}">
+      <span class="ln2-area-h"><b>${esc(x.name)}</b>${pr.pct != null ? `<em>${pr.pct}%</em>` : ''}</span>
+      <span class="fx-bar"><i style="width:${pr.pct || 0}%"></i></span>
+      <span class="ln2-area-m">${pr.total ? `${pr.done} of ${plural(pr.total, 'task')} done` : 'No tasks yet'}${nOpen ? ` · ${nOpen} open` : ''}</span>
+      <span class="ln2-area-n">${next ? `${ico('clock', 'ico-xs')}${sameDay(parseISO(next.date), today) ? 'Today' : lnShort(parseISO(next.date))}${next.start ? ' ' + next.start : ''} · ${esc(next.title)}` : 'Nothing scheduled'}</span>
+    </button>`;
+  }).join('') + `<button type="button" class="ln2-area ln2-add" data-ln="add-area"><span>${ico('plus')}</span>Add focus area</button>`;
+
+  let panel = '';
+  if(list.length && LN.area !== undefined){
+    const cur = list.find(x=> x.id === LN.area) || list[0];
+    const tasks = LN.tasks.filter(t=> t.learn_plan_id === p.id && (t.learn_area_id || null) === cur.id).map(lnTaskItem);
+    const open = tasks.filter(i=> !i.done).sort((x, y)=> (x.date || '9999').localeCompare(y.date || '9999') || (x.start || '99').localeCompare(y.start || '99'));
+    const done = tasks.filter(i=> i.done).sort((x, y)=> (y.raw.completed_at || '').localeCompare(x.raw.completed_at || ''));
+    const reps = LN.rules.filter(r=> r.learn_plan_id === p.id && (r.learn_area_id || null) === cur.id);
+    const taskLi = i => `<li class="ln2-row${i.done ? ' done' : ''}" data-key="${esc(i.key)}">
+        <button type="button" class="fx-check${i.done ? ' on' : ''}" data-ln="tick" role="checkbox" aria-checked="${i.done}" aria-label="${i.done ? 'Mark not done' : 'Mark done'}: ${esc(i.title)}">${ico('check')}</button>
+        <span class="ln2-time${i.date ? '' : ' any'}">${i.date ? lnShort(parseISO(i.date)) + (i.start ? '<br>' + i.start + (i.end ? '–' + i.end : '') : '') : 'Not scheduled'}</span>
+        <button type="button" class="ln2-main" data-ln="edit" aria-label="Edit ${esc(i.title)}"><b>${esc(i.title)}</b></button>
+        <span class="fx-acts">${i.date ? '' : `<button type="button" data-ln="move" aria-label="Schedule ${esc(i.title)}" title="Schedule">${ico('calendar')}</button>`}
+          <button type="button" data-ln="del" aria-label="Delete ${esc(i.title)}" title="Delete">${ico('trash')}</button></span></li>`;
+    panel = `<section class="fx-card ln2-apanel"><div class="fx-card-h"><div><h2>${esc(cur.name)}</h2><p class="fx-sub">${plural(open.length, 'open task')}${reps.length ? ' · ' + plural(reps.length, 'repeating session') : ''}</p></div><span class="spacer"></span>
+        ${cur.a ? `<button type="button" class="fx-icon-btn" data-ln="edit-area" data-id="${cur.id}" aria-label="Rename or delete ${esc(cur.name)}" title="Rename or delete">${ico('pencil')}</button>` : ''}</div>
+      <form class="ln2-quick" data-lnquick="${cur.id || ''}" autocomplete="off">${ico('plus')}<input placeholder="Add a task to ${esc(cur.name)}…" aria-label="New task in ${esc(cur.name)}" /><button type="submit">Add</button></form>
+      ${open.length ? `<ul class="ln2-day">${open.map(taskLi).join('')}</ul>` : `<p class="ln2-none">No open tasks here. Add one above, then schedule it.</p>`}
+      ${reps.length ? `<h3 class="ln2-h3">Repeating sessions</h3><ul class="ln2-reps">${reps.map(r=> `<li><button type="button" class="ln2-repc" data-ln="edit-rule" data-id="${r.id}">
+          ${ico('repeat', 'ico-xs')}<b>${esc(r.title)}</b><span>${esc(freqLabel(r))}${r.start_time ? ' · ' + lnT5(r.start_time) + (r.end_time ? '–' + lnT5(r.end_time) : '') : ''}</span></button></li>`).join('')}</ul>` : ''}
+      ${done.length ? `<details class="ln2-donef"><summary>Done (${done.length})</summary><ul class="ln2-day">${done.map(taskLi).join('')}</ul></details>` : ''}
     </section>`;
-  });
-  a += '</div>';
-
-  $('swBody').innerHTML = g + a;
+  }
+  return `<section class="fx-card"><div class="fx-card-h"><div><h2>Focus areas</h2><p class="fx-sub">What you are working on inside ${esc(p.name)}. Progress counts tasks you tick off.</p></div></div>
+      <div class="ln2-area-g">${cards}</div></section>${panel}`;
 }
 
-/* ---------- add / edit ---------- */
-function swOpen(ev, preset){
-  preset = preset || {};
-  const s = ev ? new Date(ev.starts_at) : null, en = ev && ev.ends_at ? new Date(ev.ends_at) : null;
-  const date = ev ? iso(s) : (preset.date || iso(new Date()));
-  const st = ev ? hhmm(s) : (preset.start || '17:00');
-  const et = ev ? (en && iso(en) === iso(s) ? hhmm(en) : '00:00') : (preset.end || swPlus(st, 60));
+/* ---------- C. statistics ---------- */
+function lnStatRange(){
+  const r = LN.statRef;
+  if(LN.stat === 'day') return [r, r, lnDayName(r)];
+  if(LN.stat === 'month'){ const a = new Date(r.getFullYear(), r.getMonth(), 1), b = new Date(r.getFullYear(), r.getMonth() + 1, 0); return [a, b, `${MONTHS_FULL[a.getMonth()]} ${a.getFullYear()}`]; }
+  const a = mondayOf(r), b = addDays(a, 6); return [a, b, `${lnShort(a)} – ${lnShort(b)}`];
+}
+function lnStatsHtml(p){
+  const [a, b, label] = lnStatRange(), today = _dayOnly(new Date());
+  const items = lnItems(a, b, p.id), s = lnSum(items);
+  // activity chart: hours per day (week / month); the day's sessions (day)
+  let chart;
+  if(LN.stat === 'day'){
+    chart = items.length ? `<ul class="ln2-day">${items.map(i=> lnRow(i, false)).join('')}</ul>` : `<p class="ln2-none">Nothing was planned on this day.</p>`;
+  } else {
+    const days = Array.from({ length: Math.round((b - a) / 864e5) + 1 }, (_, i)=> addDays(a, i));
+    const per = days.map(d=>{ const its = items.filter(x=> x.date === iso(d)); return { d, pl: its.reduce((t, x)=> t + lnDur(x), 0), dn: its.filter(x=> x.done).reduce((t, x)=> t + lnDur(x), 0) }; });
+    const max = Math.max(60, ...per.map(x=> x.pl));
+    chart = `<div class="fx-chart${LN.stat === 'month' ? ' ln2-mchart' : ''}">${per.map(x=>
+      `<div class="fx-col${sameDay(x.d, today) ? ' cur' : ''}${x.pl ? '' : ' empty'}" tabindex="0" data-tip="${esc(lnShort(x.d))}: ${lnHours(x.dn)} studied of ${lnHours(x.pl)} planned" aria-label="${esc(lnShort(x.d))}: ${lnHours(x.dn)} studied of ${lnHours(x.pl)} planned">
+        <span class="fx-col-plot">${x.pl ? `<i class="pl" style="height:${x.pl / max * 100}%"></i>` : ''}${x.dn ? `<i class="dn" style="height:${x.dn / max * 100}%"></i>` : ''}</span>
+        <small>${LN.stat === 'month' ? (x.d.getDate() === 1 || x.d.getDate() % 5 === 0 ? x.d.getDate() : '') : DAY_SHORT[(x.d.getDay() + 6) % 7]}</small></div>`).join('')}</div>
+      <div class="fx-legend"><span><i class="lg-bar"></i>Studied</span><span><i class="lg-track"></i>Planned</span></div>`;
+  }
+  // progress by focus area, inside the chosen period
+  const areas = lnAreasOf(p.id).map(x=> ({ id:x.id, name:x.name })).concat(items.some(i=> !i.area) ? [{ id:null, name:'No focus area' }] : []);
+  const byArea = areas.map(x=>{ const its = items.filter(i=> (i.area || null) === x.id); return { ...x, n: its.length, d: its.filter(i=> i.done).length, min: its.filter(i=> i.done).reduce((t, i)=> t + lnDur(i), 0) }; }).filter(x=> x.n);
+  // history: the last 12 weeks of studied time
+  const w0 = addDays(mondayOf(today), -77), hist = lnItems(w0, addDays(mondayOf(today), 6), p.id);
+  const weeks = Array.from({ length:12 }, (_, i)=>{ const m = addDays(w0, i * 7), e = addDays(m, 6), its = hist.filter(x=> x.date >= iso(m) && x.date <= iso(e));
+    return { m, pl: its.reduce((t, x)=> t + lnDur(x), 0), dn: its.filter(x=> x.done).reduce((t, x)=> t + lnDur(x), 0), n: its.filter(x=> x.done).length }; });
+  const wmax = Math.max(60, ...weeks.map(x=> x.pl));
+  const isNow = LN.stat === 'day' ? sameDay(a, today) : (today >= a && today <= b);
+  return `<section class="fx-card"><div class="fx-card-h wrap"><h2>Statistics</h2><span class="spacer"></span>
+      <div class="fx-seg sm" role="group" aria-label="Period">${[['day', 'Daily'], ['week', 'Weekly'], ['month', 'Monthly']].map(([k, l])=> `<button type="button" data-lnstat="${k}" class="${LN.stat === k ? 'on' : ''}">${l}</button>`).join('')}</div></div>
+    <div class="fx-nav fx-nav-c"><button type="button" class="fx-arrow-btn" data-ln="sprev" aria-label="Previous">${ico('chevL')}</button><span class="fx-nav-l">${label}</span>
+      <button type="button" class="fx-arrow-btn" data-ln="snext" aria-label="Next">${ico('chevR')}</button>${isNow ? '' : `<button type="button" class="fx-pill-btn" data-ln="snow">Now</button>`}</div>
+    <div class="fx-hero"><div class="fx-hero-h"><b>${esc(p.name)}</b><span>${LN.stat === 'day' ? 'This day' : LN.stat === 'week' ? 'Total for the week' : 'Total for the month'}</span></div>
+      <div class="fx-hero-g">
+        <div><small>Study time</small><b>${lnHours(s.minDone)}</b><small>of ${lnHours(s.min)} planned</small></div>
+        <div><small>Sessions done</small><b>${s.sessDone}<em>/${s.sess}</em></b><small>with a set time</small></div>
+        <div><small>Tasks done</small><b>${s.nDone}<em>/${s.n}</em></b><small>${s.n ? Math.round(s.nDone / s.n * 100) + '% of planned' : 'nothing planned'}</small></div>
+      </div></div>
+    <div class="ln2-chart">${chart}</div></section>
+  <div class="fx-two">
+    <section class="fx-card"><div class="fx-card-h"><h2>By focus area</h2><span class="spacer"></span><span class="fx-count">${label}</span></div>
+      ${byArea.length ? `<div class="fx-goal-rows">${byArea.map(x=> `<div class="fx-goal-row"><div><span>${esc(x.name)}</span><b>${x.d}/${x.n}${x.min ? ' · ' + lnHours(x.min) : ''}</b></div>
+        <div class="fx-bar"><i style="width:${Math.round(x.d / x.n * 100)}%"></i></div></div>`).join('')}</div>` : `<p class="ln2-none">No tasks in this period.</p>`}</section>
+    <section class="fx-card"><div class="fx-card-h"><h2>Last 12 weeks</h2><span class="spacer"></span><span class="fx-count">hours studied</span></div>
+      <div class="fx-chart">${weeks.map((x, i)=> `<div class="fx-col${i === 11 ? ' cur' : ''}${x.pl ? '' : ' empty'}" tabindex="0" data-tip="Week of ${esc(lnShort(x.m))}: ${lnHours(x.dn)} studied, ${plural(x.n, 'item')} done" aria-label="Week of ${esc(lnShort(x.m))}: ${lnHours(x.dn)} studied, ${plural(x.n, 'item')} done">
+        <span class="fx-col-plot">${x.pl ? `<i class="pl" style="height:${x.pl / wmax * 100}%"></i>` : ''}${x.dn ? `<i class="dn" style="height:${x.dn / wmax * 100}%"></i>` : ''}</span>
+        <small>${i % 2 ? '' : x.m.getDate() + '/' + (x.m.getMonth() + 1)}</small></div>`).join('')}</div>
+      <div class="fx-legend"><span><i class="lg-bar"></i>Studied</span><span><i class="lg-track"></i>Planned</span></div></section>
+  </div>`;
+}
+
+/* ---------- forms ---------- */
+function lnPlanForm(p){
+  let tone = p ? (p.tone || 2) : 2;
   openForm({
-    title: ev ? 'Edit study session' : 'New study session',
+    title: p ? 'Edit learning plan' : 'New learning plan',
     rows: [
-      [{ id:'swTitle', label:'What will you study?', placeholder:'e.g. English: speaking practice', value: ev ? ev.title : '' }],
-      [{ id:'swDate', type:'date', label:'Day', value: date }],
-      [{ id:'swStart', type:'time', label:'Starts', value: st }, { id:'swEnd', type:'time', label:'Ends', value: et }]
+      [{ id:'lnpName', label:'What are you learning?', placeholder:'e.g. Figma & UI/UX Design', value: p ? p.name : '' }],
+      [{ id:'lnpFocus', label:'Current focus (optional)', placeholder:'e.g. Auto Layout and components', value: p && p.focus ? p.focus : '' }],
+      [{ type:'html', html: `<div class="fm-label">Colour</div><div class="ln2-tones">${LN_TONES.map(t=> `<button type="button" class="ln2-tone t${t}${t === tone ? ' on' : ''}" data-tone="${t}" aria-pressed="${t === tone}" aria-label="${LN_TONE_NAMES[t]}" title="${LN_TONE_NAMES[t]}"></button>`).join('')}</div>` }]
     ],
-    actions: ev ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add session', value:'save' }],
+    onBodyClick: e=>{ const b = e.target.closest('[data-tone]'); if(!b) return; tone = Number(b.dataset.tone);
+      $('fmBody').querySelectorAll('[data-tone]').forEach(x=>{ const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); },
+    actions: p ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Create plan', value:'save' }],
     onSubmit: async (v, act)=>{
-      if(act === 'delete'){ setTimeout(()=> swDelete(ev), 0); return; }
-      if(!v.swTitle){ toast('Add what you will study', true); return false; }
-      if(!v.swDate || !v.swStart || !v.swEnd){ toast('Pick a day and both times', true); return false; }
-      const mid = v.swEnd === '00:00';
-      if(!mid && v.swEnd <= v.swStart){ toast('The session has to end after it starts', true); return false; }
-      const payload = {
-        title: v.swTitle,
-        starts_at: new Date(v.swDate + 'T' + v.swStart).toISOString(),
-        ends_at: mid ? addDays(new Date(v.swDate + 'T00:00'), 1).toISOString() : new Date(v.swDate + 'T' + v.swEnd).toISOString(),
-        category: 'learning'
-      };
-      const { error } = ev
-        ? await sb.from('schedule_events').update(payload).eq('id', ev.id)
-        : await sb.from('schedule_events').insert({ user_id: USER.id, ...payload });
-      if(error){ fail(error, ev ? 'Could not save the session' : 'Could not add the session'); return false; }
-      toast(ev ? 'Session updated' : 'Session added');
-      // jump to the week the session is in, so you see it land
-      SW.mon = mondayOf(parseISO(v.swDate));
+      if(act === 'delete'){ setTimeout(()=> lnDeletePlan(p), 0); return; }
+      if(!v.lnpName){ toast('Give the plan a name', true); return false; }
+      const row = { name: v.lnpName, focus: v.lnpFocus || null, tone, updated_at: new Date().toISOString() };
+      const res = p ? await sb.from('learn_plans').update(row).eq('id', p.id).select().single()
+                    : await sb.from('learn_plans').insert({ user_id: USER.id, position: LN.plans.length, ...row }).select().single();
+      if(res.error){ fail(res.error, 'Could not save the plan'); return false; }
+      toast(p ? 'Plan updated' : 'Plan created');
+      if(!p && res.data){ LN.view = 'plan'; LN.planId = res.data.id; LN.tab = 'areas'; LN.area = undefined; }
       dataChanged();
     }
   });
-  // moving the start keeps the length the same
-  const len = ev && en ? Math.max(15, Math.round((en - s) / 60000)) : (preset.len || 60);
-  $('swStart').addEventListener('change', ()=>{ if($('swStart').value) $('swEnd').value = swPlus($('swStart').value, len); });
 }
-function swPlus(hm, mins){
-  const [h, m] = hm.split(':').map(Number), t = Math.min(24 * 60, h * 60 + m + mins);
-  return t >= 24 * 60 ? '00:00' : pad2(Math.floor(t / 60)) + ':' + pad2(t % 60);
-}
-async function swDelete(ev){
-  const yes = await askConfirm({ title:'Delete this study session?', message:`"${ev.title}" will be removed from your week and the calendar.`, ok:'Delete session' });
+async function lnDeletePlan(p){
+  const n = LN.tasks.filter(t=> t.learn_plan_id === p.id).length + LN.rules.filter(r=> r.learn_plan_id === p.id).length;
+  const yes = await askConfirm({ title:`Delete "${p.name}"?`, message:`Its focus areas${n ? ' and ' + plural(n, 'task or session', 'tasks and sessions') : ''} are deleted too. This can't be undone.`, ok:'Delete plan' });
   if(!yes) return;
-  const { error } = await sb.from('schedule_events').delete().eq('id', ev.id);
-  if(error) return fail(error, 'Could not delete the session');
-  toast('Session deleted');
+  const { error } = await sb.from('learn_plans').delete().eq('id', p.id);
+  if(error) return fail(error, 'Could not delete the plan');
+  toast('Plan deleted'); LN.view = 'overview'; LN.planId = null; dataChanged();
+}
+function lnAreaForm(a){
+  openForm({
+    title: a ? 'Edit focus area' : 'New focus area',
+    rows: [[{ id:'lnaName', label:'Focus area', placeholder:'e.g. Components & Variants', value: a ? a.name : '' }]],
+    actions: a ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add focus area', value:'save' }],
+    onSubmit: async (v, act)=>{
+      if(act === 'delete'){ setTimeout(()=> lnDeleteArea(a), 0); return; }
+      if(!v.lnaName){ toast('Give the focus area a name', true); return false; }
+      const res = a ? await sb.from('learn_areas').update({ name: v.lnaName }).eq('id', a.id).select().single()
+                    : await sb.from('learn_areas').insert({ user_id: USER.id, plan_id: LN.planId, name: v.lnaName, position: lnAreasOf(LN.planId).length }).select().single();
+      if(res.error){ fail(res.error, 'Could not save the focus area'); return false; }
+      toast(a ? 'Focus area renamed' : 'Focus area added');
+      if(!a && res.data) LN.area = res.data.id;
+      dataChanged();
+    }
+  });
+}
+async function lnDeleteArea(a){
+  const n = LN.tasks.filter(t=> t.learn_area_id === a.id).length;
+  const yes = await askConfirm({ title:`Delete "${a.name}"?`, message: n ? `Its ${plural(n, 'task')} stay in the plan, without a focus area.` : 'It has no tasks.', ok:'Delete focus area' });
+  if(!yes) return;
+  const { error } = await sb.from('learn_areas').delete().eq('id', a.id);
+  if(error) return fail(error, 'Could not delete the focus area');
+  toast('Focus area deleted'); LN.area = undefined; dataChanged();
+}
+
+// add or edit a session / task. `it` is an item (task or one repeat), or null for a new one
+function lnSessionForm(it, preset){
+  preset = preset || {};
+  const rule = it && it.type === 'rec' ? it.raw : null, task = it && it.type === 'task' ? it.raw : null;
+  const planId = it ? it.plan : (preset.planId || LN.planId || null);
+  const plans = LN.plans;
+  // one select for "where": plan (and focus area). From inside a plan only its areas are offered
+  const opts = [];
+  (planId && !preset.anyPlan ? plans.filter(p=> p.id === planId) : plans).forEach(p=>{
+    opts.push({ value: p.id + '|', label: planId && !preset.anyPlan ? 'No focus area' : p.name });
+    lnAreasOf(p.id).forEach(a=> opts.push({ value: p.id + '|' + a.id, label: (planId && !preset.anyPlan ? '' : p.name + ' · ') + a.name }));
+  });
+  const where = (it ? it.plan : (planId || (plans[0] && plans[0].id))) + '|' + ((it ? it.area : preset.areaId) || '');
+  const date = it ? (it.date || '') : (preset.date || iso(new Date()));
+  const start = it ? it.start : (preset.start || ''), end = it ? it.end : (preset.end || '');
+  let noTime = it ? !it.start : !!preset.noTime;
+  let days = rule ? (rule.weekdays || []).slice() : [];
+  const dayChips = () => `<div class="fm-label">Repeat every week (optional)</div><div class="ln2-wd" role="group" aria-label="Repeat on">${DAY_SHORT.map((d, i)=>
+    `<button type="button" class="${days.includes(i) ? 'on' : ''}" data-wd="${i}" aria-pressed="${days.includes(i)}">${d}</button>`).join('')}</div>
+    <p class="fm-note ln2-wdn">${days.length ? 'Repeats every ' + days.map(i=> DAY_SHORT[i]).join(', ') + (it && !rule ? '' : '') : 'Leave empty for a one-time session.'}</p>`;
+  const timeChip = () => `<button type="button" class="ln2-notime${noTime ? ' on' : ''}" data-notime aria-pressed="${noTime}">${ico('clock', 'ico-xs')}No set time</button>`;
+  openForm({
+    title: it ? (rule ? 'Edit repeating session' : 'Edit study session') : 'New study session',
+    rows: [
+      [{ id:'lnsTitle', label:'What will you work on?', placeholder:'e.g. Figma: Auto Layout', value: it ? it.title : (preset.title || '') }],
+      [{ id:'lnsWhere', type:'select', label: planId && !preset.anyPlan ? 'Focus area' : 'Learning plan', value: where, options: opts }],
+      [{ id:'lnsDate', type:'date', label: rule ? 'This session’s day' : 'Day', value: date }],
+      [{ id:'lnsStart', type:'time', label:'Starts', value: start || '09:00' }, { id:'lnsEnd', type:'time', label:'Ends', value: end || (start ? lnPlusMin(start, 60) : '10:00') }],
+      [{ type:'html', html: timeChip() }],
+      [{ type:'html', html: `<div id="lnWd">${dayChips()}</div>` }]
+    ],
+    onBodyClick: e=>{
+      const w = e.target.closest('[data-wd]');
+      if(w){ const i = Number(w.dataset.wd); days = days.includes(i) ? days.filter(x=> x !== i) : days.concat(i).sort((x, y)=> x - y); $('lnWd').innerHTML = dayChips(); return; }
+      const nt = e.target.closest('[data-notime]');
+      if(nt){ noTime = !noTime; nt.classList.toggle('on', noTime); nt.setAttribute('aria-pressed', noTime); lnTimeVis(noTime); }
+    },
+    actions: rule
+      ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save only this one', value:'one', secondary:true }, { label:'Save series', value:'series' }]
+      : it ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add session', value:'save' }],
+    onSubmit: async (v, act)=>{
+      if(act === 'delete'){ setTimeout(()=> lnDelete(it), 0); return; }
+      if(!v.lnsTitle){ toast('Say what you will work on', true); return false; }
+      const [pid, aid] = (v.lnsWhere || '').split('|');
+      if(!pid){ toast('Pick a learning plan', true); return false; }
+      const st = noTime ? null : v.lnsStart, en = noTime ? null : v.lnsEnd;
+      if(st && en && en <= st){ toast('The end time has to be after the start', true); return false; }
+      const base = { title: v.lnsTitle, category:'learning', learn_plan_id: pid, learn_area_id: aid || null };
+      let error;
+      if(rule && act === 'series'){
+        if(!days.length){ toast('Pick at least one day, or use “Save only this one”', true); return false; }
+        ({ error } = await sb.from('recurring_tasks').update({ ...base, repeat:'weekly', weekdays: days, frequency: freqLabel({ repeat:'weekly', weekdays: days }), start_time: st, end_time: en }).eq('id', rule.id));
+      } else if(rule && act === 'one'){
+        // this occurrence becomes its own session; the series skips that day
+        const skip = [...new Set([...(rule.skip_dates || []), it.date])].sort();
+        ({ error } = await sb.from('recurring_tasks').update({ skip_dates: skip }).eq('id', rule.id));
+        if(!error){
+          const wasDone = LN.done.has(rule.id + '|' + it.date);
+          if(wasDone) await sb.from('recurring_completions').delete().eq('recurring_id', rule.id).eq('date', it.date);
+          ({ error } = await sb.from('tasks').insert({ user_id: USER.id, ...base, kind:'one-off', due_date: v.lnsDate || it.date, due_time: st, end_time: en,
+            completed: wasDone, completed_at: wasDone ? new Date().toISOString() : null }));
+        }
+      } else if(days.length && !task){
+        // a new repeating session, starting on the chosen day
+        const from = v.lnsDate ? parseISO(v.lnsDate) : _dayOnly(new Date());
+        ({ error } = await sb.from('recurring_tasks').insert({ user_id: USER.id, ...base, repeat:'weekly', weekdays: days, frequency: freqLabel({ repeat:'weekly', weekdays: days }), active:true,
+          start_time: st, end_time: en, skip_dates: [], created_at: from.toISOString() }));
+      } else if(days.length && task){
+        // a one-time session turned into a repeating one
+        const from = v.lnsDate ? parseISO(v.lnsDate) : _dayOnly(new Date());
+        ({ error } = await sb.from('recurring_tasks').insert({ user_id: USER.id, ...base, repeat:'weekly', weekdays: days, frequency: freqLabel({ repeat:'weekly', weekdays: days }), active:true,
+          start_time: st, end_time: en, skip_dates: [], created_at: from.toISOString() }));
+        if(!error) ({ error } = await sb.from('tasks').delete().eq('id', task.id));
+      } else {
+        const row = { ...base, due_date: v.lnsDate || null, due_time: v.lnsDate ? st : null, end_time: v.lnsDate ? en : null };
+        ({ error } = task ? await sb.from('tasks').update(row).eq('id', task.id)
+                          : await sb.from('tasks').insert({ user_id: USER.id, kind:'one-off', completed:false, ...row }));
+      }
+      if(error){ fail(error, 'Could not save the session'); return false; }
+      toast(it ? 'Saved' : (days.length ? 'Repeating session added' : 'Session added'));
+      if(v.lnsDate && LN.view === 'plan'){ LN.sel = parseISO(v.lnsDate); LN.ref = parseISO(v.lnsDate); }
+      dataChanged();
+    }
+  });
+  lnTimeVis(noTime);
+  // moving the start keeps the length
+  const len = start && end && lnMin(end) > lnMin(start) ? lnMin(end) - lnMin(start) : 60;
+  $('lnsStart').addEventListener('change', ()=>{ if($('lnsStart').value) $('lnsEnd').value = lnPlusMin($('lnsStart').value, len); });
+}
+function lnTimeVis(off){
+  const s = $('lnsStart'), row = s && s.closest('.modal-row');
+  if(row) row.hidden = off;
+}
+function lnPlusMin(hm, m){
+  const t = Math.min(23 * 60 + 59, lnMin(hm) + m);
+  return pad2(Math.floor(t / 60)) + ':' + pad2(t % 60);
+}
+// the repeating rule itself (from the focus area list)
+function lnRuleForm(r){
+  const today = _dayOnly(new Date());
+  let d = today; for(let i = 0; i < 14 && !occursOn(r, d); i++) d = addDays(d, 1);
+  lnSessionForm(lnRecItem(r, d));
+}
+
+/* ---------- tick, move, delete ---------- */
+function lnFind(key){
+  if(key.startsWith('t:')){ const t = LN.tasks.find(x=> x.id === key.slice(2)); return t ? lnTaskItem(t) : null; }
+  const [id, date] = key.slice(2).split('|'), r = LN.rules.find(x=> x.id === id);
+  return r ? lnRecItem(r, parseISO(date)) : null;
+}
+async function lnTick(it){
+  const done = !it.done;
+  let error;
+  if(it.type === 'task'){
+    const at = done ? new Date().toISOString() : null;
+    ({ error } = await sb.from('tasks').update({ completed: done, completed_at: at }).eq('id', it.id));
+    if(!error){ it.raw.completed = done; it.raw.completed_at = at; }
+  } else {
+    ({ error } = done ? await sb.from('recurring_completions').insert({ user_id: USER.id, recurring_id: it.id, date: it.date })
+                      : await sb.from('recurring_completions').delete().eq('recurring_id', it.id).eq('date', it.date));
+    if(!error){ const k = it.id + '|' + it.date; if(done) LN.done.add(k); else LN.done.delete(k); }
+  }
+  if(error) return fail(error, 'Could not save');
+  if(done) toast('Nice — marked done');
+  lnPaint(); refreshBadge();
+  setTimeout(dataChanged, 300);
+}
+async function lnMoveTo(it, dateISO){
+  if(!it || it.date === dateISO) return;
+  let error;
+  if(it.type === 'task') ({ error } = await sb.from('tasks').update({ due_date: dateISO }).eq('id', it.id));
+  else {
+    const r = it.raw, skip = [...new Set([...(r.skip_dates || []), it.date])].sort();
+    ({ error } = await sb.from('recurring_tasks').update({ skip_dates: skip }).eq('id', r.id));
+    if(!error) ({ error } = await sb.from('tasks').insert({ user_id: USER.id, title: r.title, category:'learning', kind:'one-off', learn_plan_id: r.learn_plan_id,
+      learn_area_id: r.learn_area_id || null, due_date: dateISO, due_time: r.start_time || null, end_time: r.end_time || null, completed:false }));
+  }
+  if(error) return fail(error, 'Could not move it');
+  toast(`Moved to ${lnShort(parseISO(dateISO))}`);
+  if(LN.view === 'plan' && LN.tab === 'schedule') LN.sel = parseISO(dateISO);
   dataChanged();
 }
-const swRow = id => SW.rows.find(r=> r.id === id);
-
-/* ---------- clicks: open a block, add on an empty slot or a day ---------- */
-$('swAdd').addEventListener('click', ()=>{
-  const today = _dayOnly(new Date()), inWeek = today >= SW.mon && today < addDays(SW.mon, 7);
-  swOpen(null, { date: iso(inWeek ? today : SW.mon) });
-});
-$('swPrev').addEventListener('click', ()=>{ SW.mon = addDays(SW.mon, -7); loadLearning(); });
-$('swNext').addEventListener('click', ()=>{ SW.mon = addDays(SW.mon, 7); loadLearning(); });
-$('swToday').addEventListener('click', ()=>{ SW.mon = mondayOf(new Date()); loadLearning(); });
-$('swBody').addEventListener('click', e=>{
-  if(SW.justDragged){ SW.justDragged = false; return; }
-  const b = e.target.closest('[data-sid]');
-  if(b){ const r = swRow(b.dataset.sid); if(r) swOpen(r); return; }
-  const add = e.target.closest('[data-addday]');
-  if(add) return swOpen(null, { date: add.dataset.addday });
-  const col = e.target.closest('.sw-col');
-  if(col){
-    // an empty spot in the grid: start there (rounded to the half hour), one hour long
-    const y = e.clientY - col.getBoundingClientRect().top, h = SW.h0 + Math.floor(y / SW_ROW * 2) / 2;
-    const hh = Math.min(23, Math.max(0, h)), start = pad2(Math.floor(hh)) + ':' + (hh % 1 ? '30' : '00');
-    swOpen(null, { date: col.dataset.day, start });
-  }
-});
-
-/* ---------- drag a block to another day or time (mouse and pen) ---------- */
-$('swBody').addEventListener('pointerdown', e=>{
-  const b = e.target.closest('.sw-ev');
-  if(!b || e.button !== 0 || e.pointerType === 'touch') return;
-  const it = SW.items.find(x=> x.id === b.dataset.sid); if(!it) return;
-  SW.drag = { b, it, x0: e.clientX, y0: e.clientY, top0: parseFloat(b.style.top), on: false, day: it.day, sh: it.sh, pid: e.pointerId };
-});
-document.addEventListener('pointermove', e=>{
-  const D = SW.drag; if(!D || e.pointerId !== D.pid) return;
-  const dx = e.clientX - D.x0, dy = e.clientY - D.y0;
-  if(!D.on){
-    if(Math.abs(dx) < 5 && Math.abs(dy) < 5) return;
-    D.on = true; D.b.classList.add('is-drag'); document.body.classList.add('sw-dragging');
-    D.b.style.left = '3px'; D.b.style.width = 'calc(100% - 6px)';
-  }
-  e.preventDefault();
-  // which day column is under the pointer
-  const cols = [...$('swBody').querySelectorAll('.sw-col')];
-  const col = cols.find(c=>{ const r = c.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right; }) ||
-    (e.clientX < cols[0].getBoundingClientRect().left ? cols[0] : cols[cols.length - 1]);
-  if(D.b.parentNode !== col) col.appendChild(D.b);
-  D.day = col.dataset.day;
-  // the new start, in 15-minute steps, kept inside the visible hours
-  const len = D.it.eh - D.it.sh;
-  let sh = D.it.sh + Math.round(dy / SW_ROW / SW_SNAP) * SW_SNAP;
-  sh = Math.max(SW.h0, Math.min(SW.h1 - Math.min(len, SW.h1 - SW.h0), sh));
-  D.sh = sh;
-  D.b.style.top = ((sh - SW.h0) * SW_ROW + 1) + 'px';
-  const st = pad2(Math.floor(sh)) + ':' + pad2(Math.round(sh % 1 * 60));
-  D.b.querySelector('small').textContent = st + ' – ' + swPlus(st, D.it.mins);
-});
-async function swDrop(e){
-  const D = SW.drag; if(!D || (e && e.pointerId !== D.pid)) return;
-  SW.drag = null;
-  document.body.classList.remove('sw-dragging');
-  if(!D.on) return;                                   // a plain click: the click handler opens it
-  SW.justDragged = true; setTimeout(()=>{ SW.justDragged = false; }, 0);
-  D.b.classList.remove('is-drag');
-  if(D.day === D.it.day && Math.abs(D.sh - D.it.sh) < .01) return swPaint();
-  const r = swRow(D.it.id), s = new Date(r.starts_at), en = r.ends_at ? new Date(r.ends_at) : new Date(s.getTime() + 3600000);
-  const ns = parseISO(D.day); ns.setHours(Math.floor(D.sh), Math.round(D.sh % 1 * 60), 0, 0);
-  const ne = new Date(ns.getTime() + (en - s));
-  const patch = { starts_at: ns.toISOString(), ends_at: ne.toISOString() };
-  Object.assign(r, patch); SW.items = SW.rows.map(swItem); swPaint();       // show it moved right away
-  const { error } = await sb.from('schedule_events').update(patch).eq('id', r.id);
-  if(error){ fail(error, 'Could not move the session'); return loadLearning(); }
-  toast(`Moved to ${ns.toLocaleDateString(undefined, { weekday:'long' })} ${hhmm(ns)}`);
-  refreshBadge();
+function lnMoveForm(it){
+  openForm({
+    title: it.date ? 'Move to another day' : 'Schedule this task',
+    rows: [[{ type:'note', text: it.title }], [{ id:'lnmDate', type:'date', label:'Day', value: it.date || iso(new Date()) }]]
+      .concat(it.date ? [] : [[{ id:'lnmStart', type:'time', label:'Starts', value:'09:00' }, { id:'lnmEnd', type:'time', label:'Ends', value:'10:00' }]]),
+    actions: [{ label: it.date ? 'Move' : 'Schedule', value:'ok' }],
+    onSubmit: async v=>{
+      if(!v.lnmDate){ toast('Pick a day', true); return false; }
+      if(!it.date){
+        if(v.lnmEnd <= v.lnmStart){ toast('The end time has to be after the start', true); return false; }
+        const { error } = await sb.from('tasks').update({ due_date: v.lnmDate, due_time: v.lnmStart, end_time: v.lnmEnd }).eq('id', it.id);
+        if(error){ fail(error, 'Could not schedule it'); return false; }
+        toast('Scheduled'); dataChanged(); return;
+      }
+      setTimeout(()=> lnMoveTo(it, v.lnmDate), 0);
+    }
+  });
 }
-document.addEventListener('pointerup', swDrop);
-// cancelled (or Escape mid-drag): put the block back where it was
-function swCancelDrag(){ const on = SW.drag && SW.drag.on; SW.drag = null; document.body.classList.remove('sw-dragging'); if(on) swPaint(); }
-document.addEventListener('pointercancel', swCancelDrag);
-document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && SW.drag && SW.drag.on) swCancelDrag(); });
+async function lnDelete(it){
+  if(it.type === 'rec') return deleteRecurring(it.raw, it.date);
+  const yes = await askConfirm({ title:'Delete this?', message:`"${it.title}" will be removed from your plan and the calendar.`, ok:'Delete' });
+  if(!yes) return;
+  const { error } = await sb.from('tasks').delete().eq('id', it.id);
+  if(error) return fail(error, 'Could not delete');
+  toast('Deleted'); dataChanged();
+}
+
+/* ---------- one listener for the page ---------- */
+$('lnBody').addEventListener('click', e=>{
+  const t = e.target;
+  const tab = t.closest('[data-lntab]');
+  if(tab){ LN.tab = tab.dataset.lntab; lnPaint(); return; }
+  const cv = t.closest('[data-lncal]');
+  if(cv){ LN.cal = cv.dataset.lncal; LN.ref = LN.sel; lnPaint(); return; }
+  const sv = t.closest('[data-lnstat]');
+  if(sv){ LN.stat = sv.dataset.lnstat; lnPaint(); return; }
+  const day = t.closest('[data-lnday]');
+  if(day && !t.closest('[data-ln]')){ LN.sel = parseISO(day.dataset.lnday); if(LN.cal === 'week') LN.ref = LN.sel; lnPaint(); return; }
+  const ar = t.closest('[data-lnarea]');
+  if(ar){ LN.area = ar.dataset.lnarea || null; lnPaint(); return; }
+  const b = t.closest('[data-ln]');
+  if(!b) return;
+  const act = b.dataset.ln, row = b.closest('[data-key]'), it = row ? lnFind(row.dataset.key) : null;
+  const step = LN.cal === 'month' ? null : 7;
+  switch(act){
+    case 'open': LN.view = 'plan'; LN.planId = b.dataset.id; LN.tab = 'schedule'; LN.area = undefined; LN.sel = _dayOnly(new Date()); LN.ref = LN.sel; lnPaint(); window.scrollTo(0, 0); return;
+    case 'back': LN.view = 'overview'; LN.planId = null; lnPaint(); window.scrollTo(0, 0); return;
+    case 'add-plan': return lnPlanForm(null);
+    case 'edit-plan': return lnPlanForm(lnPlan(LN.planId));
+    case 'add-area': return lnAreaForm(null);
+    case 'edit-area': return lnAreaForm(lnArea(b.dataset.id));
+    case 'edit-rule': { const r = LN.rules.find(x=> x.id === b.dataset.id); if(r) lnRuleForm(r); return; }
+    case 'add-session': {
+      const area = LN.view === 'plan' && LN.tab === 'areas' && LN.area ? LN.area : null;
+      return lnSessionForm(null, { planId: LN.view === 'plan' ? LN.planId : null, anyPlan: LN.view !== 'plan', areaId: area, date: b.dataset.date || (LN.view === 'plan' ? iso(LN.sel) : iso(new Date())) });
+    }
+    case 'prev': case 'next': {
+      const dir = act === 'prev' ? -1 : 1;
+      if(step){ LN.ref = addDays(LN.ref, dir * 7); LN.sel = addDays(LN.sel, dir * 7); }
+      else { LN.ref = new Date(LN.ref.getFullYear(), LN.ref.getMonth() + dir, 1); LN.sel = LN.ref; }
+      lnPaint(); return;
+    }
+    case 'today': LN.ref = _dayOnly(new Date()); LN.sel = LN.ref; lnPaint(); return;
+    case 'sprev': case 'snext': {
+      const dir = act === 'sprev' ? -1 : 1, r = LN.statRef;
+      LN.statRef = LN.stat === 'day' ? addDays(r, dir) : LN.stat === 'week' ? addDays(r, dir * 7) : new Date(r.getFullYear(), r.getMonth() + dir, 1);
+      lnPaint(); return;
+    }
+    case 'snow': LN.statRef = _dayOnly(new Date()); lnPaint(); return;
+    case 'tick': if(it) lnTick(it); return;
+    case 'edit': if(it) lnSessionForm(it); return;
+    case 'move': if(it) lnMoveForm(it); return;
+    case 'del': if(it) lnDelete(it); return;
+  }
+});
+$('lnBody').addEventListener('submit', async e=>{
+  const f = e.target.closest('[data-lnquick]');
+  if(!f) return;
+  e.preventDefault();
+  const inp = f.querySelector('input'), title = inp.value.trim();
+  if(!title) return inp.focus();
+  const { error } = await sb.from('tasks').insert({ user_id: USER.id, title, category:'learning', kind:'one-off', completed:false,
+    learn_plan_id: LN.planId, learn_area_id: f.dataset.lnquick || null, due_date: null });
+  if(error) return fail(error, 'Could not add the task');
+  toast('Task added');
+  refreshBadge();
+  await loadLearning();
+  const again = $('lnBody').querySelector('[data-lnquick] input'); if(again) again.focus();
+});
+// drag a session onto a day in the calendar to move it there
+$('lnBody').addEventListener('dragstart', e=>{
+  const row = e.target.closest && e.target.closest('.ln2-row[data-key]');
+  if(!row) return;
+  e.dataTransfer.setData('text/plain', row.dataset.key); e.dataTransfer.effectAllowed = 'move';
+  row.classList.add('is-drag'); document.body.classList.add('ln2-dragging');
+});
+$('lnBody').addEventListener('dragend', e=>{
+  document.body.classList.remove('ln2-dragging');
+  $('lnBody').querySelectorAll('.is-drag, .is-over').forEach(x=> x.classList.remove('is-drag', 'is-over'));
+});
+$('lnBody').addEventListener('dragover', e=>{
+  const d = e.target.closest && e.target.closest('.fx-sday[data-lnday], .fx-mday[data-lnday]');
+  if(!d || !document.body.classList.contains('ln2-dragging')) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  $('lnBody').querySelectorAll('.is-over').forEach(x=> x !== d && x.classList.remove('is-over'));
+  d.classList.add('is-over');
+});
+$('lnBody').addEventListener('drop', e=>{
+  const d = e.target.closest && e.target.closest('.fx-sday[data-lnday], .fx-mday[data-lnday]');
+  if(!d) return;
+  e.preventDefault();
+  const it = lnFind(e.dataTransfer.getData('text/plain'));
+  document.body.classList.remove('ln2-dragging');
+  lnMoveTo(it, d.dataset.lnday);
+});
 
 function loadSettings(){
   const P = PREFS;

@@ -7552,40 +7552,17 @@ function calRange(){
 const inRange = d => { const { from, to } = calRange(); return d >= from && d <= to; };
 
 async function calFetch(from, to){
-  const [ev, bd, lt, biz] = await Promise.all([
+  // study tasks stay out of this calendar (Ime, 2026-11-18): they live in the task lists and in Learning's own calendar
+  const [ev, bd, biz] = await Promise.all([
     sb.from('schedule_events').select('*').gte('starts_at', _dayOnly(from).toISOString()).lt('starts_at', addDays(to, 1).toISOString()).order('starts_at'),
     sb.from('birthdays').select('*').order('day'),
-    // study tasks are tasks, not events: read them from the task list, so nothing is copied
-    sb.from('tasks').select('*').eq('category', 'learning').gte('due_date', iso(from)).lte('due_date', iso(to)),
     // Side Hustle: scheduled posts, deadlines, milestones, follow-ups (read from their records)
     fetchBizSafe()
   ]);
   if(ev.error) throw ev.error;
   if(bd.error) throw bd.error;
-  return { events: ev.data || [], bdays: bd.data || [], ltasks: ((lt && lt.data) || []).concat(await calLearnRepeats(from, to)), biz: biz ? bizCalItems(biz, from, to) : [] };
+  return { events: ev.data || [], bdays: bd.data || [], ltasks: [], biz: biz ? bizCalItems(biz, from, to) : [] };
 }
-// repeating study sessions from the Learning plans, one entry per day they fall on
-async function calLearnRepeats(from, to){
-  try{
-    const r = await sb.from('recurring_tasks').select('*').eq('category', 'learning');
-    const rules = (r.data || []).filter(x=> x.learn_plan_id && x.active !== false);
-    if(!rules.length) return [];
-    const c = await sb.from('recurring_completions').select('recurring_id,date').in('recurring_id', rules.map(x=> x.id)).gte('date', iso(from)).lte('date', iso(to));
-    const done = new Set((c.data || []).map(x=> x.recurring_id + '|' + x.date)), out = [];
-    rules.forEach(x=>{
-      for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) if(occursOn(x, d)){
-        const k = iso(d);
-        out.push({ id:'r:' + x.id + '|' + k, rule:x, title:x.title, due_date:k, due_time:x.start_time, end_time:x.end_time, completed: done.has(x.id + '|' + k) });
-      }
-    });
-    return out;
-  }catch(e){ return []; }
-}
-function calOpenLTask(t){
-  if(t.rule) return openRecurringForm(t.rule, 'learning', t.due_date);
-  openTaskForm(t);
-}
-
 async function renderCalendar(){
   if(!USER) return;
   paintCalChrome();
@@ -7901,7 +7878,7 @@ $('calMain').addEventListener('click', e=>{
   const ev = e.target.closest('[data-ev]');
   if(ev){ const x = CAL.events.find(z=> z.id === ev.dataset.ev); if(x) openEditEvent(x); return; }
   const lt = e.target.closest('[data-ltask]');
-  if(lt){ const t = CAL.ltasks.find(z=> z.id === lt.dataset.ltask); if(t) calOpenLTask(t); return; }
+  if(lt){ const t = CAL.ltasks.find(z=> z.id === lt.dataset.ltask); if(t) openTaskForm(t); return; }
   const bz = e.target.closest('[data-biz]');
   if(bz){ bizCalOpen(bz.dataset.biz); return; }
   const day = e.target.closest('[data-day]');
@@ -7917,7 +7894,7 @@ function calDayAction(e){
   if(el.dataset.biz) return bizCalOpen(el.dataset.biz);
   if(evId){ const x = CAL.events.find(z=> z.id === evId); if(!x) return; return act === 'del' ? deleteEvent(x) : openEditEvent(x); }
   if(bdId){ const b = CAL.bdays.find(z=> z.id === bdId); if(!b) return; return act === 'del' ? deleteBirthday(b) : openBirthdayForm(b); }
-  if(ltId){ const t = CAL.ltasks.find(z=> z.id === ltId); if(t) calOpenLTask(t); }
+  if(ltId){ const t = CAL.ltasks.find(z=> z.id === ltId); if(t) openTaskForm(t); }
 }
 $('calDay').addEventListener('click', e=>{
   const day = e.target.closest('.cb-date[data-day]');

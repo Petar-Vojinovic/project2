@@ -5179,6 +5179,32 @@
   .fx-nut .fx-stack > .fx-meals{flex:0 0 auto;}
   .fx-meals > .fx-card{margin-top:0;}
   .fx-arrow-btn:disabled{opacity:.35;cursor:default;}
+
+  /* 2026-11-19 overview: calendar + day plan, equal cards */
+  .fx-ov{display:flex;flex-direction:column;gap:var(--fx-gap);}
+  .fx-ov > .fx-card{margin-top:0;}
+  .fx-ov-top{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  .fx-ov-mid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  .fx-ovcal{display:flex;flex-direction:column;}
+  .fx-ovcal .fx-strip{margin-top:4px;}
+  .fx-ovcal .fx-legend{margin-top:auto;padding-top:14px;}
+  .fx-dayplan .ln2-day{margin-top:2px;}
+  .fx-dayplan .fx-empty{padding:18px 8px 10px;}
+  .fx-drow .ln2-main{gap:5px;}
+  .fx-drow .ln2-tag{gap:4px;}
+  .fx-drow .ln2-tag .ico{width:12px;height:12px;}
+  .fx-dmeta{font-size:11.5px;font-weight:600;color:var(--muted-foreground);}
+  .fx-drow.rest .ln2-main b{color:var(--muted-foreground);}
+  .fx-check-rest{background:var(--muted);color:var(--muted-foreground);cursor:default;box-shadow:none;}
+  .fx-check-rest .ico{width:14px;height:14px;}
+  .fx-ov-mid > .fx-card{display:flex;flex-direction:column;}
+  .fx-ov-mid .fx-stats .fx-mini-g{margin-top:auto;}
+  .fx-ov-mid .fx-stats .fx-hero{margin-bottom:var(--fx-gap);}
+  .fx-active .fx-mgrid{flex:1 1 auto;align-content:space-evenly;}
+  .fx-active .fx-legend{margin-top:10px;}
+  .fx-cycrow{margin:14px -6px -6px;padding:12px 10px;border-radius:16px;background:var(--muted);width:calc(100% + 12px);}
+  .fx-cycrow .fx-mlink-ico{width:38px;height:38px;}
+  @media (max-width:760px){ .ln2-row.fx-drow{flex-wrap:nowrap;align-items:center;} .ln2-row.fx-drow > *{order:0 !important;} .ln2-row.fx-drow > .fx-acts{margin-left:0;} .ln2-row.fx-drow > .ln2-main{flex:1 1 auto;padding-left:0;} .fx-drow .fx-acts button{width:28px;} }
   @media (max-width:1024px){
     .fx-grid{grid-template-columns:minmax(0,1fr);}
     .fx-split .fx-hist{grid-template-columns:minmax(0,1fr);}
@@ -7837,7 +7863,7 @@ function fxPaint(){
       <div><b>Fitness tracking is paused${act.start_date > t0 ? ' from ' + fxShort(parseISO(act.start_date)) : ' since ' + fxShort(parseISO(act.start_date))}</b>
       <span>${esc(act.injury)}. Missed workouts don't count, and this time is left out of your stats and streaks.</span></div>
       <button type="button" class="btn btn-ghost btn-sm" data-fxinj="1">Resume tracking</button></div>` : '';
-  $('fxTasks').hidden = FX.tab !== 'overview';
+  $('fxTasks').hidden = true; /* training tasks stay on Dashboard and All tasks */
   const body = $('fxBody');
   body.dataset.tab = FX.tab;
   body.innerHTML = FX.tab === 'split' ? fxSplitHtml() : FX.tab === 'running' ? fxRunHtml()
@@ -7917,31 +7943,40 @@ function fxRing(val, goal, size, label){
 function fxOvHtml(){
   const C = FX.C, D = FX.D, S = FX.S, t0 = iso(new Date()), si = iso(FX.sel), today = _dayOnly(new Date());
   const G = fxGoals();
-  /* 1 · the selected day as activity cards */
+  /* 1 · week calendar (date picker only) + the selected day's plan */
   const daySess = S.filter(s=>s.date === si);
   const paused = fxPausedIn(C.inj, si);
-  const firstOpen = daySess.find(s=>s.kind !== 'rest' && s.status !== 'completed');
-  const tiles = daySess.map(s=>{
-    const done = s.status === 'completed';
-    const hero = !paused && s === firstOpen && si >= t0;
-    const icon = s.kind === 'run' ? 'run' : s.kind === 'rest' ? 'moon' : 'dumbbell';
-    return `<article class="fx-tile k-${s.kind}${done ? ' done' : ''}${hero ? ' hero' : ''}${paused ? ' paused' : ''}">
-      <div class="fx-tile-top"><span class="fx-tile-ico">${ico(icon)}</span>
-        <button type="button" class="fx-go" data-a="open" data-id="${esc(s.id)}" aria-label="Open ${esc(s.title)}">${ico('arrowUR')}</button></div>
-      <div class="fx-tile-name">${esc(s.title)}</div>
-      <div class="fx-tile-meta">${esc(paused ? 'Paused · not counted' : fxSessMeta(s))}</div>
-      ${s.kind === 'rest' ? '' : `<button type="button" class="fx-tick${done ? ' on' : ''}" data-a="tick" data-id="${esc(s.id)}" aria-pressed="${done}">${ico('check','ico-sm')}<span>${done ? 'Done' : 'Mark done'}</span></button>`}
-    </article>`;
-  }).join('');
-  const nPlan = daySess.filter(s=>s.kind !== 'rest').length;
-  const dayHead = si === t0 ? 'Today' : relDay(FX.sel);
-  const todayCard = `<section class="fx-card fx-today">
-    <div class="fx-card-h"><div><h2>${esc(dayHead)}</h2><p class="fx-sub">${esc(longDate(FX.sel))}</p></div><span class="spacer"></span>
-      <span class="fx-count">${paused ? 'Tracking paused' : nPlan ? `${nPlan} planned activit${nPlan === 1 ? 'y' : 'ies'}` : 'Rest day'}</span></div>
-    ${fxWeekNav(fxWeekLabel(mondayOf(FX.sel)), si !== t0 ? '<button type="button" class="fx-pill-btn" data-a="today">Today</button>' : '')}
+  const thisWeek = iso(mondayOf(FX.sel)) === iso(mondayOf(today));
+  const calCard = `<section class="fx-card fx-ovcal">
+    <div class="fx-card-h"><h2>Calendar</h2></div>
+    ${fxWeekNav(fxWeekLabel(mondayOf(FX.sel)), thisWeek && si === t0 ? '' : '<button type="button" class="fx-pill-btn" data-a="today">Today</button>')}
     ${fxStrip()}
-    <div class="fx-tiles">${tiles}
-      <button type="button" class="fx-tile fx-add" data-a="addact"><span>${ico('plus')}</span>Add activity</button></div>
+    ${fxLegend([['done','Done'],['plan','Planned'],['miss','Missed'],['paused','Paused']])}
+  </section>`;
+  const kindLabel = k => k === 'run' ? 'Run' : k === 'rest' ? 'Rest' : 'Strength';
+  const rows = daySess.map(s=>{
+    const done = s.status === 'completed', rest = s.kind === 'rest';
+    const meta = paused ? 'Paused · not counted' : fxSessMeta(s);
+    const tags = `<span class="ln2-tag soft">${ico(s.kind === 'run' ? 'run' : rest ? 'moon' : 'dumbbell', 'ico-xs')} ${kindLabel(s.kind)}</span>${s.category && s.category !== s.title ? `<span class="ln2-tag soft">${esc(s.category)}</span>` : ''}${meta ? `<span class="fx-dmeta">${esc(meta)}</span>` : ''}`;
+    return `<li class="ln2-row fx-drow${done ? ' done' : ''}${rest ? ' rest' : ''}">
+      ${rest ? `<span class="fx-check fx-check-rest" aria-hidden="true">${ico('moon','ico-sm')}</span>`
+             : `<button type="button" class="fx-check${done ? ' on' : ''}" data-a="tick" data-id="${esc(s.id)}" role="checkbox" aria-checked="${done}" aria-label="${done ? 'Mark not done' : 'Mark done'}: ${esc(s.title)}">${ico('check')}</button>`}
+      <button type="button" class="ln2-main" data-a="open" data-id="${esc(s.id)}" aria-label="Open ${esc(s.title)}"><b>${esc(s.title)}</b><span class="ln2-tags">${tags}</span></button>
+      <span class="fx-acts">${rest ? '' : `<button type="button" data-a="edit" data-id="${esc(s.id)}" aria-label="Edit ${esc(s.title)}" title="Edit">${ico('pencil')}</button>`}
+        <button type="button" data-a="move" data-id="${esc(s.id)}" aria-label="Move ${esc(s.title)} to another day" title="Move to another day">${ico('swap')}</button>
+        <button type="button" data-a="del" data-id="${esc(s.id)}" aria-label="Delete ${esc(s.title)}" title="Delete">${ico('trash')}</button></span>
+    </li>`;
+  }).join('');
+  const nPlan = daySess.filter(s=>s.kind !== 'rest').length, nDone = daySess.filter(s=>s.kind !== 'rest' && s.status === 'completed').length;
+  const rd = relDay(FX.sel);
+  const dayHead = /^(Today|Tomorrow|Yesterday)$/.test(rd) ? rd : FX.sel.toLocaleDateString(undefined, { weekday:'long' });
+  const sub = longDate(FX.sel) + (paused ? ' · tracking paused' : nPlan ? ` · ${nDone} of ${nPlan} done` : '');
+  const onlyRest = !nPlan;
+  const dayCard = `<section class="fx-card fx-dayplan">
+    <div class="fx-card-h"><div><h2>${esc(dayHead)}</h2><p class="fx-sub">${esc(sub)}</p></div><span class="spacer"></span>
+      <button type="button" class="btn btn-ghost btn-sm" data-a="addact">${ico('plus')}Add</button></div>
+    ${onlyRest && !daySess.length ? fxEmpty('Nothing planned', 'A free day. Use Add to plan a workout or run.', '')
+      : `<ul class="ln2-day">${rows}</ul>`}
   </section>`;
 
   /* 2 · statistics for the chosen period */
@@ -7991,26 +8026,9 @@ function fxOvHtml(){
     </div>
   </section>`;
 
-  /* 3 · goals this week */
-  const wk = fxStats(S, C, mondayOf(today), addDays(mondayOf(today), 6));
-  const streak = fxStreak(S, C);
-  const wkPlanned = wk.due + wk.upcoming;
-  const goalW = G.workouts || wkPlanned;
-  const goalsCard = `<section class="fx-card fx-goals is-link" data-a="tab" data-t="split" role="link" tabindex="0" aria-label="This week: open Workout Split">
-    <div class="fx-card-h"><h2>This week</h2><span class="spacer"></span><span class="fx-go sm">${ico('arrowUR')}</span></div>
-    <div class="fx-goal-ring">
-      ${fxRing(wk.done, goalW, 116, `${wk.done} of ${goalW} workouts`)}
-      <div class="fx-ring-c"><b>${wk.done}<em>/${goalW || 0}</em></b><span>${G.workouts ? 'weekly goal' : 'planned'}</span></div>
-    </div>
-    <div class="fx-goal-rows">
-      ${G.km ? `<div class="fx-goal-row"><div><span>Running</span><b>${fxKm(wk.km)} / ${fxKm(G.km)} km</b></div><div class="fx-bar"><i style="width:${Math.min(100, wk.km / G.km * 100)}%"></i></div></div>`
-             : `<div class="fx-goal-row"><div><span>Running</span><b>${fxKm(wk.km)} km</b></div></div>`}
-      <div class="fx-goal-row"><div><span>Workout streak</span><b>${streak} ${streak === 1 ? 'day' : 'days'}</b></div></div>
-      <div class="fx-goal-row"><div><span>Active days</span><b>${wk.activeDays} of 7</b></div></div>
-    </div>
-  </section>`;
-
-  /* 4 · active days (month) */
+  /* 3 · active days (month) + cycle shortcut */
+  const cyc = fxCycleInfo();
+  const showCyc = PREFS.fitCycleOverview !== false && cyc.last;
   const activeCard = `<section class="fx-card fx-active">
     <div class="fx-card-h"><h2>Your active days</h2><span class="spacer"></span>
       <div class="fx-nav sm"><button type="button" class="fx-arrow-btn" data-a="mon" data-n="-1" aria-label="Previous month">${ico('chevL')}</button>
@@ -8018,27 +8036,18 @@ function fxOvHtml(){
       <button type="button" class="fx-arrow-btn" data-a="mon" data-n="1" aria-label="Next month">${ico('chevR')}</button></div></div>
     ${fxMonthGrid(FX.calRef || FX.sel)}
     ${fxLegend([['done','Done'],['plan','Planned'],['miss','Missed'],['paused','Paused']])}
+    ${showCyc ? `<button type="button" class="fx-mlink fx-cycrow" data-a="tab" data-t="cycle"><span class="fx-mlink-ico cyc">${ico('drop')}</span>
+      <div><b>${cyc.day ? 'Cycle day ' + cyc.day : 'Cycle tracking'}</b><span>${cyc.next ? 'Next period predicted ' + fxShort(parseISO(cyc.next)) : 'Log two periods for a prediction'}</span></div>
+      <span class="fx-go sm">${ico('arrowUR')}</span></button>` : ''}
   </section>`;
 
   /* 5 · over time: 12 weeks */
   const trendCard = `<section class="fx-card fx-trend"><div class="fx-card-h"><h2>Last 12 weeks</h2><span class="spacer"></span><span class="fx-count">workouts</span></div>${fxWeeksChart()}</section>`;
 
-  /* 6 · small links to nutrition + cycle */
-  const tl = D.log.filter(l=>l.date === t0);
-  const kc = tl.reduce((a, l)=> a + l.kcal * l.grams / 100, 0);
-  const cyc = fxCycleInfo();
-  const showCyc = PREFS.fitCycleOverview !== false && cyc.last;
-  const minis = `<div class="fx-side-minis">
-    <button type="button" class="fx-card fx-mlink" data-a="tab" data-t="nutrition">
-      ${G.kcal ? fxRing(kc, G.kcal, 54, `${Math.round(kc)} of ${G.kcal} kcal`) : `<span class="fx-mlink-ico">${ico('food')}</span>`}
-      <div><b>${tl.length ? Math.round(kc).toLocaleString() + ' kcal today' : 'No meals logged today'}</b><span>${G.kcal ? Math.max(0, Math.round(G.kcal - kc)).toLocaleString() + ' kcal left' : 'Nutrition'}</span></div>
-      <span class="fx-go sm">${ico('arrowUR')}</span></button>
-    ${showCyc ? `<button type="button" class="fx-card fx-mlink" data-a="tab" data-t="cycle"><span class="fx-mlink-ico cyc">${ico('drop')}</span>
-      <div><b>${cyc.day ? 'Cycle day ' + cyc.day : 'Cycle tracking'}</b><span>${cyc.next ? 'Next period predicted ' + fxShort(parseISO(cyc.next)) : 'Log two periods for a prediction'}</span></div>
-      <span class="fx-go sm">${ico('arrowUR')}</span></button>` : ''}
-  </div>`;
-
-  return `<div class="fx-grid fx-ov">${todayCard}${goalsCard}${statsCard}<div class="fx-stack">${activeCard}${minis}</div><div class="fx-span">${trendCard}</div></div>`;
+  return `<div class="fx-ov">
+    <div class="fx-grid fx-ov-top">${calCard}${dayCard}</div>
+    <div class="fx-grid fx-ov-mid">${statsCard}${activeCard}</div>
+    ${trendCard}</div>`;
 }
 function fxMonthGrid(ref){
   const m0 = new Date(ref.getFullYear(), ref.getMonth(), 1), start = mondayOf(m0), t0 = iso(new Date()), si = iso(FX.sel);

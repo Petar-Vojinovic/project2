@@ -1719,14 +1719,14 @@
   .task-item.carried.done .carry-tag, .pt-item.carried.done .carry-tag{opacity:.45;}
 
   /* ---------- recurring: repeat picker ---------- */
-  .rp-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
+  .rp-seg{display:grid;grid-template-columns:1.45fr repeat(3,1fr);gap:6px;margin-bottom:12px;}
   .rp-chip, .day-chip{
     border:none;cursor:pointer;font-family:inherit;border-radius:10px;
     background:rgba(var(--foreground-rgb),0.028);box-shadow:inset 0 0 0 1px rgba(var(--foreground-rgb),0.088);
     color:var(--muted-on-dark);font-weight:600;
     transition:background .18s ease, box-shadow .18s ease, color .18s ease, transform .12s ease;
   }
-  .rp-chip{padding:8px 4px;font-size:12px;}
+  .rp-chip{padding:8px 4px;font-size:12px;white-space:nowrap;}
   .rp-chip:hover, .day-chip:hover{color:var(--foreground);background:rgba(var(--c-sky-rgb),.14);}
   .rp-chip:active, .day-chip:active{transform:scale(.94);}
   .rp-chip.on, .day-chip.on{
@@ -1734,10 +1734,11 @@
     box-shadow:inset 0 0 0 1.5px var(--c-sky), 0 0 14px -4px rgba(var(--c-sky-rgb),.8);
   }
   .day-chips{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;}
-  .day-chip{aspect-ratio:1;font-size:11px;}
+  .day-chip{height:36px;font-size:11.5px;}
   .day-chip.wknd:not(.on){color:var(--c-sky);}
-  .rp-month select{margin-bottom:12px;}
-  .rp-days[hidden], .rp-month[hidden]{display:none;}
+  .rp-days[hidden], .rp-mhint[hidden]{display:none;}
+  .fm-hint.rp-mhint{display:block;margin:-4px 0 12px;font-size:12px;}
+  .fm-hint.rp-mhint[hidden]{display:none;}
 
   /* ---------- recurring rows in Today ---------- */
   .rep-tag{
@@ -2540,18 +2541,6 @@
     color:var(--dz-ink);background:transparent;box-shadow:inset 0 0 0 1px var(--dz-line);border-radius:999px;padding:7px 12px;}
   .dz-ghost:hover{background:var(--dz-line-2);}
 
-  /* quick add */
-  .dz-quick{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding:5px 5px 5px 8px;border-radius:14px;
-    background:var(--dz-line-2);box-shadow:inset 0 0 0 1px transparent;transition:box-shadow .15s ease, background .15s ease;}
-  .dz-quick:focus-within{background:var(--card);box-shadow:inset 0 0 0 1.5px var(--dz-ink);}
-  .dz-quick-ico{width:26px;height:26px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--card);color:var(--dz-ink-2);}
-  .dz-quick input{flex:1;min-width:0;border:none;outline:none;background:transparent;font:inherit;font-size:14px;color:var(--dz-ink);padding:8px 2px;}
-  .dz-quick input::placeholder{color:var(--dz-ink-3);}
-  #page-dashboard .dz-quick input:focus-visible{box-shadow:none !important;}
-  .dz-quick-btn{border:none;cursor:pointer;font:inherit;font-size:13px;font-weight:700;border-radius:10px;padding:8px 14px;
-    background:var(--primary);color:var(--foreground);opacity:.55;transition:opacity .15s ease;}
-  .dz-quick:focus-within .dz-quick-btn, .dz-quick-btn:hover{opacity:1;}
-
   /* task rows, dashboard look (same component as everywhere else) */
   #page-dashboard .skel{background:linear-gradient(90deg,var(--card),var(--card),var(--card));background-size:200% 100%;}
   #page-dashboard .tgroup{display:flex;align-items:center;gap:8px;color:var(--dz-ink-3);font-size:11px;letter-spacing:.08em;margin:16px 2px 8px;}
@@ -2560,6 +2549,13 @@
   #page-dashboard .tgroup.g-late b{color:var(--dz-pink-ink);}
   #page-dashboard .tgroup.g-done b{color:var(--dz-mint-ink);}
   #page-dashboard .tgroup .n{font-weight:700;background:var(--dz-line-2);color:var(--dz-ink-2);border-radius:999px;padding:1px 7px;letter-spacing:0;}
+  /* Completed: collapsed by default; the whole heading is the toggle */
+  .tgroup.tg-fold{border:none;background:transparent;font-family:inherit;text-transform:uppercase;cursor:pointer;width:100%;text-align:left;padding:4px 0;border-radius:8px;}
+  #page-dashboard .tgroup.tg-fold{margin-bottom:2px;}
+  .tgroup.tg-fold:hover b{color:var(--dz-ink, var(--foreground));}
+  .tg-chev{width:13px;height:13px;color:var(--dz-ink-3, var(--muted-foreground));transition:transform .15s ease;}
+  .tgroup.tg-fold[aria-expanded="true"] .tg-chev{transform:rotate(90deg);}
+  .tg-fold + .tlist[hidden]{display:none;}
   #page-dashboard .tlist{gap:8px;}
   #page-dashboard .trow{background:var(--card);box-shadow:inset 0 0 0 1px var(--dz-line);border-radius:var(--dz-r-sm);padding:9px 10px 9px 12px;gap:12px;
     position:relative;transition:box-shadow .15s ease, background .25s ease, transform .15s ease;}
@@ -2672,7 +2668,6 @@
     .dz-head-actions .ring-mini span{display:none;}
     .dz-streak{height:44px;padding:0 12px 0 8px;}
     .dz-streak span{display:none;}
-    .dz-head-actions .dz-add{margin-left:auto;}
     .dz-progress{grid-template-columns:1fr 1fr;}
     .pw-today{grid-column:1/-1;grid-template-columns:auto 1fr;}
     .pw-today .pw-vis{justify-self:end;justify-content:flex-end;}
@@ -4505,8 +4500,8 @@
     #page-side .wo-card-head .dz-title{white-space:nowrap;}
     #page-side .wo-card-head .dz-ghost{white-space:nowrap;}
   }
-  /* ===== ALL TASKS v2: header · toolbar · list (scoped to #page-tasks) ===== */
-  .at-row, .at-chip, .at-pill, .at-group > i{--cs:var(--acc, var(--foreground));--cp:rgba(var(--acc-rgb, var(--foreground-rgb)),.24);}
+  /* ===== ALL TASKS (2026-11-19, simplified): header · To do / Done + areas · one list (scoped to #page-tasks) ===== */
+  .at-row, .at-chip{--cs:var(--acc, var(--foreground));--cp:rgba(var(--acc-rgb, var(--foreground-rgb)),.24);}
   #page-tasks .at-head{display:flex;align-items:flex-end;gap:16px;margin-bottom:18px;}
   #page-tasks .at-head-t{flex:1;min-width:0;}
   #page-tasks .at-head .page-title{margin:0;}
@@ -4515,61 +4510,23 @@
   #page-tasks .btn.at-add{border-radius:999px;padding:10px 18px 10px 14px;flex-shrink:0;}
   #page-tasks .btn.at-add .ico{width:17px;height:17px;}
 
-  /* toolbar: plain row on the page background, no container */
-  .at-tools{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-  .at-tools .cz-seg button{padding:6px 12px;font-size:12.5px;}
-  .at-spacer{flex:1;}
-  .at-break{display:none;}
-  .at-search{display:flex;align-items:center;gap:8px;flex:0 1 300px;min-width:0;height:36px;padding:0 12px;border-radius:10px;
-    background:var(--card);box-shadow:inset 0 0 0 1px var(--border);color:var(--dz-ink-3);cursor:text;}
-  .at-search:focus-within{box-shadow:inset 0 0 0 1.5px var(--ring);}
-  .at-search .ico{width:16px;height:16px;flex-shrink:0;}
-  .at-search input{border:none;background:transparent;outline:none;font:inherit;font-size:13.5px;color:var(--foreground);flex:1;min-width:0;padding:0;height:100%;}
-  .at-search input::-webkit-search-cancel-button{display:none;}
-  .at-search input::placeholder{color:var(--dz-ink-3);}
-  .at-search button{border:none;background:transparent;cursor:pointer;color:var(--dz-ink-3);display:flex;padding:4px;border-radius:50%;}
-  .at-search button:hover{color:var(--foreground);background:var(--muted);}
-  .at-search button[hidden]{display:none;}
-  .at-sort{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--dz-ink-3);white-space:nowrap;}
-  .at-sort .sel-field{height:36px;min-width:118px;border-radius:10px;font-size:12.5px;font-weight:700;margin:0;}
-  .at-sort select{height:36px;border-radius:10px;}
-  .at-filter-btn{display:none;align-items:center;gap:7px;height:36px;padding:0 12px;border:none;border-radius:10px;cursor:pointer;flex-shrink:0;
-    font:inherit;font-size:12.5px;font-weight:700;color:var(--foreground);background:var(--card);box-shadow:inset 0 0 0 1px var(--border);}
-  .at-filter-btn:hover{background:var(--muted);}
-  .at-filter-btn .ico{width:16px;height:16px;}
-  .at-filter-btn b{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--btn-primary-bg, var(--primary));color:var(--btn-primary-fg, var(--foreground));
-    font-size:11px;display:inline-flex;align-items:center;justify-content:center;}
-  .at-filter-btn b[hidden]{display:none;}
-
-  /* second row: area chips (and priority) */
-  .at-filters{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  /* one row: To do / Done, then the areas */
+  .at-tools{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+  .at-tools .cz-seg{flex-shrink:0;}
+  .at-tools .cz-seg button{padding:6px 14px;font-size:12.5px;}
   .at-chips{display:flex;align-items:center;gap:4px;flex-wrap:wrap;flex:1;min-width:0;}
   .at-chip{border:none;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:8px;
-    background:transparent;color:var(--dz-ink-2);font-size:12.5px;font-weight:600;white-space:nowrap;}
+    background:transparent;color:var(--dz-ink-2);font-size:12.5px;font-weight:600;white-space:nowrap;flex-shrink:0;}
   .at-chip:hover{background:var(--muted);color:var(--foreground);}
   .at-chip i{width:7px;height:7px;border-radius:50%;background:var(--cs, var(--foreground));}
   .at-chip .n{font-size:11px;font-weight:600;color:var(--dz-ink-3);font-variant-numeric:tabular-nums;}
   .at-chip.on{background:var(--card);color:var(--foreground);font-weight:700;box-shadow:inset 0 0 0 1px var(--border);}
   .at-chip.is-empty:not(.on){opacity:.5;}
-  .at-active{display:none;}
 
   /* the list: one surface, thin dividers */
   .at-panel{background:var(--card);border-radius:16px;box-shadow:inset 0 0 0 1px var(--dz-line);padding:6px 0 10px;}
-  .at-quick{display:flex;align-items:center;gap:10px;margin:2px 10px 2px;padding:0 6px 0 10px;height:42px;border-radius:10px;}
-  .at-quick:hover{background:var(--muted);}
-  .at-quick:focus-within{background:var(--card);box-shadow:inset 0 0 0 1.5px var(--ring);}
-  .at-quick .ico{width:16px;height:16px;color:var(--dz-ink-3);flex-shrink:0;margin:0 4px;}
-  .at-quick input{flex:1;min-width:0;border:none;background:transparent;outline:none;font:inherit;font-size:13.5px;color:var(--foreground);height:100%;padding:0;}
-  .at-quick input::placeholder{color:var(--dz-ink-3);}
-  .at-quick small{font-size:11.5px;font-weight:600;color:var(--dz-ink-3);white-space:nowrap;}
-  .at-quick button{border:none;font:inherit;font-size:12px;font-weight:700;cursor:pointer;height:28px;padding:0 12px;border-radius:8px;
-    background:var(--btn-primary-bg, var(--primary));color:var(--btn-primary-fg, var(--foreground));opacity:0;transition:opacity .15s ease;}
-  .at-quick:focus-within button{opacity:1;}
-  #page-tasks.is-rec .at-quick, #page-tasks.is-doneview .at-quick{display:none;}
-  #page-tasks.is-rec .at-tools .at-status, #page-tasks.is-rec .at-tools .at-sort, #page-tasks.is-rec .at-prio-f{display:none;}
-
   .at-list{padding:0 10px;}
-  .at-cols, .at-row{display:grid;grid-template-columns:32px minmax(0,1fr) 120px 128px 76px 34px;align-items:center;column-gap:12px;}
+  .at-cols, .at-row{display:grid;grid-template-columns:32px minmax(0,1fr) 120px 128px 34px;align-items:center;column-gap:12px;}
   .at-cols{padding:10px 10px 4px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dz-ink-3);}
   .at-group{display:flex;align-items:center;gap:8px;padding:18px 10px 6px;font-size:12.5px;font-weight:700;color:var(--foreground);}
   .at-cols + .at-group{padding-top:8px;}
@@ -4577,8 +4534,6 @@
   .at-group .n.ok .ico{width:13px;height:13px;color:var(--success, var(--dz-ink-3));vertical-align:-2px;}
   .at-group.g-late{color:var(--danger);}
   .at-group.g-muted{color:var(--dz-ink-3);}
-  .at-group > i{width:8px;height:8px;border-radius:50%;background:var(--cs);}
-  #page-tasks.is-rec .at-cols, #page-tasks.is-rec .at-row{grid-template-columns:32px minmax(0,1fr) 120px 160px 100px 34px;}
 
   .at-row{position:relative;padding:0 10px;min-height:44px;border-radius:10px;transition:background .15s ease;}
   .at-row + .at-row::before{content:"";position:absolute;left:52px;right:10px;top:0;height:1px;background:var(--dz-line-2);}
@@ -4586,7 +4541,6 @@
   .at-row:hover::before, .at-row:focus-within::before, .at-row:hover + .at-row::before, .at-row:focus-within + .at-row::before{opacity:0;}
   .at-row .tcheck{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1.75px var(--cs);background:var(--card);color:transparent;justify-self:center;position:relative;}
   .at-row .tcheck::after{content:"";position:absolute;inset:-11px;}
-  .at-row .tcheck:hover{background:var(--cp);color:var(--cs);}
   .at-row .tcheck:hover{background:var(--cp) !important;color:var(--cs) !important;}
   .at-row.done .tcheck{background:var(--foreground) !important;box-shadow:none !important;color:var(--card) !important;}
   .at-row .tcheck .ico{width:12px;height:12px;}
@@ -4595,9 +4549,9 @@
   .at-main{border:none;background:transparent;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:10px 0;min-width:0;
     display:flex;align-items:center;gap:8px;border-radius:6px;align-self:stretch;}
   .at-title{font-size:14px;font-weight:600;color:var(--foreground);line-height:1.35;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .at-rec, .at-path{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--dz-ink-3);white-space:nowrap;flex-shrink:0;}
-  .at-rec .ico, .at-path .ico{width:12px;height:12px;}
-  .at-hi, .at-rec-m{display:none;}
+  .at-rec{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--dz-ink-3);white-space:nowrap;flex-shrink:0;}
+  .at-rec .ico{width:12px;height:12px;}
+  .at-rec-m{display:none;}
   .at-meta{display:contents;}
   .at-area{display:flex;align-items:center;gap:7px;min-width:0;font-size:12.5px;font-weight:600;color:var(--dz-ink-2);white-space:nowrap;}
   .at-area i{width:8px;height:8px;border-radius:50%;background:var(--cs);flex-shrink:0;}
@@ -4606,19 +4560,13 @@
   .at-due.is-late{color:var(--danger);}
   .at-due.is-today{font-weight:800;}
   .at-due.none{color:var(--dz-ink-3);font-weight:500;}
-  .at-freq{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--dz-ink-2);white-space:nowrap;min-width:0;}
-  .at-freq .ico{width:13px;height:13px;color:var(--dz-ink-3);}
-  .at-prio{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;white-space:nowrap;}
-  .at-prio .ico{width:13px;height:13px;}
-  .at-prio.high{color:var(--danger);}
-  .at-prio.low{color:var(--dz-ink-3);font-weight:600;}
   .at-more{border:none;background:transparent;cursor:pointer;color:var(--dz-ink-3);width:32px;height:32px;border-radius:8px;
     display:flex;align-items:center;justify-content:center;opacity:.55;transition:opacity .15s ease, background .15s ease;}
   .at-row:hover .at-more, .at-row:focus-within .at-more, .at-more[aria-expanded="true"]{opacity:1;}
   .at-more:hover, .at-more[aria-expanded="true"]{background:rgba(var(--foreground-rgb),.08);color:var(--foreground);}
   .at-more .ico{width:18px;height:18px;}
   .at-row.done .at-title{text-decoration:line-through;text-decoration-color:var(--dz-ink-3);color:var(--dz-ink-3);}
-  .at-row.done .at-meta > *, .at-row.done .at-rec, .at-row.done .at-path{opacity:.55;}
+  .at-row.done .at-meta > *, .at-row.done .at-rec{opacity:.55;}
   .at-row.is-paused .at-title{color:var(--dz-ink-2);}
   .at-row.just-done{animation:atDone .5s ease;}
   @keyframes atDone{0%{background:var(--cp);}100%{background:transparent;}}
@@ -4644,113 +4592,54 @@
   .at-menu button.danger:hover{background:var(--danger-faint);}
   .at-menu hr{border:none;height:1px;background:var(--dz-line-2);margin:5px 4px;}
   .at-menu-l{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dz-ink-3);padding:4px 10px 2px;}
-  .at-menu-seg{display:flex;gap:4px;padding:4px 6px;}
-  .at-menu-seg button{flex:1;justify-content:center;gap:4px;padding:6px 4px;font-size:12.5px;box-shadow:inset 0 0 0 1px var(--border);}
-  .at-menu-seg button .ico{width:13px;height:13px;color:var(--danger);}
-  .at-menu-seg button.on{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
 
-  /* Filter sheet */
-  .at-sheet{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;}
-  .at-sheet[hidden]{display:none;}
-  .at-sheet-bg{position:absolute;inset:0;background:rgba(var(--shadow-rgb),.32);}
-  .at-sheet-card{position:relative;width:100%;max-width:520px;max-height:calc(100dvh - 40px);overflow-y:auto;background:var(--card);
-    border-radius:20px 20px 0 0;padding:6px 16px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -8px 30px rgba(var(--shadow-rgb),.18);}
-  .at-sheet-head{display:flex;align-items:center;justify-content:space-between;padding:10px 0 4px;}
-  .at-sheet-head b{font-size:16px;}
-  .at-x{border:none;background:transparent;cursor:pointer;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--dz-ink-2);margin-right:-8px;}
-  .at-x:hover{background:var(--muted);}
-  .at-sheet-l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dz-ink-3);margin:16px 0 8px;}
-  .at-sheet-seg{display:flex;width:100%;}
-  .at-sheet-seg button{flex:1;justify-content:center;padding:8px 6px;font-size:13px;}
-  .at-sheet-chips{gap:6px;}
-  .at-sheet-chips .at-chip{height:34px;padding:0 12px;box-shadow:inset 0 0 0 1px var(--border);}
-  .at-sheet-chips .at-chip.on{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
-  .at-sheet-foot{display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:12px;border-top:1px solid var(--dz-line-2);}
-  .at-sheet-foot .btn{flex:1;justify-content:center;border-radius:12px;padding:12px;}
-  .at-clear{border:none;background:transparent;font:inherit;font-size:13px;font-weight:700;color:var(--dz-ink-2);cursor:pointer;padding:8px 10px;border-radius:8px;text-decoration:underline;text-underline-offset:3px;}
-  .at-clear:hover{color:var(--foreground);}
-  .at-clear:disabled{opacity:.4;cursor:default;text-decoration:none;}
-  body.at-sheet-open{overflow:hidden;}
-  .at-pill{border:none;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 6px 0 10px;border-radius:8px;flex-shrink:0;
-    background:var(--card);box-shadow:inset 0 0 0 1px var(--border);color:var(--foreground);font-size:12.5px;font-weight:600;white-space:nowrap;}
-  .at-pill i{width:7px;height:7px;border-radius:50%;background:var(--cs);}
-  .at-pill .ico{width:13px;height:13px;color:var(--dz-ink-3);}
-  .at-pill:hover .ico{color:var(--foreground);}
-
-  /* tablet and small laptops: fold status, area, priority and sort into Filter */
+  /* tablets: the areas get their own row */
   @media (max-width:1060px){
-    .at-filter-btn{display:inline-flex;}
-    .at-tools .at-status, .at-tools .at-sort, .at-filters{display:none;}
-    .at-search{flex:1 1 auto;max-width:none;}
-    .at-spacer{display:none;}
-    .at-tools{flex-wrap:wrap;}
-    .at-active:not([hidden]){display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1 1 100%;order:5;}
+    .at-tools{flex-wrap:wrap;gap:10px;}
+    .at-chips{flex:1 1 100%;}
     .at-cols, .at-row{grid-template-columns:32px minmax(0,1fr) 110px 120px 34px;}
-    .at-cols span:nth-child(5), .at-row .at-prio{display:none;}
-    .at-hi{display:inline-flex;color:var(--danger);flex-shrink:0;}
-    .at-hi .ico{width:13px;height:13px;}
-    #page-tasks.is-rec .at-cols, #page-tasks.is-rec .at-row{grid-template-columns:32px minmax(0,1fr) 110px 130px 90px 34px;}
-    #page-tasks.is-rec .at-cols span:nth-child(5){display:block;}
-  }
-  @media (min-width:761px) and (max-width:1060px){
-    .at-sheet{align-items:center;}
-    .at-sheet-card{border-radius:20px;padding-bottom:16px;}
   }
 
-  /* phones: compact header, two-line rows, menu as a bottom sheet */
+  /* phones: compact header, areas scroll sideways, two-line rows, menu as a bottom sheet */
   @media (max-width:760px){
     #page-tasks .at-head .page-title{display:none;}
     #page-tasks .at-head{align-items:center;margin-bottom:12px;}
     .at-count{margin-top:0;font-size:13.5px;}
     #page-tasks .btn.at-add{padding:8px 14px 8px 11px;font-size:13px;}
-    .at-tools{flex-wrap:wrap;gap:8px;margin-bottom:8px;}
-    .at-search{order:1;flex:1 1 0;height:40px;}
-    .at-break{display:block;order:3;flex-basis:100%;height:0;margin-top:-8px;}
-    .at-filter-btn{order:2;height:40px;}
-    .at-filter-btn span{display:none;}
-    .at-tools .at-view{order:4;flex-shrink:0;}
-    .at-tools .at-view button{padding:5px 11px;font-size:12px;}
-    .at-tools .at-view .ico{width:13px;height:13px;}
-    .at-active:not([hidden]){order:5;flex:1 1 0;min-width:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px;}
-    .at-active::-webkit-scrollbar{display:none;}
-    .at-tools{margin-bottom:10px;}
+    .at-tools{gap:8px;margin-bottom:10px;}
+    .at-tools .cz-seg{width:100%;}
+    .at-tools .cz-seg button{flex:1;justify-content:center;padding:7px 12px;font-size:13px;}
+    .at-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px;}
+    .at-chips::-webkit-scrollbar{display:none;}
     .at-panel{padding:2px 0 6px;border-radius:14px;}
-    .at-quick{display:none;}
     .at-list{padding:0 4px;}
     .at-cols{display:none;}
     .at-group{padding:14px 10px 4px;}
     .at-group:first-child{padding-top:8px;}
-    .at-row, #page-tasks.is-rec .at-row{grid-template-columns:30px minmax(0,1fr) 32px;grid-template-areas:"c m x" "c d x";column-gap:10px;
+    .at-row{grid-template-columns:30px minmax(0,1fr) 32px;grid-template-areas:"c m x" "c d x";column-gap:10px;
       padding:9px 4px 9px 8px;min-height:0;align-items:start;}
     .at-row + .at-row::before{left:48px;right:8px;}
     .at-row .tcheck, .at-row .at-rec-ico{grid-area:c;align-self:start;margin-top:0;}
     .at-row .tcheck::after{inset:-10px;}
     .at-main{grid-area:m;padding:1px 0 0;align-self:start;}
     .at-title{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:14.5px;}
-    .at-main .at-rec, .at-main .at-path, .at-main .at-hi{display:none;}
+    .at-main .at-rec{display:none;}
     .at-meta{grid-area:d;display:flex;align-items:center;gap:0;min-width:0;margin-top:3px;font-size:12px;overflow:hidden;}
     .at-meta > *{flex-shrink:0;}
     .at-meta > * + *:not(:empty)::before{content:"·";margin:0 6px;color:var(--dz-ink-3);font-weight:600;}
-    .at-area, .at-due, .at-freq, .at-prio{font-size:12px;}
+    .at-area, .at-due{font-size:12px;}
     .at-area i{width:7px;height:7px;}
     .at-due small{font-size:11.5px;}
-    .at-row .at-prio, #page-tasks.is-rec .at-row .at-due{display:flex;}
-    .at-prio:empty{display:none !important;}
-    .at-prio.low{display:none !important;}
     .at-rec-m{display:inline-flex;align-items:center;color:var(--dz-ink-3);}
     .at-rec-m .ico{width:12px;height:12px;}
-    .at-freq .ico{display:none;}
     .at-more{grid-area:x;align-self:center;opacity:.7;width:32px;height:36px;}
     .at-menu{left:8px !important;right:8px;top:auto !important;bottom:8px;width:auto;border-radius:18px;padding:8px;
       box-shadow:0 0 0 100vmax rgba(var(--shadow-rgb),.32), 0 -8px 30px rgba(var(--shadow-rgb),.18);}
     .at-menu-t{display:block;font-size:13px;font-weight:700;color:var(--dz-ink-2);padding:8px 12px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .at-menu button{padding:12px;font-size:15px;}
-    .at-menu-seg button{padding:10px 4px;font-size:14px;}
   }
   @media (max-width:360px){
-    .at-tools .at-view button{padding:5px 9px;}
     .at-due small{display:none;}
-    .at-prio.high span{display:none;}
   }
   @media (prefers-reduced-motion:reduce){ .at-row.just-done, .at-row .tcheck.popped{animation:none;} }
   /* ===================================================================
@@ -4844,10 +4733,8 @@
   .month-btn.active{box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 0 0 1px rgba(var(--shadow-rgb),.08), 0 8px 18px -10px rgba(134,189,217,.95) !important;}
 
   /* 4 · tab tracks and inputs sit slightly into the surface; the selected tab rises out of it */
-  .cz-seg, .wk-tabs, .seg, .nfilter, .view-toggle, .sh-kcol, .dz-quick, .wo-quick, .tk-quick, .tk-search, .ws-search{
+  .cz-seg, .wk-tabs, .seg, .nfilter, .view-toggle, .sh-kcol, .wo-quick, .tk-quick, .tk-search, .ws-search{
     background-image:var(--well-bg) !important;box-shadow:var(--well) !important;}
-  .at-search, .at-filter-btn, .at-sort .sel-field{box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), 0 1px 2px rgba(var(--shadow-rgb),.05) !important;background-image:var(--sheen-sm) !important;}
-  .at-search:focus-within{box-shadow:inset 0 0 0 1.5px var(--ring), 0 0 0 4px rgba(var(--primary-rgb),.35) !important;}
   .cz-seg button.on, .wk-tabs button.on, .seg button.on, .nfilter button.on, .at-chip.on, .tk-chip.on, .seg-pill{
     background-image:linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,0) 85%) !important;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95), inset 0 0 0 1px rgba(var(--shadow-rgb),.07), 0 1px 2px rgba(var(--shadow-rgb),.08), 0 4px 10px -4px rgba(var(--shadow-rgb),.16) !important;}
@@ -4857,12 +4744,12 @@
     box-shadow:inset 0 1px 0 rgba(255,255,255,.08), inset 0 0 0 1px rgba(255,255,255,.07), 0 2px 8px -2px rgba(0,0,0,.5) !important;}
 
   /* 5 · buttons: primary gets a gentle sheen and a tinted shadow; quiet buttons a light lift */
-  .btn-primary, .btn.btn-primary, .modal-ok, .budget-btn, .at-quick button, .tk-quick button{
+  .btn-primary, .btn.btn-primary, .modal-ok, .budget-btn, .tk-quick button{
     background-image:linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,255,255,0) 70%) !important;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.7), inset 0 0 0 1px rgba(var(--shadow-rgb),.07), 0 1px 2px rgba(var(--shadow-rgb),.06), 0 8px 18px -10px rgba(134,189,217,.9) !important;}
   .btn-primary:hover, .modal-ok:hover, .budget-btn:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.75), inset 0 0 0 1px rgba(var(--shadow-rgb),.08), 0 2px 4px rgba(var(--shadow-rgb),.07), 0 12px 24px -10px rgba(134,189,217,1) !important;}
   :root[data-theme="dark"] .btn-primary, :root[data-theme="dark"] .btn.btn-primary, :root[data-theme="dark"] .modal-ok,
-  :root[data-theme="dark"] .budget-btn, :root[data-theme="dark"] .at-quick button, :root[data-theme="dark"] .tk-quick button{
+  :root[data-theme="dark"] .budget-btn, :root[data-theme="dark"] .tk-quick button{
     background-image:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,0) 70%) !important;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.1), inset 0 0 0 1px rgba(255,255,255,.06), 0 8px 18px -10px rgba(0,0,0,.6) !important;}
   .btn-ghost, .btn.btn-ghost, .modal-cancel, .dz-ghost, .at-more[aria-expanded="true"]{
@@ -4870,14 +4757,14 @@
   .btn-ghost:hover, .modal-cancel:hover, .dz-ghost:hover{box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px rgba(var(--shadow-rgb),.12), 0 3px 8px -3px rgba(var(--shadow-rgb),.14) !important;}
 
   /* 6 · floating layers: menus, sheets and dialogs are lifted and slightly glassy */
-  .modal-card, .wk-menu, .at-menu, .at-sheet-card, .sel-menu, .dp-pop, .tp-pop{
+  .modal-card, .wk-menu, .at-menu, .sel-menu, .dp-pop, .tp-pop{
     background-image:var(--sheen) !important;box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), var(--pop) !important;}
   @media (max-width:760px){
     .at-menu{box-shadow:0 0 0 100vmax rgba(var(--shadow-rgb),.32), inset 0 1px 0 var(--hi), var(--pop) !important;}
   }
-  .modal-back, .at-sheet-bg{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px) !important;}
+  .modal-back{-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px) !important;}
   .at-panel, .tk-card{background-color:var(--card);}
-  .tk-search:focus-within, .dz-quick:focus-within, .wo-quick:focus-within, .tk-quick:focus-within, .ws-search:focus-within{
+  .tk-search:focus-within, .wo-quick:focus-within, .tk-quick:focus-within, .ws-search:focus-within{
     background-image:none !important;box-shadow:inset 0 0 0 1.5px var(--ring), 0 0 0 4px rgba(var(--primary-rgb),.3) !important;}
   /* keyboard focus always wins over the depth shadows */
   :root :is(button, a, [tabindex]):focus-visible{box-shadow:0 0 0 3px rgba(134,189,217,.6) !important;}
@@ -5505,7 +5392,6 @@
         <div class="dz-head-actions">
           <div class="ring-mini" id="dashRing" aria-live="polite"></div>
           <button type="button" class="dz-streak" id="dashStreak" aria-live="polite" hidden></button>
-          <button class="btn btn-primary dz-add" id="dashAddTask"><i data-ico="plus"></i>Add task</button>
         </div>
       </div>
 
@@ -5528,13 +5414,8 @@
             </div>
             <span class="spacer"></span>
             <div class="dz-minibar" id="dzTaskBar" aria-hidden="true"><i></i></div>
-            <button class="dz-ghost" id="dashAddTask2"><i data-ico="plus" class="ico-sm"></i>Task</button>
+            <button type="button" class="dz-ghost dz-add-task" id="dashAddTask" aria-label="Add a task"><i data-ico="plus" class="ico-sm"></i>Task</button>
           </div>
-          <form class="dz-quick" id="dashQuickAdd" autocomplete="off">
-            <span class="dz-quick-ico" aria-hidden="true"><i data-ico="plus"></i></span>
-            <input id="dashQuickInput" placeholder="Add a task for today…" aria-label="Quick add a task for today" />
-            <button class="dz-quick-btn" type="submit">Add</button>
-          </form>
           <div id="dashTasksList"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
         </section>
         <section class="dz-card dz-sched" aria-labelledby="dzSchedTitle">
@@ -5634,68 +5515,23 @@
           <h1 class="page-title">All tasks</h1>
           <div class="at-count" id="tkCount" aria-live="polite"></div>
         </div>
-        <button type="button" class="btn btn-primary at-add" id="addTaskBtn"><i data-ico="plus"></i><span id="addTaskLbl">Add task</span></button>
+        <button type="button" class="btn btn-primary at-add" id="addTaskBtn"><i data-ico="plus"></i><span>Add task</span></button>
       </header>
 
+      <!-- one list; two switches: To do / Done and the area -->
       <div class="at-tools">
-        <div class="cz-seg at-view" role="tablist" aria-label="Show">
-          <button type="button" role="tab" data-tkview="tasks">Tasks</button>
-          <button type="button" role="tab" data-tkview="recurring"><i data-ico="repeat"></i>Recurring</button>
-        </div>
-        <label class="at-search"><i data-ico="search"></i>
-          <input id="tkSearch" type="search" placeholder="Search tasks" aria-label="Search tasks" autocomplete="off" />
-          <button type="button" id="tkSearchClear" aria-label="Clear search" hidden><i data-ico="x" class="ico-sm"></i></button>
-        </label>
-        <button type="button" class="at-filter-btn" id="tkFilterBtn" aria-haspopup="dialog" aria-expanded="false" aria-controls="tkSheet"><i data-ico="sliders"></i><span>Filter</span><b id="tkFilterN" hidden></b></button>
-        <span class="at-break" aria-hidden="true"></span>
-        <span class="at-spacer"></span>
         <div class="cz-seg at-status" id="tkStatus" role="group" aria-label="Status">
           <button type="button" data-tkstatus="todo">To do</button>
           <button type="button" data-tkstatus="done">Done</button>
-          <button type="button" data-tkstatus="all">All</button>
         </div>
-        <label class="at-sort" id="tkSortWrap"><span>Sort</span>
-          <select id="tkSort" aria-label="Sort tasks">
-            <option value="due">Due date</option>
-            <option value="priority">Priority</option>
-            <option value="area">Area</option>
-            <option value="new">Newest</option>
-          </select>
-        </label>
-        <div class="at-active" id="tkActive" aria-label="Filters on" hidden></div>
-      </div>
-      <!-- wide screens: area chips and priority. Narrow screens: the filters that are on, each removable -->
-      <div class="at-filters">
         <div class="at-chips" id="tkAreas" role="group" aria-label="Filter by area"></div>
-        <label class="at-sort at-prio-f" id="tkPrioWrap"><span>Priority</span>
-          <select id="tkPrio" aria-label="Filter by priority">
-            <option value="all">Any</option>
-            <option value="high">High</option>
-            <option value="normal">Normal</option>
-            <option value="low">Low</option>
-          </select>
-        </label>
       </div>
 
       <div class="at-panel">
-        <form class="at-quick" id="tkQuick" autocomplete="off">
-          <i data-ico="plus"></i>
-          <input id="tkQuickInput" placeholder="Add a task for today…" aria-label="Quick add a task for today" />
-          <small id="tkQuickArea"></small>
-          <button type="submit">Add</button>
-        </form>
         <div class="at-list" id="tkList"><div class="skel"></div><div class="skel"></div></div>
       </div>
 
       <div class="at-menu" id="tkMenu" role="menu" aria-label="Task actions" hidden></div>
-      <div class="at-sheet" id="tkSheet" role="dialog" aria-modal="true" aria-labelledby="tkSheetTitle" hidden>
-        <div class="at-sheet-bg" data-sheet="close"></div>
-        <div class="at-sheet-card">
-          <div class="at-sheet-head"><b id="tkSheetTitle">Filter and sort</b><button type="button" class="at-x" data-sheet="close" aria-label="Close"><i data-ico="x"></i></button></div>
-          <div class="at-sheet-body" id="tkSheetBody"></div>
-          <div class="at-sheet-foot"><button type="button" class="at-clear" data-sheet="clear">Clear all</button><button type="button" class="btn btn-primary" data-sheet="close" id="tkSheetDone">Show tasks</button></div>
-        </div>
-      </div>
     </section>
 
     <!-- ---------- BUDGET ---------- -->
@@ -6945,16 +6781,17 @@ function _dayOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()
 
 // one occurrence removed with "Delete this occurrence only"
 function isSkipped(rule, d){ return (rule.skip_dates || []).includes(iso(d)); }
+// first day a repeating task can happen: its start date, or (older rows) the day it was made
+function ruleStart(rule){ return rule.start_date ? parseISO(rule.start_date) : _dayOnly(new Date(rule.created_at || 0)); }
+// "Mondays · until Fri 19 Dec": the end date shows only when there is one
+function repeatLabel(rule){ return freqLabel(rule) + (rule.end_date ? ' · until ' + shortDate(parseISO(rule.end_date)) : ''); }
 function occursOn(rule, d, { withSkipped } = {}){
   if(!withSkipped && rule.skip_dates && rule.skip_dates.length && isSkipped(rule, d)) return false;
-  const start = _dayOnly(new Date(rule.created_at || 0));
-  if(d < start) return false;                              // nothing before the rule existed
+  if(d < ruleStart(rule)) return false;                    // never before the start date
+  if(rule.end_date && d > parseISO(rule.end_date)) return false;   // the end date is the last day
   if(rule.repeat === 'weekly')  return (rule.weekdays || []).includes((d.getDay() + 6) % 7);
-  if(rule.repeat === 'monthly'){
-    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-    // the 31st becomes the last day in short months
-    return monthDaysOf(rule).some(x => Math.min(x, last) === d.getDate());
-  }
+  // monthly: the same day of the month, only in months that have that day
+  if(rule.repeat === 'monthly') return monthDaysOf(rule).includes(d.getDate());
   return true;                                             // daily
 }
 
@@ -7066,99 +6903,6 @@ async function deleteRecurring(rule, occISO){
   if(error){ fail(error, 'Could not delete'); return; }
   toast('Recurring task deleted');
   dataChanged();
-}
-
-/* ---------- add / edit popup ---------- */
-function openRecurringForm(rule, defCat, occISO){
-  const st = {
-    repeat:   (rule && rule.repeat) || 'daily',
-    weekdays: new Set((rule && rule.weekdays) || [(new Date().getDay() + 6) % 7]),
-    monthDays: new Set(rule && rule.repeat === 'monthly' ? monthDaysOf(rule) : [new Date().getDate()]),
-    cat: (rule && CATS[rule.category]) ? rule.category : (defCat || 'home')
-  };
-  const html = `
-    <div class="fm-label">Area</div>
-    <div class="chip-pick" data-pick="rcat">${CAT_ORDER.map(k=>
-      `<button type="button" class="${CATS[k].acc}${st.cat===k?' on':''}" data-rcat="${k}"><i></i>${CATS[k].label}</button>`).join('')}</div>
-    <div class="fm-label">Repeats</div>
-    <div class="rp-seg">
-      ${['daily','weekly','monthly'].map(r=>
-        `<button type="button" class="rp-chip${st.repeat===r?' on':''}" data-repeat="${r}">${r[0].toUpperCase()+r.slice(1)}</button>`).join('')}
-    </div>
-    <div class="rp-days"${st.repeat==='weekly'?'':' hidden'}>
-      <div class="fm-label">On</div>
-      <div class="day-chips">
-        ${DAY_SHORT.map((d,i)=>`<button type="button" class="day-chip${st.weekdays.has(i)?' on':''}${i>=5?' wknd':''}" data-wd="${i}">${d.slice(0,2)}</button>`).join('')}
-      </div>
-    </div>
-    <div class="rp-month"${st.repeat==='monthly'?'':' hidden'}>
-      <div class="fm-label">On these days <span class="fm-hint">tap as many as you like</span></div>
-      <div class="md-grid">
-        ${Array.from({length:31},(_,i)=>
-          `<button type="button" class="md-chip${st.monthDays.has(i+1)?' on':''}" data-md="${i+1}">${i+1}</button>`).join('')}
-      </div>
-      <div class="fm-hint md-note">29th–31st fall on the last day in shorter months.</div>
-    </div>`;
-
-  openForm({
-    title: rule ? 'Edit recurring task' : 'New recurring task',
-    rows: [
-      [{ id:'fmRec', placeholder:'Task (e.g. 20 minute walk)', value: rule ? rule.title : '' }],
-      [{ type:'html', html }]
-    ],
-    actions: rule ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add' }],
-    onBodyClick: e=>{
-      const body = $('fmBody');
-      const rc = e.target.closest('[data-rcat]');
-      if(rc){
-        st.cat = rc.dataset.rcat;
-        body.querySelectorAll('[data-rcat]').forEach(b=>b.classList.toggle('on', b === rc));
-        return;
-      }
-      const rp = e.target.closest('[data-repeat]');
-      if(rp){
-        st.repeat = rp.dataset.repeat;
-        body.querySelectorAll('[data-repeat]').forEach(b=>b.classList.toggle('on', b === rp));
-        body.querySelector('.rp-days').hidden  = st.repeat !== 'weekly';
-        body.querySelector('.rp-month').hidden = st.repeat !== 'monthly';
-        return;
-      }
-      const wd = e.target.closest('[data-wd]');
-      if(wd){
-        const i = Number(wd.dataset.wd);
-        st.weekdays.has(i) ? st.weekdays.delete(i) : st.weekdays.add(i);
-        wd.classList.toggle('on', st.weekdays.has(i));
-        return;
-      }
-      const md = e.target.closest('[data-md]');
-      if(md){
-        const n = Number(md.dataset.md);
-        st.monthDays.has(n) ? st.monthDays.delete(n) : st.monthDays.add(n);
-        md.classList.toggle('on', st.monthDays.has(n));
-      }
-    },
-    onSubmit: async (v, act)=>{
-      if(act === 'delete'){ setTimeout(()=>deleteRecurring(rule, occISO), 0); return; }
-      if(!v.fmRec){ toast('Give it a name', true); return false; }
-      if(st.repeat === 'weekly'  && st.weekdays.size === 0){ toast('Pick at least one day', true); return false; }
-      if(st.repeat === 'monthly' && st.monthDays.size === 0){ toast('Pick at least one date', true); return false; }
-      const payload = {
-        title: v.fmRec,
-        repeat: st.repeat,
-        weekdays: st.repeat === 'weekly' ? [...st.weekdays].sort((a,b)=>a-b) : null,
-        month_days:   st.repeat === 'monthly' ? [...st.monthDays].sort((a,b)=>a-b) : null,
-        day_of_month: st.repeat === 'monthly' ? Math.min(...st.monthDays) : null,
-        category: st.cat
-      };
-      payload.frequency = freqLabel(payload);          // keep the old text column in step
-      const { error } = rule
-        ? await sb.from('recurring_tasks').update(payload).eq('id', rule.id)
-        : await sb.from('recurring_tasks').insert({ user_id: USER.id, ...payload });
-      if(error){ fail(error, 'Could not save'); return false; }
-      toast(rule ? 'Recurring task updated' : 'Recurring task added');
-      dataChanged();
-    }
-  });
 }
 
 /* ===================================================================
@@ -9735,33 +9479,29 @@ function birthdaysInRange(rows, from, to){
 }
 
 /* ===================================================================
-   ALL TASKS (2026-11 redesign, v2)
-   One list for every task, filtered by area, status, priority and search,
-   sorted by due date, priority, area or newest. Today's and overdue
-   recurring tasks sit in the same list; the rules themselves are under
-   "Recurring". Tick, edit and delete reuse the shared task model
-   (toggleItem, openItem, openTaskForm, openRecurringForm, deleteRecurring).
-   Layout: header (title, summary, one Add button) · toolbar · list.
-   Wide screens show every control; narrower ones fold status, area,
-   priority and sort into a Filter sheet and show what is on as chips.
+   ALL TASKS (2026-11-19, simplified)
+   One list for every task, repeating or not. Two switches only:
+   To do / Done, and the area (with "All areas"). The order is fixed:
+   overdue first, then by date; no search, sort or priority.
+   Repeating tasks show their open occurrence (today's, a missed one,
+   or the next one coming up); paused ones sit at the bottom of To do.
+   Tick, edit and delete reuse the shared task model
+   (toggleItem, openItem, openTaskForm, deleteRecurring).
    =================================================================== */
 const TK = (()=>{
-  const def = { view:'tasks', status:'todo', area:'all', prio:'all', sort:'due' };
+  const def = { status:'todo', area:'all' };
   try{
-    const s = { ...def, ...JSON.parse(localStorage.getItem('pa_tasks_view') || '{}'), q:'' };
-    if(!['tasks', 'recurring'].includes(s.view)) s.view = 'tasks';
-    if(!['todo', 'done', 'all'].includes(s.status)) s.status = 'todo';
-    if(!['all', 'high', 'normal', 'low'].includes(s.prio)) s.prio = 'all';
-    if(!['due', 'priority', 'area', 'new'].includes(s.sort)) s.sort = 'due';
+    const s = { ...def, ...JSON.parse(localStorage.getItem('pa_tasks_view') || '{}') };
+    if(!['todo', 'done'].includes(s.status)) s.status = 'todo';
     if(s.area !== 'all' && !CATS[s.area]) s.area = 'all';
-    return s;
-  }catch(e){ return { ...def, q:'' }; }
+    return { status: s.status, area: s.area };
+  }catch(e){ return { ...def }; }
 })();
 let TK_DATA = null;
 // tasks ticked or unticked during this visit stay where they were (muted) until
 // the page is opened again, so the list never jumps under the finger
 window.TK_KEEP = new Map();
-const tkSave = ()=>{ try{ const { q, ...keep } = TK; localStorage.setItem('pa_tasks_view', JSON.stringify(keep)); }catch(e){} };
+const tkSave = ()=>{ try{ localStorage.setItem('pa_tasks_view', JSON.stringify({ status: TK.status, area: TK.area })); }catch(e){} };
 
 async function loadTasks(){
   if(!USER) return;
@@ -9772,7 +9512,6 @@ async function loadTasks(){
       // finished in the last 60 days, for "Done"
       sb.from('tasks').select('*').eq('completed', true).gte('completed_at', addDays(today, -60).toISOString()),
       fetchRecurringState(),
-      // paused recurring tasks (active = false) only show under Recurring
       sb.from('recurring_tasks').select('*').eq('active', false).order('created_at')
     ]);
     if(open.error) throw open.error;
@@ -9782,27 +9521,44 @@ async function loadTasks(){
   }catch(err){ showError($('tkList'), err, loadTasks); }
 }
 
+const tkRecCat = r => CATS[r.category] ? r.category : 'home';
 function tkItems(){
   const today = _dayOnly(new Date()), out = [];
   TK_DATA.tasks.forEach(t=>{
     out.push({ key:'t:' + t.id, type:'task', id:t.id, raw:t, title:t.title, cat: taskCat(t), done: !!t.completed,
-      due: t.due_date || null, time: t.due_time ? t.due_time.slice(0, 5) : '', priority: t.priority || 'normal',
-      created: t.created_at || '', doneAt: t.completed_at || '' });
+      due: t.due_date || null, time: t.due_time ? t.due_time.slice(0, 5) : '', doneAt: t.completed_at || '' });
   });
-  // recurring: today's and the overdue ones, ticked straight from the list
-  const rec = todayRecurring(TK_DATA.recState, today);
-  rec.carried.concat(rec.due).forEach(r=>{
-    const d = iso(r.date);
-    out.push({ key:'r:' + r.rule.id + '|' + d, type:'rec', id:r.rule.id, date:d, raw:r.rule, title:r.rule.title,
-      cat: CATS[r.rule.category] ? r.rule.category : 'home', done:r.done, due:d, time:'', priority:'normal',
-      created: r.rule.created_at || '', doneAt: r.done ? new Date().toISOString() : '' });
+  const { rules, completions } = TK_DATA.recState;
+  const recItem = (r, d, done, doneAt)=>({ key:'r:' + r.id + '|' + d, type:'rec', id:r.id, date:d, raw:r, title:r.title,
+    cat: tkRecCat(r), done, due:d, time:'', doneAt: doneAt || '' });
+  // to do: today's and missed occurrences, then the next one for every other repeating task
+  const rec = todayRecurring(TK_DATA.recState, today), seen = new Set();
+  rec.carried.concat(rec.due).forEach(x=>{
+    const d = iso(x.date), c = completions.find(z=> z.recurring_id === x.rule.id && z.date === d);
+    out.push(recItem(x.rule, d, x.done, c && c.created_at));
+    if(!x.done) seen.add(x.rule.id);
+  });
+  const doneOn = new Map();
+  completions.forEach(c=>{ if(!doneOn.has(c.recurring_id)) doneOn.set(c.recurring_id, new Set()); doneOn.get(c.recurring_id).add(c.date); });
+  rules.forEach(r=>{
+    if(seen.has(r.id)) return;
+    const nx = nextOccurrence(r, doneOn.get(r.id));
+    if(!nx || sameDay(nx, today)) return;            // ended, or today's is already listed
+    if(rec.carried.concat(rec.due).some(x=> x.rule.id === r.id && sameDay(x.date, nx))) return;
+    out.push(recItem(r, iso(nx), false));
+  });
+  // done: every ticked occurrence we have (last month)
+  const listed = new Set(out.map(i=> i.key));
+  const byId = new Map(rules.map(r=> [r.id, r]));
+  completions.forEach(c=>{
+    const r = byId.get(c.recurring_id); if(!r) return;
+    const it = recItem(r, c.date, true, c.created_at);
+    if(!listed.has(it.key)) out.push(it);
   });
   return out;
 }
 
-const PRIO_RANK = { high:0, normal:1, low:2 };
-function tkBucket(it, today, ignoreDone){
-  if(it.done && !ignoreDone) return 'done';
+function tkBucket(it, today){
   if(!it.due) return 'nodate';
   const d = parseISO(it.due), diff = Math.round((d - today) / 86400000);
   if(diff < 0) return 'late';
@@ -9812,112 +9568,62 @@ function tkBucket(it, today, ignoreDone){
   return 'later';
 }
 const BUCKETS = [['late','Overdue','g-late'], ['today','Today'], ['tomorrow','Tomorrow'], ['week','Later this week'],
-  ['later','Upcoming'], ['nodate','No date'], ['done','Done']];
-const TK_STATUS_L = { todo:'To do', done:'Done', all:'All' };
-const TK_PRIO_L = { all:'Any', high:'High', normal:'Normal', low:'Low' };
-const TK_SORT_L = { due:'Due date', priority:'Priority', area:'Area', new:'Newest' };
-
-// filters that differ from the default (for the Filter badge and the chips on small screens)
-function tkActive(){
-  const out = [];
-  if(TK.view === 'tasks' && TK.status !== 'todo') out.push({ k:'status', label: TK.status === 'done' ? 'Done' : 'All tasks' });
-  if(TK.area !== 'all') out.push({ k:'area', label: CATS[TK.area].label, acc: CATS[TK.area].acc });
-  if(TK.view === 'tasks' && TK.prio !== 'all') out.push({ k:'prio', label: TK_PRIO_L[TK.prio] + ' priority' });
-  if(TK.view === 'tasks' && TK.sort !== 'due') out.push({ k:'sort', label: 'By ' + TK_SORT_L[TK.sort].toLowerCase() });
-  return out;
-}
-function tkReset(k){
-  if(!k || k === 'status'){ if(TK.status !== 'todo') window.TK_KEEP.clear(); TK.status = 'todo'; }
-  if(!k || k === 'area') TK.area = 'all';
-  if(!k || k === 'prio') TK.prio = 'all';
-  if(!k || k === 'sort') TK.sort = 'due';
-  $('tkSort').value = TK.sort; $('tkPrio').value = TK.prio;
-  tkSave(); paintTasks();
-}
+  ['later','Upcoming'], ['nodate','No date']];
 
 function paintTasks(){
   if(!TK_DATA) return;
-  const today = _dayOnly(new Date()), all = tkItems(), q = TK.q.trim().toLowerCase();
+  const today = _dayOnly(new Date()), all = tkItems(), keep = window.TK_KEEP;
   const openN = all.filter(i=>!i.done).length, lateN = all.filter(i=>!i.done && tkBucket(i, today) === 'late').length;
-  $('tkCount').innerHTML = TK.view === 'recurring'
-    ? `${plural(TK_DATA.recState.rules.length, 'repeating task')}${TK_DATA.paused.length ? ` · ${TK_DATA.paused.length} paused` : ''}`
-    : `${openN} to do${lateN ? ` · <b>${lateN} overdue</b>` : ''}`;
-  $('addTaskLbl').textContent = TK.view === 'recurring' ? 'Add recurring' : 'Add task';
-
-  // view + status switches
-  document.querySelectorAll('[data-tkview]').forEach(b=>{ const on = b.dataset.tkview === TK.view; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+  $('tkCount').innerHTML = `${openN} to do${lateN ? ` · <b>${lateN} overdue</b>` : ''}`;
   document.querySelectorAll('#tkStatus [data-tkstatus]').forEach(b=>{ const on = b.dataset.tkstatus === TK.status; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
-  $('page-tasks').classList.toggle('is-rec', TK.view === 'recurring');
   $('page-tasks').classList.toggle('is-doneview', TK.status === 'done');
-  $('tkSearchClear').hidden = !TK.q;
-  $('tkSearch').placeholder = TK.view === 'recurring' ? 'Search recurring tasks' : 'Search tasks';
-  const act = tkActive();
-  $('tkFilterN').hidden = !act.length; $('tkFilterN').textContent = act.length;
-  $('tkFilterBtn').setAttribute('aria-label', 'Filter and sort' + (act.length ? `, ${act.length} on` : ''));
-  $('tkActive').hidden = !act.length;
-  $('tkActive').innerHTML = act.map(a=> `<button type="button" class="at-pill${a.acc ? ' ' + a.acc : ''}" data-tkoff="${a.k}" aria-label="Remove filter: ${esc(a.label)}">${a.acc ? '<i></i>' : ''}${esc(a.label)}${ico('x')}</button>`).join('') +
-    (act.length > 1 ? '<button type="button" class="at-clear" data-tkoff="">Clear all</button>' : '');
 
-  if(TK.view === 'recurring') return paintRecurringRules(q);
+  const isDoneView = TK.status === 'done';
+  const byStatus = all.filter(i=> keep.has(i.key) || (isDoneView ? i.done : !i.done));
+  const paused = isDoneView ? [] : TK_DATA.paused.map(r=>({ key:'p:' + r.id, type:'rec', id:r.id, raw:r, title:r.title, cat: tkRecCat(r),
+    done:false, due:null, paused:true, rule:true }));
+  const counts = {}; byStatus.concat(paused).forEach(i=>{ counts[i.cat] = (counts[i.cat] || 0) + 1; });
+  tkChips(counts, byStatus.length + paused.length);
 
-  const keep = window.TK_KEEP;
-  const byStatus = all.filter(i=> TK.status === 'all' || keep.has(i.key) || (TK.status === 'done' ? i.done : !i.done))
-    .filter(i=> !q || i.title.toLowerCase().includes(q) || CATS[i.cat].label.toLowerCase().includes(q))
-    .filter(i=> TK.prio === 'all' || i.priority === TK.prio);
-  // area chips with live counts
-  const counts = {}; byStatus.forEach(i=>{ counts[i.cat] = (counts[i.cat] || 0) + 1; });
-  tkChips(counts, byStatus.length);
-  $('tkQuickArea').textContent = TK.area === 'all' ? 'Today · Personal' : 'Today · ' + CATS[TK.area].label;
-
-  let items = byStatus.filter(i=> TK.area === 'all' || i.cat === TK.area);
-  TK._shown = items.length;
-  const byDue = (a, b)=> (a.due || '9999') < (b.due || '9999') ? -1 : (a.due || '9999') > (b.due || '9999') ? 1
-    : (a.time || '99') < (b.time || '99') ? -1 : (a.time || '99') > (b.time || '99') ? 1
-    : PRIO_RANK[a.priority] - PRIO_RANK[b.priority] || a.title.localeCompare(b.title);
+  const inArea = i=> TK.area === 'all' || i.cat === TK.area;
+  const items = byStatus.filter(inArea), pausedShown = paused.filter(inArea);
+  const byDue = (a, b)=> (a.due || '9999').localeCompare(b.due || '9999') || (a.time || '99').localeCompare(b.time || '99') || a.title.localeCompare(b.title);
   let groups;
-  if(TK.sort === 'priority'){
-    items.sort((a, b)=> PRIO_RANK[a.priority] - PRIO_RANK[b.priority] || byDue(a, b));
-    groups = [['high','High priority'], ['normal','Normal'], ['low','Low priority']].map(([k, l])=>({ label:l, items: items.filter(i=>i.priority === k) }));
-  } else if(TK.sort === 'area'){
-    items.sort(byDue);
-    groups = CAT_ORDER.map(k=>({ label: CATS[k].label, acc: CATS[k].acc, items: items.filter(i=>(CAT_ORDER.includes(i.cat) ? i.cat : 'personal') === k) }));
-  } else if(TK.sort === 'new'){
-    items.sort((a, b)=> (b.created || '').localeCompare(a.created || ''));
-    groups = [{ label:'Newest first', items }];
+  if(isDoneView){
+    const doneAt = i=> (keep.get(i.key) || {}).doneAt || i.doneAt || i.due || '';
+    groups = [{ label:'Done', done:true, items: items.slice().sort((a, b)=> doneAt(b).localeCompare(doneAt(a))) }];
   } else {
     items.sort(byDue);
-    // in "Done", everything stays in one list, newest first; elsewhere a just-ticked task keeps its date group
-    const inDone = i=> i.done ? !keep.has(i.key) || TK.status === 'done' : TK.status === 'done' && keep.has(i.key);
-    const doneAt = i=> (keep.get(i.key) || {}).doneAt || i.doneAt || '';
-    const done = items.filter(inDone).sort((a, b)=> doneAt(b).localeCompare(doneAt(a)));
-    groups = BUCKETS.map(([k, l, cls])=>({ label:l, cls, done: k === 'done', items: k === 'done' ? done : items.filter(i=> !inDone(i) && tkBucket(i, today, true) === k) }));
+    groups = BUCKETS.map(([k, l, cls])=>({ label:l, cls, items: items.filter(i=> tkBucket(i, today) === k) }));
+    groups.push({ label:'Paused', cls:'g-muted', items: pausedShown });
   }
-  groups = groups.filter(g=>g.items.length);
+  groups = groups.filter(g=> g.items.length);
+  const shown = groups.flatMap(g=> g.items);
   const list = $('tkList');
-  list._items = new Map(items.map(i=>[i.key, i]));
-  if(!items.length){
-    const filtered = q || TK.area !== 'all' || TK.prio !== 'all';
-    list.innerHTML = `<div class="at-empty">${typeof doodleSvg === 'function' ? doodleSvg(TK.status === 'done' ? 'calm' : 'done') : ''}
-      <b>${filtered ? 'No tasks match' : TK.status === 'done' ? 'Nothing finished yet' : 'All clear'}</b>
-      <span>${filtered ? 'Try another area, priority or search.' : TK.status === 'done' ? 'Tasks you finish show here for 60 days.' : 'Nothing left to do. Nice.'}</span>
-      ${filtered ? '<button type="button" class="dz-ghost" data-tk="reset">Show all tasks</button>' : TK.status === 'done' ? '' : `<button type="button" class="dz-ghost" data-tk="add">${ico('plus', 'ico-sm')}Add a task</button>`}</div>`;
+  list._items = new Map(shown.map(i=>[i.key, i]));
+  if(!shown.length){
+    const filtered = TK.area !== 'all';
+    list.innerHTML = `<div class="at-empty">${typeof doodleSvg === 'function' ? doodleSvg(isDoneView ? 'calm' : 'done') : ''}
+      <b>${isDoneView ? (filtered ? 'Nothing finished here yet' : 'Nothing finished yet') : (filtered ? 'Nothing to do here' : 'All clear')}</b>
+      <span>${isDoneView ? 'Tasks you finish show here for 60 days.' : filtered ? 'No open tasks in ' + esc(CATS[TK.area].label) + '.' : 'Nothing left to do. Nice.'}</span>
+      ${filtered ? '<button type="button" class="dz-ghost" data-tk="reset">Show all areas</button>' : ''}</div>`;
     return;
   }
-  list.innerHTML = `<div class="at-cols" aria-hidden="true"><span></span><span>Task</span><span>Area</span><span>Due</span><span>Priority</span><span></span></div>` +
+  list.innerHTML = `<div class="at-cols" aria-hidden="true"><span></span><span>Task</span><span>Area</span><span>${isDoneView ? 'Date' : 'Due'}</span><span></span></div>` +
     groups.map(g=>{
-      const open = g.items.filter(i=> !i.done).length;
-      const n = g.done ? g.items.length : open;
-      return `<div class="at-group ${g.cls || ''}">${g.acc ? `<i class="${g.acc}"></i>` : ''}<span>${esc(g.label)}</span>${n ? `<span class="n">${n}</span>` : `<span class="n ok">${ico('check')}</span>`}</div>` +
+      const n = g.done ? g.items.length : g.items.filter(i=> !i.done).length;
+      return `<div class="at-group ${g.cls || ''}"><span>${esc(g.label)}</span>${n ? `<span class="n">${n}</span>` : `<span class="n ok">${ico('check')}</span>`}</div>` +
         `<div role="list" aria-label="${esc(g.label)}">${g.items.map(i=>tkRow(i, today)).join('')}</div>`; }).join('');
 }
 
-// desktop area chips; the same choices live in the Filter sheet on small screens
+// area filter: "All areas" plus one chip per area, with live counts
 function tkChips(counts, total){
-  $('tkAreas').innerHTML = `<button type="button" class="at-chip${TK.area === 'all' ? ' on' : ''}" data-tkarea="all" aria-pressed="${TK.area === 'all'}">All<span class="n">${total}</span></button>` +
+  $('tkAreas').innerHTML = `<button type="button" class="at-chip${TK.area === 'all' ? ' on' : ''}" data-tkarea="all" aria-pressed="${TK.area === 'all'}">All areas<span class="n">${total}</span></button>` +
     CAT_ORDER.map(k=>`<button type="button" class="at-chip ${CATS[k].acc}${TK.area === k ? ' on' : ''}${counts[k] ? '' : ' is-empty'}" data-tkarea="${k}" aria-pressed="${TK.area === k}"><i></i>${CATS[k].label}<span class="n">${counts[k] || 0}</span></button>`).join('');
 }
 
 function tkDue(it, today){
+  if(it.paused) return `<span class="at-due none">Paused</span>`;
   if(!it.due) return `<span class="at-due none">No date</span>`;
   const d = parseISO(it.due), diff = Math.round((d - today) / 86400000);
   const dm = `${d.getDate()} ${MONTHS_SH[d.getMonth()]}`;
@@ -9928,65 +9634,21 @@ function tkDue(it, today){
 }
 function tkRow(it, today){
   const c = CATS[it.cat] || CATS.personal;
-  let path = '';
-  const rec = it.type === 'rec' ? `<span class="at-rec" title="Repeats: ${esc(freqLabel(it.raw))}">${ico('repeat')}<span>${esc(freqLabel(it.raw))}</span></span>` : '';
-  const prio = it.priority === 'high' ? `<span class="at-prio high">${ico('flag')}<span>High</span></span>`
-    : it.priority === 'low' ? '<span class="at-prio low"><span>Low</span></span>' : '<span class="at-prio"></span>';
-  return `<div class="at-row ${c.acc}${it.done ? ' done' : ''}${it.priority === 'high' ? ' is-high' : ''}" role="listitem" data-key="${esc(it.key)}">
-    <button type="button" class="tcheck at-check" role="checkbox" aria-checked="${it.done}" data-act="toggle" aria-label="${it.done ? 'Mark not done' : 'Mark done'}: ${esc(it.title)}">${ico('check')}</button>
-    <button type="button" class="at-main" data-act="open" aria-label="Open ${esc(it.title)}"><span class="at-title">${esc(it.title)}</span>${rec}${path ? `<span class="at-path">${ico('book')}${esc(path)}</span>` : ''}${it.priority === 'high' ? `<span class="at-hi" title="High priority">${ico('flag')}</span>` : ''}</button>
+  const rep = it.type === 'rec' ? repeatLabel(it.raw) : '';
+  const rec = rep ? `<span class="at-rec" title="Repeats: ${esc(rep)}">${ico('repeat')}<span>${esc(rep)}</span></span>` : '';
+  const check = it.paused
+    ? `<span class="at-check at-rec-ico" aria-hidden="true">${ico('pause')}</span>`
+    : `<button type="button" class="tcheck at-check" role="checkbox" aria-checked="${it.done}" data-act="toggle" aria-label="${it.done ? 'Mark not done' : 'Mark done'}: ${esc(it.title)}">${ico('check')}</button>`;
+  return `<div class="at-row ${c.acc}${it.done ? ' done' : ''}${it.paused ? ' is-paused' : ''}" role="listitem" data-key="${esc(it.key)}">
+    ${check}
+    <button type="button" class="at-main" data-act="open" aria-label="Open ${esc(it.title)}"><span class="at-title">${esc(it.title)}</span>${rec}</button>
     <div class="at-meta">
       <span class="at-area"><i></i>${c.label}</span>
       ${tkDue(it, today)}
-      ${prio}
-      ${it.type === 'rec' ? `<span class="at-rec-m" title="Repeats: ${esc(freqLabel(it.raw))}">${ico('repeat')}</span>` : ''}
+      ${rep ? `<span class="at-rec-m" title="Repeats: ${esc(rep)}">${ico('repeat')}</span>` : ''}
     </div>
     <button type="button" class="at-more" data-act="menu" aria-haspopup="menu" aria-expanded="false" aria-label="More actions: ${esc(it.title)}">${ico('dots')}</button>
   </div>`;
-}
-
-/* recurring rules: name, area, how often, next date; paused ones last */
-function paintRecurringRules(q){
-  const today = _dayOnly(new Date());
-  const match = r=> !q || r.title.toLowerCase().includes(q);
-  const rules = TK_DATA.recState.rules.filter(match), paused = TK_DATA.paused.filter(match);
-  const counts = {}; rules.concat(paused).forEach(r=>{ const k = CATS[r.category] ? r.category : 'home'; counts[k] = (counts[k] || 0) + 1; });
-  tkChips(counts, rules.length + paused.length);
-  const inArea = r=> TK.area === 'all' || (CATS[r.category] ? r.category : 'home') === TK.area;
-  const shown = rules.filter(inArea), shownP = paused.filter(inArea);
-  TK._shown = shown.length + shownP.length;
-  const doneToday = new Set(TK_DATA.recState.completions.filter(c=> c.date === iso(today)).map(c=> c.recurring_id));
-  const list = $('tkList');
-  list._items = new Map();
-  if(!shown.length && !shownP.length){
-    const any = TK_DATA.recState.rules.length + TK_DATA.paused.length;
-    list.innerHTML = `<div class="at-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>${any ? 'No recurring tasks match' : 'No recurring tasks yet'}</b>
-      <span>${any ? 'Try another area or search.' : 'Things you do every day, week or month. They show up in your lists on the right days.'}</span>
-      ${any ? '<button type="button" class="dz-ghost" data-tk="reset">Show all</button>' : `<button type="button" class="dz-ghost" data-tk="add-rec">${ico('plus','ico-sm')}Add recurring task</button>`}</div>`;
-    return;
-  }
-  const row = (r, isPaused)=>{
-    const cat = CATS[r.category] ? r.category : 'home', c = CATS[cat];
-    const dueToday = !isPaused && occursOn(r, today), done = dueToday && doneToday.has(r.id);
-    const it = { key:'rr:' + r.id, type:'rec', id:r.id, date: iso(today), raw:r, title:r.title, cat, done, rule:true, dueToday, paused: isPaused };
-    list._items.set(it.key, it);
-    const nx = isPaused ? null : nextOccurrence(r, done ? new Set([iso(today)]) : null);
-    const next = isPaused ? '<span class="at-due none">Paused</span>'
-      : `<span class="at-due${nx && sameDay(nx, today) ? ' is-today' : ''}">${!nx ? '—' : sameDay(nx, today) ? 'Today' : sameDay(nx, addDays(today, 1)) ? 'Tomorrow' : esc(shortDate(nx))}</span>`;
-    return `<div class="at-row ${c.acc}${done ? ' done' : ''}${isPaused ? ' is-paused' : ''}" role="listitem" data-key="${it.key}">
-      ${dueToday ? `<button type="button" class="tcheck at-check" role="checkbox" aria-checked="${done}" data-act="toggle" aria-label="${done ? 'Mark not done' : 'Mark done'} for today: ${esc(r.title)}">${ico('check')}</button>`
-                 : `<span class="at-check at-rec-ico" aria-hidden="true">${ico(isPaused ? 'pause' : 'repeat')}</span>`}
-      <button type="button" class="at-main" data-act="open" aria-label="Edit ${esc(r.title)}"><span class="at-title">${esc(r.title)}</span></button>
-      <div class="at-meta">
-        <span class="at-area"><i></i>${c.label}</span>
-        <span class="at-freq">${ico('repeat')}${esc(freqLabel(r))}</span>
-        ${next}
-      </div>
-      <button type="button" class="at-more" data-act="menu" aria-haspopup="menu" aria-expanded="false" aria-label="More actions: ${esc(r.title)}">${ico('dots')}</button></div>`;
-  };
-  list.innerHTML = `<div class="at-cols" aria-hidden="true"><span></span><span>Recurring task</span><span>Area</span><span>Repeats</span><span>Next</span><span></span></div>` +
-    (shown.length ? `${shownP.length ? `<div class="at-group"><span>Active</span><span class="n">${shown.length}</span></div>` : ''}<div role="list" aria-label="Active recurring tasks">${shown.map(r=> row(r, false)).join('')}</div>` : '') +
-    (shownP.length ? `<div class="at-group g-muted"><span>Paused</span><span class="n">${shownP.length}</span></div><div role="list" aria-label="Paused recurring tasks">${shownP.map(r=> row(r, true)).join('')}</div>` : '');
 }
 
 async function tkDelete(it){
@@ -10014,7 +9676,7 @@ async function tkPause(it, pause){
 function tkPickDate(it){
   openForm({
     title:'Move to another day',
-    rows: [[{ type:'note', text: `"${it.title}"` }], [{ id:'tkRsDate', type:'date', label:'Due date', value: it.due || iso(new Date()) }]],
+    rows: [[{ type:'note', text: `"${it.title}"` }], [{ id:'tkRsDate', type:'date', label:'Date', value: it.due || iso(new Date()) }]],
     actions: [{ label:'Save', value:'save' }],
     onSubmit: async v=>{
       if(!v.tkRsDate){ toast('Pick a date first'); return false; }
@@ -10023,7 +9685,7 @@ function tkPickDate(it){
   });
 }
 
-/* ---------- the ⋯ menu: edit, move, priority, delete ---------- */
+/* ---------- the ⋯ menu: edit, move, pause, delete ---------- */
 let TK_MENU = null;
 function tkMenuOpen(it, btn){
   tkMenuClose();
@@ -10031,12 +9693,10 @@ function tkMenuOpen(it, btn){
   const nextMon = addDays(mondayOf(today), 7);
   const item = (act, icon, label, extra)=> `<button type="button" role="menuitem" data-mact="${act}"${extra || ''}>${ico(icon)}<span>${label}</span></button>`;
   let html = `<div class="at-menu-t">${esc(it.title)}</div>`;
-  if(it.rule){
-    html += item('open', 'pencil', 'Edit schedule') +
+  if(it.type === 'rec'){
+    html += item('open', 'pencil', 'Edit') +
       (it.paused ? item('resume', 'play', 'Resume') : item('pause', 'pause', 'Pause')) +
-      '<hr>' + item('del', 'trash', 'Delete', ' class="danger"');
-  } else if(it.type === 'rec'){
-    html += item('open', 'pencil', 'Edit recurring task') + '<hr>' + item('del', 'trash', 'Delete…', ' class="danger"');
+      '<hr>' + item('del', 'trash', 'Delete…', ' class="danger"');
   } else {
     const d = it.due;
     html += item('open', 'pencil', 'Edit') + '<hr><div class="at-menu-l">Move to</div>' +
@@ -10045,8 +9705,6 @@ function tkMenuOpen(it, btn){
       (d === iso(nextMon) ? '' : item('due:' + iso(nextMon), 'calendar', 'Next week', ` title="${esc(shortDate(nextMon))}"`)) +
       item('pick', 'calendar', 'Pick a date…') +
       (d ? item('due:', 'x', 'No date') : '') +
-      `<hr><div class="at-menu-l">Priority</div><div class="at-menu-seg" role="group" aria-label="Priority">${['high', 'normal', 'low'].map(p=>
-        `<button type="button" role="menuitemradio" aria-checked="${it.priority === p}" class="${it.priority === p ? 'on' : ''}" data-mact="prio:${p}">${p === 'high' ? ico('flag') : ''}${TK_PRIO_L[p]}</button>`).join('')}</div>` +
       '<hr>' + item('del', 'trash', 'Delete', ' class="danger"');
   }
   m.innerHTML = html;
@@ -10077,12 +9735,11 @@ $('tkMenu').addEventListener('click', e=>{
   e.stopPropagation();
   const it = TK_MENU.it, a = b.dataset.mact;
   tkMenuClose();
-  if(a === 'open') return it.rule ? openRecurringForm(it.raw) : openItem(it);
+  if(a === 'open') return openItem(it);
   if(a === 'del') return tkDelete(it);
   if(a === 'pause' || a === 'resume') return tkPause(it, a === 'pause');
   if(a === 'pick') return tkPickDate(it);
   if(a.startsWith('due:')){ const d = a.slice(4) || null; return tkUpdate(it, { due_date: d }, d ? 'Moved to ' + (d === iso(new Date()) ? 'today' : shortDate(parseISO(d))) : 'Date removed'); }
-  if(a.startsWith('prio:')){ const p = a.slice(5); if(p !== it.priority) tkUpdate(it, { priority: p === 'normal' ? null : p }, TK_PRIO_L[p] + ' priority'); }
 });
 $('tkMenu').addEventListener('keydown', e=>{
   const items = [...$('tkMenu').querySelectorAll('[data-mact]')], i = items.indexOf(document.activeElement);
@@ -10095,104 +9752,26 @@ document.addEventListener('click', e=>{ if(TK_MENU && !e.target.closest('#tkMenu
 window.addEventListener('resize', ()=> tkMenuClose());
 window.addEventListener('scroll', ()=>{ if(TK_MENU) tkMenuPlace(); }, { passive:true });
 
-/* ---------- Filter sheet (narrow screens): status, area, priority, sort ---------- */
-function tkSheetPaint(){
-  const rec = TK.view === 'recurring';
-  const seg = (name, opts, cur)=> `<div class="cz-seg at-sheet-seg" role="group">${opts.map(([v, l])=>
-    `<button type="button" data-sf="${name}:${v}" class="${cur === v ? 'on' : ''}" aria-pressed="${cur === v}">${l}</button>`).join('')}</div>`;
-  $('tkSheetBody').innerHTML =
-    (rec ? '' : `<div class="at-sheet-l">Status</div>${seg('status', [['todo', 'To do'], ['done', 'Done'], ['all', 'All']], TK.status)}`) +
-    `<div class="at-sheet-l">Area</div><div class="at-chips at-sheet-chips">${$('tkAreas').innerHTML}</div>` +
-    (rec ? '' : `<div class="at-sheet-l">Priority</div>${seg('prio', [['all', 'Any'], ['high', 'High'], ['normal', 'Normal'], ['low', 'Low']], TK.prio)}
-      <div class="at-sheet-l">Sort by</div>${seg('sort', [['due', 'Due date'], ['priority', 'Priority'], ['area', 'Area'], ['new', 'Newest']], TK.sort)}`);
-  $('tkSheetDone').textContent = TK._shown === 1 ? 'Show 1 task' : `Show ${TK._shown || 0} ${rec ? 'recurring tasks' : 'tasks'}`;
-  $('tkSheet').querySelector('.at-clear').disabled = !tkActive().length;
-}
-function tkSheetOpen(){
-  tkSheetPaint();
-  $('tkSheet').hidden = false;
-  document.body.classList.add('at-sheet-open');
-  $('tkFilterBtn').setAttribute('aria-expanded', 'true');
-  setTimeout(()=>{ const f = $('tkSheet').querySelector('.at-sheet-card button'); if(f) f.focus({ preventScroll:true }); }, 30);
-}
-function tkSheetClose(){
-  if($('tkSheet').hidden) return;
-  $('tkSheet').hidden = true;
-  document.body.classList.remove('at-sheet-open');
-  $('tkFilterBtn').setAttribute('aria-expanded', 'false');
-  $('tkFilterBtn').focus({ preventScroll:true });
-}
-$('tkFilterBtn').addEventListener('click', tkSheetOpen);
-$('tkSheet').addEventListener('click', e=>{
-  const s = e.target.closest('[data-sheet]');
-  if(s){ if(s.dataset.sheet === 'clear'){ tkReset(); tkSheetPaint(); } else tkSheetClose(); return; }
-  const f = e.target.closest('[data-sf]');
-  if(f){ const [k, v] = f.dataset.sf.split(':'); if(k === 'status' && TK.status !== v) window.TK_KEEP.clear(); TK[k] = v; if(k === 'sort') $('tkSort').value = v; if(k === 'prio') $('tkPrio').value = v;
-    tkSave(); paintTasks(); tkSheetPaint(); return; }
-  const a = e.target.closest('[data-tkarea]');
-  if(a){ TK.area = a.dataset.tkarea; tkSave(); paintTasks(); tkSheetPaint(); }
-});
-$('tkSheet').addEventListener('keydown', e=>{
-  if(e.key === 'Escape'){ e.preventDefault(); tkSheetClose(); return; }
-  if(e.key !== 'Tab') return;
-  const f = [...$('tkSheet').querySelectorAll('.at-sheet-card button:not([disabled])')];
-  if(!f.length) return;
-  if(e.shiftKey && document.activeElement === f[0]){ e.preventDefault(); f[f.length - 1].focus(); }
-  else if(!e.shiftKey && document.activeElement === f[f.length - 1]){ e.preventDefault(); f[0].focus(); }
-});
-
 /* ---------- wiring ---------- */
-$('addTaskBtn').addEventListener('click', ()=> TK.view === 'recurring'
-  ? openRecurringForm(null, TK.area !== 'all' ? TK.area : undefined)
-  : openTaskForm(null, TK.area !== 'all' ? { category: TK.area } : {}));
-// switching view or status starts a clean list (ticked tasks were only kept to avoid jumps)
-document.querySelectorAll('[data-tkview]').forEach(b=> b.addEventListener('click', ()=>{ TK.view = b.dataset.tkview; window.TK_KEEP.clear(); tkSave(); paintTasks(); }));
+$('addTaskBtn').addEventListener('click', ()=> openTaskForm(null, TK.area !== 'all' ? { category: TK.area } : {}));
+// switching status starts a clean list (ticked tasks were only kept to avoid jumps)
 document.querySelectorAll('#tkStatus [data-tkstatus]').forEach(b=> b.addEventListener('click', ()=>{ TK.status = b.dataset.tkstatus; window.TK_KEEP.clear(); tkSave(); paintTasks(); }));
-$('tkSort').value = TK.sort;
-$('tkPrio').value = TK.prio;
-enhanceSelects($('tkSortWrap'));
-enhanceSelects($('tkPrioWrap'));
-$('tkSort').addEventListener('change', ()=>{ TK.sort = $('tkSort').value; tkSave(); paintTasks(); });
-$('tkPrio').addEventListener('change', ()=>{ TK.prio = $('tkPrio').value; tkSave(); paintTasks(); });
-$('tkSearch').addEventListener('input', ()=>{ TK.q = $('tkSearch').value; paintTasks(); });
-$('tkSearch').addEventListener('keydown', e=>{ if(e.key === 'Escape'){ $('tkSearch').value = ''; TK.q = ''; paintTasks(); } });
-$('tkSearchClear').addEventListener('click', ()=>{ $('tkSearch').value = ''; TK.q = ''; paintTasks(); $('tkSearch').focus(); });
 $('tkAreas').addEventListener('click', e=>{
   const b = e.target.closest('[data-tkarea]'); if(!b) return;
   TK.area = b.dataset.tkarea; tkSave(); paintTasks();
 });
-$('tkActive').addEventListener('click', e=>{ const b = e.target.closest('[data-tkoff]'); if(b) tkReset(b.dataset.tkoff || null); });
-$('tkQuick').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const title = $('tkQuickInput').value.trim();
-  if(!title){ $('tkQuickInput').focus(); return; }
-  $('tkQuickInput').value = '';
-  const category = TK.area !== 'all' ? TK.area : 'personal';
-  const { error } = await sb.from('tasks').insert({ user_id: USER.id, title, due_date: iso(new Date()), kind:'one-off', category, completed:false });
-  if(error){ fail(error, 'Could not add task'); $('tkQuickInput').value = title; return; }
-  toast('Added to today');
-  if(TK.status === 'done') TK.status = 'todo';
-  dataChanged();
-});
 $('tkList').addEventListener('click', e=>{
-  const reset = e.target.closest('[data-tk]');
-  if(reset){
-    if(reset.dataset.tk === 'add-rec') return openRecurringForm();
-    if(reset.dataset.tk === 'add') return openTaskForm(null, TK.area !== 'all' ? { category: TK.area } : {});
-    TK.area = 'all'; TK.prio = 'all'; TK.q = ''; $('tkSearch').value = ''; $('tkPrio').value = 'all'; tkSave(); return paintTasks();
-  }
+  if(e.target.closest('[data-tk="reset"]')){ TK.area = 'all'; tkSave(); return paintTasks(); }
   const btn = e.target.closest('[data-act]'); if(!btn) return;
   const row = btn.closest('.at-row'), it = row && $('tkList')._items.get(row.dataset.key);
   if(!it) return;
   if(btn.dataset.act === 'menu'){ e.stopPropagation(); return TK_MENU && TK_MENU.btn === btn ? tkMenuClose() : tkMenuOpen(it, btn); }
   if(btn.dataset.act === 'toggle'){
-    if(!window.TK_KEEP.has(it.key)) window.TK_KEEP.set(it.key, { doneAt: it.doneAt });
+    if(!window.TK_KEEP.has(it.key)) window.TK_KEEP.set(it.key, { doneAt: it.done ? it.doneAt : new Date().toISOString() });
     return toggleItem(it, row, btn);
   }
-  if(it.rule) return openRecurringForm(it.raw);
   openItem(it);
 });
-
 
 /* ===================================================================
    BUDGET
@@ -10806,13 +10385,11 @@ function taskRowHtml(it){
   const c = CATS[it.cat] || CATS.personal;
   const meta = [];
   if(!it.hideCat) meta.push(catChip(it.cat));
-  if(it.priority === 'high') meta.push(`<span class="prio high">${ico('flag','ico-sm')}High</span>`);
-  if(it.priority === 'low') meta.push('<span class="prio low">Low</span>');
   if(it.time) meta.push(`<span class="ttime tclock">${ico('clock','ico-sm')}${esc(it.time)}</span>`);
   if(it.dateLabel) meta.push(`<span class="ttime">${esc(it.dateLabel)}</span>`);
   if(it.carried) meta.push(`<span class="late">↻ ${it.daysLate === 1 ? 'from yesterday' : it.daysLate + ' days late'}</span>`);
   if(it.missed) meta.push('<span class="late">Not done</span>');
-  if(it.type === 'rec' && !it.carried) meta.push(`<span class="ttime">${ico('repeat','ico-sm')} ${esc(freqLabel(it.raw))}</span>`);
+  if(it.type === 'rec' && !it.carried) meta.push(`<span class="ttime">${ico('repeat','ico-sm')} ${esc(repeatLabel(it.raw))}</span>`);
   if(it.type === 'train') meta.push(`<span class="ttime">${it.session && it.session.kind === 'run' ? 'run' : 'from your split'}</span>`);
   return `<div class="trow ${c.acc}${it.done ? ' done' : ''}${it.carried || it.missed ? ' is-late' : ''}" data-key="${esc(it.key)}">
     <button class="tcheck" role="checkbox" aria-checked="${it.done}" data-act="toggle"
@@ -10826,19 +10403,36 @@ function taskRowHtml(it){
 }
 
 /* Renders items into a container and wires check / open once.
-   groups: [{label, items}] or a flat array. */
+   groups: [{label, items}] or a flat array. A group with fold:true
+   (Completed on the Dashboard) starts collapsed: title, count and a
+   chevron; a tap opens it, and it stays open until the page reloads. */
 function renderTaskList(el, groups, emptyHtml){
   const flat = Array.isArray(groups) && groups.length && groups[0] && groups[0].items ? groups : [{ items: groups || [] }];
   const all = flat.flatMap(g=>g.items);
   el._items = new Map(all.map(it=>[it.key, it]));
+  el._fold = el._fold || {};
   el.innerHTML = all.length
-    ? flat.filter(g=>g.items.length).map(g=>
-        (g.label ? `<div class="tgroup ${g.cls || ''}"><b>${esc(g.label)}</b>${g.count != null ? `<span class="n">${g.count}</span>` : ''}</div>` : '') +
-        `<div class="tlist">${g.items.map(taskRowHtml).join('')}</div>`).join('')
+    ? flat.filter(g=>g.items.length).map((g, gi)=>{
+        const n = g.count != null ? `<span class="n">${g.count}</span>` : '';
+        if(g.fold){
+          const open = !!el._fold[g.label], id = (el.id || 'tl') + '-fold-' + gi;
+          return `<button type="button" class="tgroup tg-fold ${g.cls || ''}" data-fold="${esc(g.label)}" aria-expanded="${open}" aria-controls="${id}"><b>${esc(g.label)}</b>${n}${ico('chevR', 'ico-sm tg-chev')}</button>` +
+            `<div class="tlist" id="${id}"${open ? '' : ' hidden'}>${g.items.map(taskRowHtml).join('')}</div>`;
+        }
+        return (g.label ? `<div class="tgroup ${g.cls || ''}"><b>${esc(g.label)}</b>${n}</div>` : '') +
+          `<div class="tlist">${g.items.map(taskRowHtml).join('')}</div>`; }).join('')
     : emptyHtml;
   if(el._wired) return;
   el._wired = true;
   el.addEventListener('click', e=>{
+    const fold = e.target.closest('[data-fold]');
+    if(fold && el.contains(fold)){
+      const open = fold.getAttribute('aria-expanded') !== 'true';
+      el._fold[fold.dataset.fold] = open;
+      fold.setAttribute('aria-expanded', open);
+      const list = fold.nextElementSibling; if(list) list.hidden = !open;
+      return;
+    }
     const btn = e.target.closest('[data-act]');
     if(!btn || !el.contains(btn)) return;
     const row = btn.closest('.trow');
@@ -10897,63 +10491,94 @@ const TIME_OPTS = (()=>{ const o = [{ value:'', label:'No time' }];
   for(let h = 6; h < 24; h++) for(const m of [0, 30]) o.push({ value: pad2(h) + ':' + pad2(m), label: pad2(h) + ':' + pad2(m) });
   return o; })();
 
-function openTaskForm(task, defaults){
+/* ---------- the one task form (2026-11-19) ----------
+   Used everywhere a task is added or edited: name, start date, area,
+   repeats (does not repeat / daily / weekly on chosen days / monthly)
+   and, for repeating tasks, "Repeat until" or no end date.
+   A repeating task is a row in recurring_tasks (start_date, end_date);
+   a one-time task is a row in tasks. Fields this form no longer shows
+   (time, priority, notes, links) are kept as they are when editing.
+   openTaskForm(item, defaults): item = a task row, a repeating-task row, or null.
+   defaults: { date, category, repeat, occISO, biz, focus, title } */
+function openTaskForm(item, defaults){
   defaults = defaults || {};
+  const rule = item && item.repeat ? item : null, task = item && !rule ? item : null;
+  const today = iso(new Date());
+  const startOf = r => r.start_date || iso(_dayOnly(new Date(r.created_at || Date.now())));
   const st = {
-    cat: task ? taskCat(task) : (defaults.category || 'personal'),
-    prio: (task && task.priority) || 'normal',
-    noDate: task ? !task.due_date : !!defaults.noDate,
-    lp: (task && task.learning_path_id) || defaults.learningPathId || null,
-    fw: task ? (task.focus_week || null) : (defaults.focus ? iso(mondayOf(new Date())) : null),
+    cat: rule ? (CATS[rule.category] ? rule.category : 'home') : task ? taskCat(task) : (CATS[defaults.category] ? defaults.category : 'personal'),
+    repeat: rule ? (rule.repeat || 'daily') : (defaults.repeat || 'none'),
+    weekdays: new Set(rule && rule.repeat === 'weekly' ? (rule.weekdays || []) : []),
+    noEnd: rule ? !rule.end_date : false,
     confirmDel: false
   };
-  // Side Hustle: a task can belong to a project, opportunity, milestone… and be pinned to a week's focus
-  const bizK = task ? task.biz_kind : (defaults.biz && defaults.biz.kind), bizI = task ? task.biz_id : (defaults.biz && defaults.biz.id);
-  const bizL = bizK && typeof bizLink === 'function' ? bizLink(bizK, bizI) : null;
-  const showFocus = st.cat === 'side' || !!bizK;
-  const thisMon = iso(mondayOf(new Date()));
-  const time = task && task.due_time ? task.due_time.slice(0,5) : (defaults.time || '');
-  const timeOpts = TIME_OPTS.some(o=>o.value === time) ? TIME_OPTS : TIME_OPTS.concat([{ value:time, label:time }]);
-  const chips = (name, opts, on) => `<div class="chip-pick" data-pick="${name}">${opts.map(o=>
-    `<button type="button" class="${o.acc || ''}${o.value === on ? ' on' : ''}" data-v="${o.value}" aria-pressed="${o.value === on}">${o.dot ? '<i></i>' : ''}${o.label}</button>`).join('')}</div>`;
-  const html =
-    '<div class="fm-label">Area</div>' +
-    chips('cat', CAT_ORDER.map(k=>({ value:k, label:CATS[k].label, acc:CATS[k].acc, dot:true })), st.cat) +
-    '<div class="fm-label">Priority</div>' +
-    chips('prio', [{ value:'high', label:'High' }, { value:'normal', label:'Normal' }, { value:'low', label:'Low' }], st.prio) +
-    chips('nodate', [{ value:'1', label:'No date (someday)' }], st.noDate ? '1' : '') +
-    (showFocus ? chips('focus', [{ value:'1', label: st.fw && st.fw > thisMon ? 'In focus for the week of ' + shortDate(parseISO(st.fw)) : "This week's focus" }], st.fw ? '1' : '') : '') +
-    (bizK ? `<div class="fm-label">Linked to</div><div class="fm-linked">${bizL ? `${esc(bizL.type)} · <b>${esc(bizL.label)}</b>` : 'A Side Hustle item'}</div>` : '');
-  const actions = task
-    ? [{ label:'Delete', value:'delete', danger:true }, { label:'Tomorrow', value:'tomorrow', secondary:true }, { label:'Save', value:'save' }]
+  const start0 = rule ? startOf(rule) : task ? (task.due_date || '') : (defaults.date || today);
+  const until0 = rule && rule.end_date ? rule.end_date : iso(addMonthsClamp(parseISO(start0 || today), 1));
+  const wdOf = s => (parseISO(s || today).getDay() + 6) % 7;
+  if(st.repeat === 'weekly' && !st.weekdays.size) st.weekdays.add(wdOf(start0));
+  const monthHint = s => `Every month on the ${ORD(parseISO(s || today).getDate())}` + (parseISO(s || today).getDate() > 28 ? ' (skipped in months without that day)' : '');
+
+  const html = `
+    <div class="fm-label">Area</div>
+    <div class="chip-pick" data-pick="cat">${CAT_ORDER.map(k=>
+      `<button type="button" class="${CATS[k].acc}${st.cat === k ? ' on' : ''}" data-v="${k}" aria-pressed="${st.cat === k}"><i></i>${CATS[k].label}</button>`).join('')}</div>
+    <div class="fm-label">Repeats</div>
+    <div class="rp-seg" role="group" aria-label="Repeats">
+      ${[['none','Does not repeat'], ['daily','Daily'], ['weekly','Weekly'], ['monthly','Monthly']].map(([v, l])=>
+        `<button type="button" class="rp-chip${st.repeat === v ? ' on' : ''}" data-repeat="${v}" aria-pressed="${st.repeat === v}">${l}</button>`).join('')}
+    </div>
+    <div class="rp-days"${st.repeat === 'weekly' ? '' : ' hidden'}>
+      <div class="day-chips" role="group" aria-label="Repeat on">
+        ${DAY_SHORT.map((d, i)=>`<button type="button" class="day-chip${st.weekdays.has(i) ? ' on' : ''}${i >= 5 ? ' wknd' : ''}" data-wd="${i}" aria-pressed="${st.weekdays.has(i)}" aria-label="${d}">${d.slice(0, 2)}</button>`).join('')}
+      </div>
+    </div>
+    <div class="fm-hint rp-mhint"${st.repeat === 'monthly' ? '' : ' hidden'}>${monthHint(start0)}</div>`;
+  const endHtml = `<div class="chip-pick rp-noend" data-pick="noend"><button type="button" class="${st.noEnd ? 'on' : ''}" aria-pressed="${st.noEnd}">No end date (someday)</button></div>`;
+
+  const actions = item
+    ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }]
     : [{ label:'Add task', value:'save' }];
   openForm({
-    title: task ? 'Edit task' : 'New task',
+    title: item ? 'Edit task' : 'New task',
     wide: true,
     rows: [
-      [{ id:'fmTask', placeholder:'What needs doing?', value: task ? task.title : (defaults.title || '') }],
-      [{ id:'fmDate', type:'date', value: (task && task.due_date) || defaults.date || iso(new Date()) },
-       { id:'fmTime', type:'select', value: time, options: timeOpts }],
+      [{ id:'fmTask', placeholder:'What needs doing?', value: item ? item.title : (defaults.title || '') }],
+      [{ id:'fmDate', type:'date', label:'Start date', value: start0 }],
       [{ type:'html', html }],
-      [{ id:'fmKind', type:'select', value: (task && task.kind) || 'one-off', options:[
-          { value:'one-off', label:'One-off' }, { value:'long-term', label:'Long-term / project' }, { value:'event', label:'Event' }] }],
-      [{ id:'fmNotes', type:'textarea', rows:2, placeholder:'Notes (optional)', value: (task && task.notes) || '' }]
+      [{ id:'fmUntil', type:'date', label:'Repeat until', value: until0 }],
+      [{ type:'html', html: endHtml }]
     ],
     actions,
     onBodyClick: e=>{
+      const body = $('fmBody');
+      const rp = e.target.closest('[data-repeat]');
+      if(rp){
+        st.repeat = rp.dataset.repeat;
+        body.querySelectorAll('[data-repeat]').forEach(b=>{ const on = b === rp; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+        if(st.repeat === 'weekly' && !st.weekdays.size){
+          st.weekdays.add(wdOf($('fmDate').value));
+          body.querySelectorAll('[data-wd]').forEach(b=>{ const on = st.weekdays.has(Number(b.dataset.wd)); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+        }
+        if(st.repeat !== 'none' && !$('fmDate').value){ $('fmDate').value = defaults.date || today; $('fmDate').dispatchEvent(new Event('change')); }
+        tfVis();
+        return;
+      }
+      const wd = e.target.closest('[data-wd]');
+      if(wd){
+        const i = Number(wd.dataset.wd);
+        st.weekdays.has(i) ? st.weekdays.delete(i) : st.weekdays.add(i);
+        wd.classList.toggle('on', st.weekdays.has(i)); wd.setAttribute('aria-pressed', st.weekdays.has(i));
+        return;
+      }
       const b = e.target.closest('.chip-pick button');
       if(!b) return;
-      const pick = b.parentNode.dataset.pick;
-      if(pick === 'nodate'){ st.noDate = !st.noDate; b.classList.toggle('on', st.noDate); b.setAttribute('aria-pressed', st.noDate); return; }
-      if(pick === 'focus'){ st.fw = st.fw ? null : thisMon; b.classList.toggle('on', !!st.fw); b.setAttribute('aria-pressed', !!st.fw); return; }
-      b.parentNode.querySelectorAll('button').forEach(x=>{ x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); });
-      const pickOnly = (name, v)=> $('fmBody').querySelectorAll(`[data-pick="${name}"] button`).forEach(x=>{ const on = x.dataset.v === v; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
-      if(pick === 'lp'){ st.lp = b.dataset.v || null; if(st.lp){ st.cat = 'learning'; pickOnly('cat', 'learning'); } return; }
-      if(pick === 'cat'){ st.cat = b.dataset.v; if(st.cat !== 'learning' && st.lp){ st.lp = null; pickOnly('lp', ''); } }
-      else st.prio = b.dataset.v;
+      if(b.parentNode.dataset.pick === 'noend'){ st.noEnd = !st.noEnd; b.classList.toggle('on', st.noEnd); b.setAttribute('aria-pressed', st.noEnd); tfVis(); return; }
+      st.cat = b.dataset.v;
+      b.parentNode.querySelectorAll('button').forEach(x=>{ const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
     },
     onSubmit: async (v, act)=>{
       if(act === 'delete'){
+        if(rule){ setTimeout(()=> deleteRecurring(rule, defaults.occISO || undefined), 0); return; }
         if(!st.confirmDel){
           st.confirmDel = true;
           const btn = $('fmActions').querySelector('.modal-danger');
@@ -10964,32 +10589,93 @@ function openTaskForm(task, defaults){
         if(error){ fail(error, 'Could not delete'); return false; }
         toast('Task deleted'); dataChanged(); return;
       }
-      if(!v.fmTask){ toast('Give the task a name', true); return false; }
-      const payload = {
-        title: v.fmTask,
-        due_date: st.noDate ? null : (v.fmDate || null),
-        due_time: st.noDate ? null : (v.fmTime || null),
-        kind: v.fmKind || 'one-off',
-        category: st.cat,
-        priority: st.prio === 'normal' ? null : st.prio,
-        notes: v.fmNotes || null,
-        learning_path_id: st.cat === 'learning' ? st.lp : null
-      };
-      if(showFocus) payload.focus_week = st.fw;
-      if(!task && bizK){ payload.biz_kind = bizK; payload.biz_id = bizI; }
-      if(!task) payload.completed = false;
-      if(act === 'tomorrow'){
-        const base = new Date();
-        payload.due_date = iso(addDays(_dayOnly(base), 1));
+      if(!v.fmTask){ toast('Give the task a name', true); $('fmTask').focus(); return false; }
+      const repeating = st.repeat !== 'none';
+      const start = v.fmDate || null, until = repeating && !st.noEnd ? (v.fmUntil || null) : null;
+      if(repeating){
+        if(!start){ toast('Pick a start date for a repeating task', true); return false; }
+        if(!st.noEnd && !until){ toast('Pick when it stops, or choose No end date', true); return false; }
+        if(until && until < start){ toast('Repeat until can’t be before the start date', true); return false; }
+        if(st.repeat === 'weekly' && !st.weekdays.size){ toast('Pick at least one day of the week', true); return false; }
       }
-      const { error } = task
-        ? await sb.from('tasks').update(payload).eq('id', task.id)
-        : await sb.from('tasks').insert({ user_id: USER.id, ...payload });
-      if(error){ fail(error, task ? 'Could not save task' : 'Could not add task'); return false; }
-      toast(act === 'tomorrow' ? 'Moved to tomorrow' : task ? 'Task saved' : 'Task added');
+      let error = null, msg;
+      if(repeating){
+        const wd = [...st.weekdays].sort((a, b)=> a - b), md = [parseISO(start).getDate()];
+        // keep a monthly task's days when only other things changed
+        const keepMd = rule && rule.repeat === 'monthly' && st.repeat === 'monthly' && startOf(rule) === start;
+        const r = {
+          title: v.fmTask, category: st.cat, repeat: st.repeat,
+          weekdays: st.repeat === 'weekly' ? wd : null,
+          month_days: st.repeat === 'monthly' ? (keepMd ? monthDaysOf(rule) : md) : null,
+          day_of_month: st.repeat === 'monthly' ? (keepMd ? monthDaysOf(rule)[0] : md[0]) : null,
+          start_date: start, end_date: until
+        };
+        r.frequency = freqLabel(r);
+        if(rule){
+          ({ error } = await sb.from('recurring_tasks').update(r).eq('id', rule.id));
+          msg = 'Task saved';
+        } else {
+          // a one-time task that now repeats becomes a repeating task (its time and Learning links come along)
+          const extra = task ? { start_time: task.due_time || null, end_time: task.end_time || null,
+            learn_plan_id: task.learn_plan_id || null, learn_area_id: task.learn_area_id || null } : {};
+          ({ error } = await sb.from('recurring_tasks').insert({ user_id: USER.id, ...r, ...extra, active:true, skip_dates:[] }));
+          if(!error && task) ({ error } = await sb.from('tasks').delete().eq('id', task.id));
+          msg = task ? 'Task saved' : 'Repeating task added';
+        }
+      } else if(rule){
+        // a repeating task that stops repeating: the series ends (its history stays) and one task is left on the chosen day
+        const end = iso(addDays(_dayOnly(new Date()), -1));
+        ({ error } = await sb.from('recurring_tasks').update({ end_date: end < startOf(rule) ? startOf(rule) : end,
+          ...(end < startOf(rule) ? { skip_dates: [...new Set([...(rule.skip_dates || []), startOf(rule)])] } : {}) }).eq('id', rule.id));
+        if(!error) ({ error } = await sb.from('tasks').insert({ user_id: USER.id, title: v.fmTask, category: st.cat, kind:'one-off', completed:false,
+          due_date: start, due_time: start ? (rule.start_time || null) : null, end_time: start ? (rule.end_time || null) : null,
+          learn_plan_id: rule.learn_plan_id || null, learn_area_id: rule.learn_area_id || null }));
+        msg = 'Task saved';
+      } else {
+        const p = { title: v.fmTask, category: st.cat, due_date: start };
+        if(!start) p.due_time = null;                       // no day, so no time either
+        if(task && task.category === 'learning' && st.cat !== 'learning'){ p.learn_plan_id = null; p.learn_area_id = null; p.learning_path_id = null; }
+        if(task){
+          ({ error } = await sb.from('tasks').update(p).eq('id', task.id));
+          msg = 'Task saved';
+        } else {
+          const ins = { user_id: USER.id, ...p, kind: defaults.kind || 'one-off', completed:false };
+          if(defaults.biz){ ins.biz_kind = defaults.biz.kind; ins.biz_id = defaults.biz.id; }
+          if(defaults.focus) ins.focus_week = iso(mondayOf(new Date()));
+          ({ error } = await sb.from('tasks').insert(ins));
+          msg = 'Task added';
+        }
+      }
+      if(error){ fail(error, item ? 'Could not save task' : 'Could not add task'); return false; }
+      toast(msg);
       dataChanged();
     }
   });
+  // progressive disclosure: days for Weekly, "Repeat until" only when it repeats
+  function tfVis(){
+    const body = $('fmBody'), rep = st.repeat !== 'none';
+    body.querySelector('.rp-days').hidden = st.repeat !== 'weekly';
+    body.querySelector('.rp-mhint').hidden = st.repeat !== 'monthly';
+    const untilRow = $('fmUntil').closest('.modal-row');
+    untilRow.hidden = !rep || st.noEnd;
+    body.querySelector('.rp-noend').closest('.modal-row').hidden = !rep;
+  }
+  tfVis();
+  $('fmDate').addEventListener('change', ()=>{
+    const s = $('fmDate').value;
+    const h = $('fmBody').querySelector('.rp-mhint'); if(h) h.textContent = monthHint(s);
+    // keep "Repeat until" after the start
+    if(s && $('fmUntil').value && $('fmUntil').value < s){ $('fmUntil').value = iso(addMonthsClamp(parseISO(s), 1)); $('fmUntil').dispatchEvent(new Event('change')); }
+  });
+}
+// the same day next month (or the month's last day)
+function addMonthsClamp(d, n){
+  const y = d.getFullYear(), m = d.getMonth() + n, last = new Date(y, m + 1, 0).getDate();
+  return new Date(y, m, Math.min(d.getDate(), last));
+}
+// add / edit a repeating task: the same form, with Repeats preset
+function openRecurringForm(rule, defCat, occISO){
+  return openTaskForm(rule || null, { category: defCat || undefined, repeat: rule ? undefined : 'daily', occISO: occISO || undefined });
 }
 
 /* ===================================================================
@@ -11198,20 +10884,9 @@ $('sumGrid').addEventListener('click', e=>{
   progPeriod = c.dataset.sum;
   go('progress');
 });
+// the one way to add a task here: + Task by the heading, on the day picked in the strip
 $('dashAddTask').addEventListener('click', ()=> openTaskForm(null, { date: iso(DSEL) }));
-$('dashAddTask2').addEventListener('click', ()=> openTaskForm(null, { date: iso(DSEL) }));
 $('dashAddEvent').addEventListener('click', ()=> openEventModal(iso(DSEL)));
-$('dashQuickAdd').addEventListener('submit', async e=>{
-  e.preventDefault();
-  const title = $('dashQuickInput').value.trim();
-  if(!title){ $('dashQuickInput').focus(); return; }
-  $('dashQuickInput').value = '';
-  const day = iso(DSEL);
-  const { error } = await sb.from('tasks').insert({ user_id: USER.id, title, due_date: day, kind:'one-off', category:'personal' });
-  if(error){ fail(error, 'Could not add task'); $('dashQuickInput').value = title; return; }
-  toast(isTodaySel() ? 'Added to today' : 'Added to ' + relDay(DSEL));
-  dataChanged();
-});
 
 /* ---------- B: date strip ---------- */
 function selectDay(d, fromStrip){
@@ -11381,11 +11056,10 @@ function renderDash(){
   const dayName = d.toLocaleDateString(undefined,{ weekday:'long', day:'numeric', month:'short' });
   $('dzTasksTitle').textContent = isT ? "Today's tasks" : /^(Tomorrow|Yesterday)$/.test(rel) ? rel + "'s tasks" : 'Tasks · ' + dayName;
   $('dzSchedTitle').textContent = isT ? "Today's schedule" : /^(Tomorrow|Yesterday)$/.test(rel) ? rel + "'s schedule" : 'Schedule · ' + dayName;
-  $('dashQuickInput').placeholder = isT ? 'Add a task for today…' : `Add a task for ${relDayLc(d)}…`;
-  $('dashQuickInput').setAttribute('aria-label', isT ? 'Quick add a task for today' : 'Quick add a task for ' + dayName);
+  $('dashAddTask').setAttribute('aria-label', 'Add a task for ' + (isT ? 'today' : dayName));
   paintTaskHead();
 
-  const byTime = (a, b)=> ((b.priority === 'high') - (a.priority === 'high')) || (a.time || '99').localeCompare(b.time || '99');
+  const byTime = (a, b)=> (a.time || '99').localeCompare(b.time || '99');
   const open = x => !x.done;
   const lateOpen = day.late.filter(open).concat(day.own.filter(x=>x.missed && open(x)), day.routine.filter(x=>x.missed && open(x)));
   const todo = day.own.filter(x=>open(x) && !x.missed).sort(byTime);
@@ -11395,13 +11069,13 @@ function renderDash(){
     { label: isT ? 'Overdue' : 'Missed', cls:'g-late', items: lateOpen },
     { label: 'To do', items: todo },
     { label: 'Routine', items: routine },
-    { label: 'Completed', cls:'g-done', items: doneAll }
+    { label: 'Completed', cls:'g-done', fold:true, items: doneAll }
   ];
   groups.forEach(g=> g.count = g.items.length);
   const allDone = day.all.length && !lateOpen.length && !todo.length && !routine.length;
   renderTaskList($('dashTasksList'), groups, `<div class="dz-empty">${doodleSvg('calm')}<span class="dz-cap">Nothing planned</span>
       <b>${isT ? 'Your day is wide open' : relDay(d) + ' is wide open'}</b>
-      Add a task above, or plan ahead from any area in the sidebar.</div>`);
+      Add one with + Task, or plan ahead from any area in the sidebar.</div>`);
   if(allDone){
     $('dashTasksList').insertAdjacentHTML('afterbegin', `<div class="dz-cheer">${doodleSvg('done')}
       <span><span class="dz-cap">All done</span><b>${isT ? 'Everything ticked off for today.' : 'Everything done for ' + relDayLc(d) + '.'}</b>Go and do something nice. You've earned it.</span></div>`);
@@ -11417,7 +11091,7 @@ function renderDash(){
     // study sessions carry an end time
     const et = t.raw && t.raw.end_time, e = et ? new Date(d) : null;
     if(e){ const [eh, em] = et.split(':').map(Number); e.setHours(eh, em, 0, 0); }
-    return { kind:'task', start:s, end: e && e > s ? e : null, title:t.title, cat:t.cat, done:t.done, star:t.priority === 'high', task:t.raw, rec: t.type === 'rec' ? t : null };
+    return { kind:'task', start:s, end: e && e > s ? e : null, title:t.title, cat:t.cat, done:t.done, task:t.raw, rec: t.type === 'rec' ? t : null };
   });
   const items = evs.concat(timed).sort((a, b)=> a.start - b.start);
   $('dashSchedCount').textContent = items.length
@@ -11496,7 +11170,7 @@ function catGroups(tasks, opts){
     priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t,
     dateLabel: t.due_date && t.due_date !== t0 ? relDay(parseISO(t.due_date)) : '' });
   const open = tasks.filter(t=>!t.completed);
-  const byDate = (a,b)=> (a.due_date || '').localeCompare(b.due_date || '') || ((b.priority === 'high') - (a.priority === 'high'));
+  const byDate = (a,b)=> (a.due_date || '').localeCompare(b.due_date || '');
   return [
     { label:'Overdue',  items: open.filter(t=>t.due_date && t.due_date < t0).sort(byDate).map(toItem) },
     { label:'Today',    items: tasks.filter(t=>t.due_date === t0 && (!t.completed || opts.todayDone)).sort(byDate).map(toItem) },
@@ -11970,9 +11644,8 @@ function wireShRows(el, items){
   });
 }
 function openSideTasks(){
-  Object.assign(TK, { view:'tasks', status:'todo', area:'side', sort:'due', q:'' });
+  Object.assign(TK, { status:'todo', area:'side' });
   tkSave();
-  const s = $('tkSearch'); if(s) s.value = '';
   go('tasks');
 }
 // small list of tasks linked to one record, with an inline "add task" box
@@ -14852,8 +14525,7 @@ function lnProgress(planId, areaId){
   LN.rules.forEach(r=>{
     if(r.learn_plan_id !== planId) return;
     if(areaId !== undefined && (r.learn_area_id || null) !== areaId) return;
-    const start = _dayOnly(new Date(r.created_at));
-    for(let d = start; d <= today; d = addDays(d, 1)) if(occursOn(r, d)){ total++; if(LN.done.has(r.id + '|' + iso(d))) done++; }
+    for(let d = ruleStart(r); d <= today; d = addDays(d, 1)) if(occursOn(r, d)){ total++; if(LN.done.has(r.id + '|' + iso(d))) done++; }
   });
   return { total, done, pct: total ? Math.round(done / total * 100) : null };
 }
@@ -15242,12 +14914,12 @@ function lnSessionForm(it, preset){
         // a new repeating session, starting on the chosen day
         const from = v.lnsDate ? parseISO(v.lnsDate) : _dayOnly(new Date());
         ({ error } = await sb.from('recurring_tasks').insert({ user_id: USER.id, ...base, repeat:'weekly', weekdays: days, frequency: freqLabel({ repeat:'weekly', weekdays: days }), active:true,
-          start_time: st, end_time: en, skip_dates: [], created_at: from.toISOString() }));
+          start_time: st, end_time: en, skip_dates: [], start_date: iso(from), created_at: from.toISOString() }));
       } else if(days.length && task){
         // a one-time session turned into a repeating one
         const from = v.lnsDate ? parseISO(v.lnsDate) : _dayOnly(new Date());
         ({ error } = await sb.from('recurring_tasks').insert({ user_id: USER.id, ...base, repeat:'weekly', weekdays: days, frequency: freqLabel({ repeat:'weekly', weekdays: days }), active:true,
-          start_time: st, end_time: en, skip_dates: [], created_at: from.toISOString() }));
+          start_time: st, end_time: en, skip_dates: [], start_date: iso(from), created_at: from.toISOString() }));
         if(!error) ({ error } = await sb.from('tasks').delete().eq('id', task.id));
       } else {
         const row = { ...base, due_date: v.lnsDate || null, due_time: v.lnsDate ? st : null, end_time: v.lnsDate ? en : null };

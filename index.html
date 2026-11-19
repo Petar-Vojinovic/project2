@@ -2971,6 +2971,12 @@
   .ln2-notime{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:12px;font-weight:700;
     color:var(--muted-foreground);background:rgba(var(--foreground-rgb),.035);box-shadow:inset 0 0 0 1px rgba(var(--foreground-rgb),.09);}
   .ln2-notime.on{background:var(--foreground);color:var(--card);box-shadow:none;}
+  /* Hustle task form: daily duration (hours + minutes) and the end date that only matters for weekly tasks */
+  .hs-dur{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .hs-dur-f{display:block;margin:0;}
+  #fmBody .hs-noend{margin:-4px 0 0;}
+  #fmBody .hs-off{opacity:.42;pointer-events:none;}
+  .hs-days{margin-bottom:4px;}
 
   @media (max-width:1180px){
     .ln2-ov{grid-template-columns:minmax(0,1fr);}
@@ -11135,7 +11141,7 @@ const LN_TONES = [1, 2, 3, 4, 5, 6];
 const LN_TONE_NAMES = { 1:'Amber', 2:'Sky', 3:'Rose', 4:'Sage', 5:'Sand', 6:'Stone' };
 const lnT5 = t => t ? String(t).slice(0, 5) : '';
 const lnMin = t => { if(!t) return null; const [h, m] = String(t).split(':').map(Number); return h * 60 + m; };
-const lnDur = it => (it.start && it.end && lnMin(it.end) > lnMin(it.start)) ? lnMin(it.end) - lnMin(it.start) : 0;
+const lnDur = it => it.dur ? it.dur : (it.start && it.end && lnMin(it.end) > lnMin(it.start)) ? lnMin(it.end) - lnMin(it.start) : 0;
 function lnHours(min){
   if(!min) return '0 h';
   const h = Math.floor(min / 60), m = Math.round(min % 60);
@@ -11181,12 +11187,12 @@ async function lnLoad(kind){
 
 /* ---------- items: one-off sessions/tasks + repeating occurrences ---------- */
 function lnTaskItem(t){
-  return { key:'t:' + t.id, type:'task', id:t.id, title:t.title, date:t.due_date || null, start:lnT5(t.due_time), end:lnT5(t.end_time),
+  return { key:'t:' + t.id, type:'task', id:t.id, title:t.title, date:t.due_date || null, start:lnT5(t.due_time), end:lnT5(t.end_time), dur:t.duration_min || null,
            done:!!t.completed, plan:t.learn_plan_id, area:t.learn_area_id || null, raw:t };
 }
 function lnRecItem(r, d){
   const k = iso(d);
-  return { key:'r:' + r.id + '|' + k, type:'rec', id:r.id, title:r.title, date:k, start:lnT5(r.start_time), end:lnT5(r.end_time),
+  return { key:'r:' + r.id + '|' + k, type:'rec', id:r.id, title:r.title, date:k, start:lnT5(r.start_time), end:lnT5(r.end_time), dur:r.duration_min || null,
            done: LN.done.has(r.id + '|' + k), plan:r.learn_plan_id, area:r.learn_area_id || null, raw:r };
 }
 function lnItems(from, to, planId){
@@ -11283,7 +11289,7 @@ function lnOverviewHtml(){
 // one session / task row (day lists, today, focus areas)
 function lnRow(i, showPlan){
   const p = lnPlan(i.plan), a = lnArea(i.area);
-  const time = i.start ? `${i.start}${i.end ? '–' + i.end : ''}` : 'Any time';
+  const time = i.start ? `${i.start}${i.end ? '–' + i.end : ''}` : i.dur ? lnHours(i.dur) : 'Any time';
   const tags = [showPlan && p ? `<span class="ln2-tag t${p.tone || 2}"><i class="fx-cdot"></i>${esc(p.name)}</span>` : '',
                 a ? `<span class="ln2-tag soft">${esc(a.name)}</span>` : '',
                 i.type === 'rec' ? `<span class="ln2-rep" title="${esc(freqLabel(i.raw))}">${ico('repeat', 'ico-xs')}${esc(freqLabel(i.raw))}</span>` : ''].join('');
@@ -11577,6 +11583,7 @@ async function lnDeleteArea(a){
 
 // add or edit a session / task. `it` is an item (task or one repeat), or null for a new one
 function lnSessionForm(it, preset){
+  if(!LN.K.areas) return hsTaskForm(it, preset);     // Hustle has its own form
   preset = preset || {};
   const rule = it && it.type === 'rec' ? it.raw : null, task = it && it.type === 'task' ? it.raw : null;
   const planId = it ? it.plan : (preset.planId || LN.planId || null);
@@ -11664,6 +11671,119 @@ function lnSessionForm(it, preset){
   // moving the start keeps the length
   const len = start && end && lnMin(end) > lnMin(start) ? lnMin(end) - lnMin(start) : 60;
   $('lnsStart').addEventListener('change', ()=>{ if($('lnsStart').value) $('lnsEnd').value = lnPlusMin($('lnsStart').value, len); });
+}
+/* Hustle task form (Ime 2026-11-19): what · business plan · start / end date · daily duration · weekly days.
+   No days picked = a one-time task on the start date. Days picked = a weekly repeating task (recurring_tasks),
+   each day ticked on its own through recurring_completions. Duration per day lives in duration_min. */
+function hsTaskForm(it, preset){
+  preset = preset || {};
+  const rule = it && it.type === 'rec' ? it.raw : null, task = it && it.type === 'task' ? it.raw : null;
+  const today = _dayOnly(new Date()), t0 = iso(today);
+  const plans = LN.plans;
+  const planId = it ? it.plan : (preset.planId || LN.planId || (plans[0] && plans[0].id) || '');
+  const start0 = rule ? iso(ruleStart(rule)) : task ? (task.due_date || preset.date || t0) : (preset.date || t0);
+  const st = { days: rule ? (rule.weekdays || []).slice().sort((a, b)=> a - b) : [], noEnd: rule ? !rule.end_date : true, confirmDel:false };
+  const end0 = rule && rule.end_date ? rule.end_date : '';
+  const raw = rule || task;
+  const dur0 = raw ? (raw.duration_min || lnDur(it) || 0) : 60;
+  const mins = [0, 15, 30, 45]; if(!mins.includes(dur0 % 60)) mins.push(dur0 % 60); mins.sort((a, b)=> a - b);
+  const sel = (id, label, opts, v) => `<label class="hs-dur-f"><span class="sr-only">${label}</span><select id="${id}" aria-label="${label}">${opts.map(([val, l])=>
+    `<option value="${val}"${Number(val) === v ? ' selected' : ''}>${l}</option>`).join('')}</select></label>`;
+  const durHtml = `<div class="fm-label">Daily duration</div><div class="hs-dur">
+      ${sel('hsfH', 'Hours', Array.from({ length:13 }, (_, h)=> [h, h + ' h']), Math.min(12, Math.floor(dur0 / 60)))}
+      ${sel('hsfM', 'Minutes', mins.map(m=> [m, m + ' min']), dur0 % 60)}</div>`;
+  const daysHtml = () => `<div class="fm-label">Weekly schedule <span class="fm-hint">${st.days.length ? 'repeats on these days' : 'no days = one-time task'}</span></div>
+    <div class="day-chips hs-days" role="group" aria-label="Weekly schedule">${DAY_SHORT.map((d, i)=>
+      `<button type="button" class="day-chip${st.days.includes(i) ? ' on' : ''}${i >= 5 ? ' wknd' : ''}" data-wd="${i}" aria-pressed="${st.days.includes(i)}">${d}</button>`).join('')}</div>`;
+  const noEndHtml = `<div class="chip-pick rp-noend hs-noend"><button type="button" class="${st.noEnd ? 'on' : ''}" data-noend aria-pressed="${st.noEnd}">No end date</button></div>`;
+  openForm({
+    title: it ? 'Edit task' : 'New task',
+    rows: [
+      [{ id:'hsfTitle', label:'What will you work on?', placeholder:'e.g. Figma: Auto Layout', value: it ? it.title : (preset.title || '') }],
+      [{ id:'hsfPlan', type:'select', label:'Business plan', value: planId, options: plans.map(p=> ({ value:p.id, label:p.name })) }],
+      [{ id:'hsfStart', type:'date', label:'Start date', value: start0 }, { id:'hsfEnd', type:'date', label:'End date', value: end0 }],
+      [{ type:'html', html: noEndHtml }],
+      [{ type:'html', html: durHtml }],
+      [{ type:'html', html: `<div id="hsfDays">${daysHtml()}</div>` }]
+    ],
+    actions: it ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add task', value:'save' }],
+    onBodyClick: e=>{
+      const w = e.target.closest('[data-wd]');
+      if(w){ const i = Number(w.dataset.wd); st.days = st.days.includes(i) ? st.days.filter(x=> x !== i) : st.days.concat(i).sort((a, b)=> a - b); $('hsfDays').innerHTML = daysHtml(); vis(); return; }
+      const ne = e.target.closest('[data-noend]');
+      if(ne){
+        st.noEnd = !st.noEnd;
+        if(st.noEnd){ $('hsfEnd').value = ''; $('hsfEnd').dispatchEvent(new Event('change')); }
+        else if(!$('hsfEnd').value){ $('hsfEnd').value = iso(addDays(parseISO($('hsfStart').value || t0), 28)); $('hsfEnd').dispatchEvent(new Event('change')); }
+        vis();
+      }
+    },
+    onSubmit: async (v, act)=>{
+      if(act === 'delete'){
+        if(rule){ setTimeout(()=> lnDelete(it), 0); return; }
+        if(!st.confirmDel){ st.confirmDel = true; const b = $('fmActions').querySelector('.modal-danger'); b.textContent = 'Tap again to delete'; b.classList.add('confirming'); return false; }
+        const { error } = await sb.from('tasks').delete().eq('id', task.id);
+        if(error){ fail(error, 'Could not delete'); return false; }
+        toast('Task deleted'); dataChanged(); return;
+      }
+      if(!v.hsfTitle){ toast('Say what you will work on', true); $('hsfTitle').focus(); return false; }
+      if(!v.hsfPlan){ toast('Pick a business plan', true); return false; }
+      const start = v.hsfStart || t0, repeating = st.days.length > 0;
+      const end = repeating && !st.noEnd ? (v.hsfEnd || null) : null;
+      if(repeating && !st.noEnd && !end){ toast('Pick an end date, or choose No end date', true); return false; }
+      if(end && end < start){ toast('The end date can’t be before the start date', true); return false; }
+      const dur = (Number($('hsfH').value) || 0) * 60 + (Number($('hsfM').value) || 0) || null;
+      // a task that already has a clock time keeps it; the end follows the duration
+      const timeOf = s => s ? { s: lnT5(s), e: dur ? lnPlusMin(lnT5(s), dur) : null } : { s:null, e:null };
+      const base = { title: v.hsfTitle, category: LN.K.cat, learn_plan_id: v.hsfPlan, learn_area_id: null, duration_min: dur };
+      const ruleRow = (s, from) => ({ ...base, repeat:'weekly', weekdays: st.days, frequency: freqLabel({ repeat:'weekly', weekdays: st.days }),
+        start_time: s.s, end_time: s.e, start_date: from, end_date: end, active:true });
+      let error;
+      if(rule){
+        // past ticked days stay: when the schedule changes, the old rule ends where its history ends and a new one carries on
+        const doneDates = LN.comps.filter(c=> c.recurring_id === rule.id && c.date <= t0).map(c=> c.date).sort();
+        const sameSched = repeating && st.days.join() === (rule.weekdays || []).slice().sort((a, b)=> a - b).join()
+          && start === iso(ruleStart(rule)) && (dur || null) === (rule.duration_min || lnDur(it) || null);
+        const tm = timeOf(rule.start_time);
+        if(sameSched || !doneDates.length){
+          if(repeating) ({ error } = await sb.from('recurring_tasks').update(ruleRow(tm, start)).eq('id', rule.id));
+          else {
+            ({ error } = await sb.from('tasks').insert({ user_id: USER.id, ...base, kind:'one-off', completed:false, due_date: start, due_time: tm.s, end_time: tm.e }));
+            if(!error) ({ error } = await sb.from('recurring_tasks').delete().eq('id', rule.id));
+          }
+        } else {
+          const cut = doneDates[doneDates.length - 1] === t0 ? t0 : iso(addDays(today, -1));
+          ({ error } = await sb.from('recurring_tasks').update({ end_date: rule.end_date && rule.end_date < cut ? rule.end_date : cut }).eq('id', rule.id));
+          const from = start > cut ? start : iso(addDays(parseISO(cut), 1));
+          if(!error && repeating && (!end || end >= from))
+            ({ error } = await sb.from('recurring_tasks').insert({ user_id: USER.id, ...ruleRow(tm, from), skip_dates: (rule.skip_dates || []).filter(d=> d >= from), created_at: parseISO(from).toISOString() }));
+          if(!error && !repeating)
+            ({ error } = await sb.from('tasks').insert({ user_id: USER.id, ...base, kind:'one-off', completed:false, due_date: from, due_time: tm.s, end_time: tm.e }));
+        }
+      } else if(repeating){
+        const tm = timeOf(task && task.due_time);
+        ({ error } = await sb.from('recurring_tasks').insert({ user_id: USER.id, ...ruleRow(tm, start), skip_dates: [], created_at: parseISO(start).toISOString() }));
+        if(!error && task) ({ error } = await sb.from('tasks').delete().eq('id', task.id));
+      } else {
+        const tm = timeOf(task && task.due_time);
+        const row = { ...base, due_date: start, due_time: tm.s, end_time: tm.e };
+        ({ error } = task ? await sb.from('tasks').update(row).eq('id', task.id)
+                          : await sb.from('tasks').insert({ user_id: USER.id, kind:'one-off', completed:false, ...row }));
+      }
+      if(error){ fail(error, 'Could not save the task'); return false; }
+      toast(it ? 'Saved' : repeating ? 'Weekly task added' : 'Task added');
+      if(LN.view === 'plan'){ LN.sel = parseISO(start); LN.ref = parseISO(start); }
+      dataChanged();
+    }
+  });
+  // the end date and "No end date" exclude each other; both only matter for a weekly task
+  const vis = () => {
+    const endF = $('hsfEnd').closest('label'), ne = $('fmBody').querySelector('.hs-noend');
+    const b = ne.querySelector('button'); b.classList.toggle('on', st.noEnd); b.setAttribute('aria-pressed', st.noEnd);
+    [endF, ne].forEach(x=> x.classList.toggle('hs-off', !st.days.length));
+  };
+  $('hsfEnd').addEventListener('change', ()=>{ if($('hsfEnd').value && st.noEnd){ st.noEnd = false; vis(); } });
+  vis();
 }
 function lnTimeVis(off){
   const s = $('lnsStart'), row = s && s.closest('.modal-row');

@@ -4831,7 +4831,6 @@
   .fx-legend .lg-log{width:6px;height:6px;background:var(--foreground);}
 
   /* overview */
-  .fx-ov{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:var(--fx-gap);align-items:start;}
   .fx-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px;}
   .fx-tile{position:relative;display:flex;flex-direction:column;gap:4px;min-height:164px;padding:14px 14px 12px;border-radius:22px;border:0;text-align:left;font:inherit;color:var(--foreground);
     background:var(--muted);background-image:var(--sheen-sm);box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge);}
@@ -5008,7 +5007,6 @@
   .fx-ex li.done .fx-exn{color:var(--muted-foreground-2);text-decoration:line-through;}
   .fx-exd{font-size:12.5px;color:var(--muted-foreground);font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;}
   .fx-addex{margin:10px 0 0 42px;}
-  .fx-note{margin:8px 0 0 42px;font-size:12.5px;color:var(--muted-foreground);white-space:pre-wrap;}
   .fx-hist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;}
   .fx-hist button{width:100%;display:grid;grid-template-columns:110px minmax(0,1fr);grid-template-areas:"d t" "d x";column-gap:12px;row-gap:1px;text-align:left;border:0;background:transparent;font:inherit;color:var(--foreground);padding:9px 8px;border-radius:12px;cursor:pointer;}
   .fx-hist button:hover{background:var(--muted);}
@@ -5029,7 +5027,7 @@
   .fx-cmp .fx-bar{flex:1;}
   .fx-table{display:flex;flex-direction:column;}
   .fx-tr{display:grid;grid-template-columns:1.3fr 1.2fr .9fr .9fr .9fr .9fr;gap:8px;align-items:center;padding:10px 8px;border:0;background:transparent;font:inherit;font-size:13px;color:var(--foreground);text-align:left;border-radius:12px;}
-  .fx-table.cyc .fx-tr{grid-template-columns:1.3fr 1fr 1fr 2fr;}
+  .fx-table.cyc .fx-tr{grid-template-columns:1.4fr 1fr 1fr;}
   button.fx-tr{cursor:pointer;} button.fx-tr:hover{background:var(--muted);}
   .fx-tr + .fx-tr{border-top:1px solid var(--border);border-radius:0;}
   .fx-tr.th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted-foreground);padding-top:0;}
@@ -5051,9 +5049,8 @@
   .fx-mac.m-protein .fx-bar i{background:var(--cat-training);}
   .fx-mac.m-carbs .fx-bar i{background:var(--ring);}
   .fx-mac.m-fat .fx-bar i{background:var(--cat-home);}
-  .fx-meals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--fx-gap);margin-top:var(--fx-gap);}
+  .fx-meals{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--fx-gap);align-items:start;}
   .fx-meals .fx-card + .fx-card{margin-top:0;}
-  .fx-nut > .fx-card:last-child{margin-top:var(--fx-gap);}
   .fx-meal .fx-card-h{margin-bottom:6px;}
   .fx-foods{list-style:none;margin:6px 0 0;padding:0;}
   .fx-foods li + li{border-top:1px solid var(--border);}
@@ -5091,7 +5088,7 @@
   .fx-af-tot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px;}
   .fx-af-tot > div{display:flex;flex-direction:column;align-items:center;padding:8px;border-radius:12px;background:var(--card);}
   .fx-af-tot b{font-size:17px;font-weight:800;} .fx-af-tot small{font-size:11px;color:var(--muted-foreground);}
-  .fx-af-foot{margin-top:10px;}
+  .fx-af-foot{margin-top:10px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;}
   /* other dialogs */
   .fx-exed-h, .fx-exrow{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,.8fr) minmax(0,.9fr) minmax(0,.9fr) 32px;gap:6px;align-items:center;}
   .fx-exed-h{font-size:11px;font-weight:700;color:var(--muted-foreground);text-transform:uppercase;letter-spacing:.04em;padding:0 4px 4px;}
@@ -5138,15 +5135,46 @@
   .fx-cyc-notes button{display:flex;gap:10px;align-items:baseline;border:0;text-align:left;font:inherit;font-size:12.5px;color:var(--foreground);padding:8px 10px;border-radius:12px;cursor:pointer;background:rgba(255,255,255,.45);}
   :root[data-theme="dark"] .fx-cyc-notes button{background:rgba(255,255,255,.06);}
   .fx-cyc-notes button span{opacity:.8;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .fx-priv-r{display:flex;align-items:center;gap:14px;}
+  .fx-priv-r{display:flex;align-items:center;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
   .fx-priv-r > div{flex:1;display:flex;flex-direction:column;gap:2px;}
   .fx-priv-r b{font-size:14px;} .fx-priv-r span{font-size:12.5px;color:var(--muted-foreground);}
   .fx-cyc > .fx-card + .fx-card{margin-top:var(--fx-gap);}
 
-  @media (max-width:1180px){
-    .fx-ov{grid-template-columns:minmax(0,1fr);}
-    .fx-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--fx-gap);align-items:start;}
-    .fx-side > .fx-card + .fx-card, .fx-side > .fx-trend, .fx-side-minis{margin-top:0 !important;}
+
+  /* 2026-11-19 layout pass: two-column grid, clickable cards */
+  .fx-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:var(--fx-gap);align-items:stretch;}
+  .fx-grid > *{min-width:0;}
+  .fx-grid > .fx-card, .fx-grid .fx-card + .fx-card, .fx-grid > .fx-stack, .fx-grid > .fx-span{margin-top:0;}
+  .fx-span{grid-column:1/-1;}
+  .fx-stack{display:flex;flex-direction:column;gap:var(--fx-gap);min-width:0;}
+  .fx-stack > .fx-card{margin-top:0 !important;}
+  .fx-stack > .fx-card:last-child, .fx-stack > .fx-side-minis:last-child{flex:1 1 auto;}
+  .fx-grid .fx-side-minis{margin-top:0;}
+  .fx-split .fx-hist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;}
+  .fx-split .fx-hist li + li{border-top:0;}
+  .fx-split .fx-hist li{border-bottom:1px solid var(--border);}
+  .fx-card.is-link{cursor:pointer;transition:box-shadow .15s ease, transform .15s ease;}
+  .fx-card.is-link:hover{box-shadow:var(--lift-2, var(--lift-1));transform:translateY(-1px);}
+  .fx-card.is-link:focus-visible, .fx-mlink:focus-visible, .fx-goalbtn:focus-visible, .fx-tagbtn:focus-visible{outline:2px solid var(--primary-ink);outline-offset:2px;}
+  .fx-tagbtn{border:0;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer;}
+  .fx-tagbtn:hover{color:var(--foreground);}
+  .fx-goalbtn{display:flex;flex-direction:column;gap:1px;align-items:flex-start;border:0;background:transparent;font:inherit;color:inherit;padding:4px 8px;margin:-4px -8px;border-radius:10px;cursor:pointer;text-align:left;}
+  .fx-goalbtn:hover{background:rgba(var(--foreground-rgb),.06);}
+  .fx-chart.dense{gap:2px;}
+  .fx-chart.dense .fx-col-plot{max-width:14px;}
+  .fx-chart.dense .fx-col-plot i{border-radius:4px 4px 2px 2px;}
+  .fx-chart.dense .fx-col-plot .dn{left:1px;right:1px;}
+  .fx-col.fut .fx-col-plot{opacity:0;}
+  .fx-legend .lg-empty{border-radius:3px;background:repeating-linear-gradient(0deg, var(--border) 0 1px, transparent 1px 3px);box-shadow:inset 0 0 0 1px var(--border);}
+  .fx-macs-avg{margin-top:14px;padding:0;gap:12px;}
+  .fx-ntrend .fx-nav{margin-bottom:12px;}
+  .fx-nut > .fx-ntrend{align-self:start;}
+  .fx-nut .fx-stack > .fx-meals{flex:0 0 auto;}
+  .fx-meals > .fx-card{margin-top:0;}
+  .fx-arrow-btn:disabled{opacity:.35;cursor:default;}
+  @media (max-width:1024px){
+    .fx-grid{grid-template-columns:minmax(0,1fr);}
+    .fx-split .fx-hist{grid-template-columns:minmax(0,1fr);}
   }
   @media (max-width:980px){
     .fx-week{grid-template-columns:repeat(4,minmax(0,1fr));}
@@ -5187,13 +5215,12 @@
     .fx-wo-h{gap:10px;align-items:flex-start;}
     .fx-acts{flex-wrap:wrap;justify-content:flex-end;max-width:72px;}
     .fx-acts button{width:30px;height:30px;}
-    .fx-ex, .fx-pvd, .fx-cmp, .fx-note, .fx-addex{margin-left:0;padding-left:0;}
+    .fx-ex, .fx-pvd, .fx-cmp, .fx-addex{margin-left:0;padding-left:0;}
     .fx-pvd{grid-template-columns:1fr 1fr;}
     .fx-tr{grid-template-columns:1.2fr 1fr .8fr .9fr;font-size:12.5px;}
     .fx-tr > span:nth-child(2), .fx-tr > span:nth-child(6){display:none;}
     .fx-table.cyc .fx-tr{grid-template-columns:1.3fr 1fr 1fr;}
     .fx-table.cyc .fx-tr > span:nth-child(2){display:block;}
-    .fx-table.cyc .fx-tr > span:nth-child(4){display:none;}
     .fx-kcal{flex-direction:column;align-items:stretch;}
     .fx-kcal-t{flex-direction:row;justify-content:space-around;}
     .fx-choose{grid-template-columns:minmax(0,1fr);}
@@ -7022,7 +7049,7 @@ const BACKUP_LABELS = {
   budget_recurring:'Recurring budget items', birthdays:'Birthdays',
   meals:'Meals', notification_state:'Notification states', user_prefs:'Settings',
   fit_sessions:'Workouts & runs', fit_templates:'Workout templates', fit_weeks:'Planned weeks', fit_injuries:'Injury breaks',
-  fit_foods:'Foods', fit_food_log:'Food log', fit_saved_meals:'Saved meals', fit_cycles:'Cycles', fit_cycle_days:'Cycle notes',
+  fit_foods:'Foods', fit_food_log:'Food log', fit_saved_meals:'Saved meals', fit_cycles:'Cycles', fit_cycle_days:'Cycle logs',
   learn_plans:'Learning plans', learn_areas:'Learning focus areas',
   biz_goals:'Business goals', biz_milestones:'Milestones', biz_projects:'Portfolio projects', biz_content:'Content ideas', biz_posts:'Content per platform',
   biz_profiles:'Freelance profiles', biz_leads:'Freelance leads', biz_opps:'Opportunities', biz_months:'Monthly reviews'
@@ -7595,7 +7622,7 @@ function fxVirtual(tpl, di, wd){
     title:t.title || t.category || (t.kind === 'run' ? (t.run_type || 'Run') : 'Workout'),
     category:t.category || null, run_type:t.run_type || null,
     target_km:t.target_km == null ? null : t.target_km, target_sec:t.target_sec == null ? null : t.target_sec,
-    target_pace:t.target_pace == null ? null : t.target_pace, notes:t.notes || null,
+    target_pace:t.target_pace == null ? null : t.target_pace,
     exercises:(t.exercises || []).map(e=>({ name:e.name, sets:e.sets == null ? null : e.sets, reps:e.reps == null ? null : e.reps, weight:e.weight == null ? null : e.weight, done:false })),
     status:'planned', completed_at:null, distance_km:null, duration_sec:null, pace_sec:null
   }));
@@ -7734,7 +7761,7 @@ function fxDayState(list, C, di){
 }
 
 /* ---------- page state ---------- */
-const FX = { tab:'overview', sel:_dayOnly(new Date()), period:'week', calRef:null, cycRef:null, exSel:null, C:null, S:[], D:null };
+const FX = { tab:'overview', sel:_dayOnly(new Date()), period:'week', nutPeriod:'week', nutRef:null, calRef:null, cycRef:null, exSel:null, C:null, S:[], D:null };
 try{ const t = localStorage.getItem('pa_fx_tab'); if(FX_TABS.includes(t)) FX.tab = t; }catch(e){}
 const fxCats = ()=>{
   const list = Array.isArray(PREFS.fitCats) && PREFS.fitCats.length ? PREFS.fitCats.slice() : FX_DEF_CATS.slice();
@@ -7753,7 +7780,10 @@ async function loadFitness(){
   const today = _dayOnly(new Date()), sel = FX.sel;
   const lo = sel < addDays(today, -364) ? addDays(sel, -62) : addDays(today, -364);
   const hi = sel > addDays(today, 120) ? addDays(sel, 62) : addDays(today, 120);
-  const fLo = addDays(sel < today ? sel : today, -34), fHi = sel > today ? sel : today;
+  const NR = fxNutRange();
+  let fLo = addDays(sel < today ? sel : today, -34), fHi = sel > today ? sel : today;
+  if(NR.from < fLo) fLo = NR.from;
+  if(NR.to > fHi) fHi = NR.to > today ? (today > fHi ? today : fHi) : NR.to;
   const [C, res] = await Promise.all([
     fxFetchCore(iso(mondayOf(lo)), iso(hi)),
     Promise.all([
@@ -7775,6 +7805,10 @@ async function loadFitness(){
 async function fxReload(){
   try{ await loadFitness(); }catch(err){ fail(err, 'Could not refresh'); }
   refreshBadge();
+}
+function fxNutGo(){
+  const R = fxNutRange(), D = FX.D, to = iso(R.to) > iso(new Date()) ? iso(new Date()) : iso(R.to);
+  if(D && (iso(R.from) < D.logFrom || to > D.logTo)) fxReload(); else fxPaint();
 }
 function fxSelect(d){
   FX.sel = _dayOnly(d);
@@ -7918,10 +7952,10 @@ function fxOvHtml(){
   const inLog = R.from >= parseISO(D.logFrom);
   const pick = v => FX.period === v ? ' class="on" aria-selected="true"' : ' aria-selected="false"';
   const goalRow = (g, a) => `<div class="fx-gr"><span>Goal</span><b>${g}</b></div><div class="fx-gr"><span>Average</span><b>${a}</b></div>`;
-  const wkGoal = G.workouts ? G.workouts + ' / week' : '<button type="button" class="fx-link" data-a="goals">Set</button>';
-  const kmGoal = G.km ? G.km + ' km / week' : '<button type="button" class="fx-link" data-a="goals">Set</button>';
-  const kcalGoal = G.kcal ? G.kcal + ' kcal' : '<button type="button" class="fx-link" data-a="goals">Set</button>';
-  const protGoal = G.protein ? G.protein + ' g' : '<button type="button" class="fx-link" data-a="goals">Set</button>';
+  const wkGoal = G.workouts ? G.workouts + ' / week' : '—';
+  const kmGoal = G.km ? G.km + ' km / week' : '—';
+  const kcalGoal = G.kcal ? G.kcal + ' kcal' : '—';
+  const protGoal = G.protein ? G.protein + ' g' : '—';
   const avgW = perWeek(avg.done), avgKm = perWeek(avg.km);
   const statsCard = `<section class="fx-card fx-stats">
     <div class="fx-card-h"><h2>Statistics</h2><span class="spacer"></span>
@@ -7957,8 +7991,8 @@ function fxOvHtml(){
   const streak = fxStreak(S, C);
   const wkPlanned = wk.due + wk.upcoming;
   const goalW = G.workouts || wkPlanned;
-  const goalsCard = `<section class="fx-card fx-goals">
-    <div class="fx-card-h"><h2>This week</h2><span class="spacer"></span><button type="button" class="fx-link" data-a="goals">Goals</button></div>
+  const goalsCard = `<section class="fx-card fx-goals is-link" data-a="tab" data-t="split" role="link" tabindex="0" aria-label="This week: open Workout Split">
+    <div class="fx-card-h"><h2>This week</h2><span class="spacer"></span><span class="fx-go sm">${ico('arrowUR')}</span></div>
     <div class="fx-goal-ring">
       ${fxRing(wk.done, goalW, 116, `${wk.done} of ${goalW} workouts`)}
       <div class="fx-ring-c"><b>${wk.done}<em>/${goalW || 0}</em></b><span>${G.workouts ? 'weekly goal' : 'planned'}</span></div>
@@ -7999,7 +8033,7 @@ function fxOvHtml(){
       <span class="fx-go sm">${ico('arrowUR')}</span></button>` : ''}
   </div>`;
 
-  return `<div class="fx-ov"><div class="fx-main">${todayCard}${statsCard}</div><div class="fx-side">${goalsCard}${activeCard}${minis}${trendCard}</div></div>`;
+  return `<div class="fx-grid fx-ov">${todayCard}${goalsCard}${statsCard}<div class="fx-stack">${activeCard}${minis}</div><div class="fx-span">${trendCard}</div></div>`;
 }
 function fxMonthGrid(ref){
   const m0 = new Date(ref.getFullYear(), ref.getMonth(), 1), start = mondayOf(m0), t0 = iso(new Date()), si = iso(FX.sel);
@@ -8052,9 +8086,11 @@ function fxSplitHtml(){
   const planLine = tpl
     ? `<span class="fx-tag">${ico('repeat','ico-xs')} Repeating: ${esc(tpl.name)}</span>${fxTplApplies(tpl, iso(mon)) && weekMarked ? '<span class="fx-tag soft">This week was changed</span>' : ''}`
     : '<span class="fx-tag soft">No repeating plan</span>';
-  return `<div class="fx-split">
-    <section class="fx-card">
-      <div class="fx-card-h wrap"><div><h2>Weekly split</h2><div class="fx-tags">${planLine}</div></div><span class="spacer"></span>
+  const G = fxGoals();
+  const goalTag = `<button type="button" class="fx-tag soft fx-tagbtn" data-a="goal" data-g="workouts">${ico('target','ico-xs')} ${G.workouts ? 'Goal: ' + G.workouts + ' workouts a week' : 'Weekly goal'}</button>`;
+  return `<div class="fx-grid fx-split">
+    <section class="fx-card fx-span">
+      <div class="fx-card-h wrap"><div><h2>Weekly split</h2><div class="fx-tags">${planLine}${goalTag}</div></div><span class="spacer"></span>
         <button type="button" class="btn btn-ghost btn-sm" data-a="tpls">${ico('layers','ico-sm')}Templates</button>
         <button type="button" class="btn btn-ghost btn-sm" data-a="cats">${ico('sliders','ico-sm')}Workout types</button></div>
       ${fxWeekNav(fxWeekLabel(mon), iso(mon) !== iso(mondayOf(new Date())) ? '<button type="button" class="fx-pill-btn" data-a="today">This week</button>' : '')}
@@ -8065,17 +8101,15 @@ function fxSplitHtml(){
         <button type="button" class="btn btn-primary btn-sm" data-a="addwo">${ico('plus','ico-sm')}Add workout</button></div>
       ${cards || fxEmpty('Rest day', 'Nothing planned. Enjoy it, or add a workout.', '')}
     </section>
-    <div class="fx-two">
-      <section class="fx-card">${fxProgressHtml()}</section>
-      <section class="fx-card">${fxHistoryHtml()}</section>
-    </div>
+    <section class="fx-card">${fxProgressHtml()}</section>
+    <section class="fx-card fx-span">${fxHistoryHtml()}</section>
   </div>`;
 }
 function fxWoCard(s, paused){
   const done = s.status === 'completed', ex = s.exercises || [];
   if(s.kind === 'rest'){
     return `<article class="fx-wo k-rest"><div class="fx-wo-h"><span class="fx-wo-ico">${ico('moon')}</span>
-      <div class="fx-wo-t"><b>Rest day</b><span>${esc(s.notes || 'Rest and recover')}</span></div>${fxWoActs(s)}</div></article>`;
+      <div class="fx-wo-t"><b>Rest day</b><span>Rest and recover</span></div>${fxWoActs(s)}</div></article>`;
   }
   return `<article class="fx-wo${done ? ' done' : ''}${paused ? ' paused' : ''}">
     <div class="fx-wo-h">
@@ -8087,7 +8121,6 @@ function fxWoCard(s, paused){
         <button type="button" class="fx-exck${e.done ? ' on' : ''}" role="checkbox" aria-checked="${!!e.done}" data-a="ex" data-id="${esc(s.id)}" data-i="${i}" aria-label="${esc(e.name)}">${ico('check','ico-xs')}</button>
         <span class="fx-exn">${esc(e.name)}</span><span class="fx-exd">${esc(fxExDetail(e))}</span></li>`).join('')}</ol>`
       : `<button type="button" class="fx-link fx-addex" data-a="edit" data-id="${esc(s.id)}">${ico('plus','ico-xs')} Add exercises</button>`}
-    ${s.notes ? `<p class="fx-note">${esc(s.notes)}</p>` : ''}
   </article>`;
 }
 function fxExDetail(e){
@@ -8180,9 +8213,10 @@ function fxRunHtml(){
   const st = fxStats(S.filter(isRun), C, mon, sun);
   const mSt = fxStats(S.filter(isRun), C, new Date(FX.sel.getFullYear(), FX.sel.getMonth(), 1), new Date(FX.sel.getFullYear(), FX.sel.getMonth() + 1, 0));
   const cards = wkRuns.map(s=> fxRunCard(s, false)).join('');
-  return `<div class="fx-run">
+  const G = fxGoals();
+  return `<div class="fx-grid fx-run">
     <section class="fx-card">
-      <div class="fx-card-h wrap"><h2>Running</h2><span class="spacer"></span>
+      <div class="fx-card-h wrap"><h2>Running</h2><button type="button" class="fx-tag soft fx-tagbtn" data-a="goal" data-g="km">${ico('target','ico-xs')} ${G.km ? 'Goal: ' + fxKm(G.km) + ' km a week' : 'Weekly goal'}</button><span class="spacer"></span>
         <button type="button" class="btn btn-ghost btn-sm" data-a="logrun">${ico('check','ico-sm')}Log a run</button>
         <button type="button" class="btn btn-primary btn-sm" data-a="planrun">${ico('plus','ico-sm')}Plan a run</button></div>
       ${fxWeekNav(fxWeekLabel(mon), iso(mon) !== iso(mondayOf(today)) ? '<button type="button" class="fx-pill-btn" data-a="today">This week</button>' : '')}
@@ -8198,11 +8232,11 @@ function fxRunHtml(){
       ${fxStrip(isRun)}
       <div class="fx-runs">${cards || fxEmpty('No runs this week', 'Plan one, or log a run you already did.', '')}</div>
     </section>
-    <div class="fx-two">
+    <div class="fx-stack">
       <section class="fx-card"><div class="fx-card-h"><h2>Weekly distance</h2><span class="spacer"></span><span class="fx-count">km · last 10 weeks</span></div>${fxRunWeeksChart()}</section>
       <section class="fx-card"><div class="fx-card-h"><h2>Monthly distance</h2><span class="spacer"></span><span class="fx-count">km · last 6 months</span></div>${fxRunMonthsChart()}</section>
     </div>
-    <section class="fx-card">${fxRunHistory()}</section>
+    <section class="fx-card fx-span">${fxRunHistory()}</section>
   </div>`;
 }
 function fxRunCard(s, compact){
@@ -8228,7 +8262,6 @@ function fxRunCard(s, compact){
       <div><small>Planned</small><span>${esc(plan || '—')}</span></div>
       <div><small>Done</small><span>${esc(done ? (res || 'Done, no figures') : '—')}</span></div>
     </div>${cmp}
-    ${s.notes ? `<p class="fx-note">${esc(s.notes)}</p>` : ''}
   </article>`;
 }
 function fxRunWeeksChart(){
@@ -8299,7 +8332,7 @@ function fxNutHtml(){
   const meals = FX_MEALS.map(([k, label])=>{
     const items = day.filter(l=>l.meal === k), t = fxTot(items);
     return `<section class="fx-card fx-meal">
-      <div class="fx-card-h"><div><h3>${label}</h3><p class="fx-sub">${items.length ? Math.round(t.kcal) + ' kcal · P ' + fxR(t.protein, 1) + ' · C ' + fxR(t.carbs, 1) + ' · F ' + fxR(t.fat, 1) : 'Nothing logged'}</p></div><span class="spacer"></span>
+      <div class="fx-card-h"><div><h3>${label}</h3><p class="fx-sub">${items.length ? Math.round(t.kcal) + ' kcal<br>P ' + fxR(t.protein, 1) + ' · C ' + fxR(t.carbs, 1) + ' · F ' + fxR(t.fat, 1) : 'Nothing logged'}</p></div><span class="spacer"></span>
         <button type="button" class="fx-icon-btn" data-a="mealmenu" data-m="${k}" aria-label="${label} options" title="Saved meals">${ico('layers','ico-sm')}</button>
         <button type="button" class="btn btn-ghost btn-sm" data-a="addfood" data-m="${k}">${ico('plus','ico-sm')}Add food</button></div>
       ${items.length ? `<ul class="fx-foods">${items.map(l=>{ const f = l.grams / 100;
@@ -8307,11 +8340,10 @@ function fxNutHtml(){
           <span class="fx-food-v"><b>${Math.round(l.kcal * f)} kcal</b><small>P ${fxR(l.protein * f, 1)} · C ${fxR(l.carbs * f, 1)} · F ${fxR(l.fat * f, 1)}</small></span></button></li>`; }).join('')}</ul>` : ''}
     </section>`;
   }).join('');
-  return `<div class="fx-nut">
+  return `<div class="fx-grid fx-nut">
+    <div class="fx-stack">
     <section class="fx-card fx-nsum">
-      <div class="fx-card-h wrap"><h2>Nutrition</h2><span class="spacer"></span>
-        <button type="button" class="btn btn-ghost btn-sm" data-a="myfoods">${ico('food','ico-sm')}My foods</button>
-        <button type="button" class="btn btn-ghost btn-sm" data-a="goals">${ico('target','ico-sm')}Goals</button></div>
+      <div class="fx-card-h wrap"><h2>Nutrition</h2></div>
       <div class="fx-nav">
         <button type="button" class="fx-arrow-btn" data-a="dstep" data-n="-1" aria-label="Previous day">${ico('chevL')}</button>
         <span class="fx-nav-l">${esc(si === t0 ? 'Today, ' + fxShort(FX.sel) : fxDayLabel(FX.sel))}</span>
@@ -8322,38 +8354,63 @@ function fxNutHtml(){
           <div class="fx-goal-ring">${fxRing(T.kcal, G.kcal || 0, 132, G.kcal ? `${Math.round(T.kcal)} of ${G.kcal} kcal` : `${Math.round(T.kcal)} kcal`)}
             <div class="fx-ring-c"><b>${Math.round(T.kcal).toLocaleString()}</b><span>kcal eaten</span></div></div>
           <div class="fx-kcal-t">${G.kcal
-            ? `<div><small>Goal</small><b>${G.kcal.toLocaleString()}</b></div><div><small>${T.kcal <= G.kcal ? 'Remaining' : 'Over'}</small><b>${Math.abs(Math.round(G.kcal - T.kcal)).toLocaleString()}</b></div>`
-            : `<div><small>Goal</small><b><button type="button" class="fx-link" data-a="goals">Set a goal</button></b></div>`}</div>
+            ? `<button type="button" class="fx-goalbtn" data-a="goal" data-g="food" aria-label="Change nutrition goals"><small>Goal</small><b>${G.kcal.toLocaleString()}</b></button><div><small>${T.kcal <= G.kcal ? 'Remaining' : 'Over'}</small><b>${Math.abs(Math.round(G.kcal - T.kcal)).toLocaleString()}</b></div>`
+            : `<button type="button" class="fx-goalbtn" data-a="goal" data-g="food" aria-label="Add nutrition goals"><small>Goal</small><b>—</b></button>`}</div>
         </div>
         <div class="fx-macs">${macro('protein', 'Protein')}${macro('carbs', 'Carbs')}${macro('fat', 'Fat')}</div>
       </div>
     </section>
     <div class="fx-meals">${meals}</div>
-    <section class="fx-card">${fxNutTrend()}</section>
+    </div>
+    <section class="fx-card fx-ntrend">${fxNutTrend()}</section>
   </div>`;
 }
+function fxNutRange(){
+  const r = FX.nutRef || FX.sel;
+  if(FX.nutPeriod === 'month') return { p:'month', from: new Date(r.getFullYear(), r.getMonth(), 1), to: new Date(r.getFullYear(), r.getMonth() + 1, 0) };
+  const m = mondayOf(r); return { p:'week', from: m, to: addDays(m, 6) };
+}
 function fxNutTrend(){
-  const D = FX.D, G = fxGoals(), end = FX.sel, days = [];
-  for(let k = 13; k >= 0; k--){
-    const d = addDays(end, -k), di = iso(d), items = D.log.filter(l=>l.date === di);
-    days.push({ d, n: items.length, T: fxTot(items) });
+  const D = FX.D, G = fxGoals(), R = fxNutRange(), t0 = iso(new Date()), month = R.p === 'month';
+  const days = [];
+  for(let d = R.from; d <= R.to; d = addDays(d, 1)){
+    const di = iso(d), items = D.log.filter(l=>l.date === di);
+    days.push({ d, di, n: items.length, fut: di > t0, T: fxTot(items) });
   }
-  const logged = days.filter(x=>x.n);
-  const max = Math.max(1, G.kcal || 0, ...days.map(x=>x.T.kcal));
-  const avg = k => logged.length ? logged.reduce((a, x)=> a + x.T[k], 0) / logged.length : null;
-  return `<div class="fx-card-h"><h2>Last 14 days</h2><span class="spacer"></span><span class="fx-count">kcal per day</span></div>
-    <div class="fx-chart tall${G.kcal ? ' has-goal' : ''}" role="img" aria-label="Calories per day, last 14 days" style="--goal:${G.kcal ? (G.kcal / max).toFixed(4) : 0}">` + days.map(x=>{
-      const tip = x.n ? `${fxDayLabel(x.d)}: ${Math.round(x.T.kcal)} kcal · P ${fxR(x.T.protein, 1)} g · C ${fxR(x.T.carbs, 1)} g · F ${fxR(x.T.fat, 1)} g` : `${fxDayLabel(x.d)}: nothing logged`;
-      return `<button type="button" class="fx-col${x.n ? '' : ' empty'}${iso(x.d) === iso(FX.sel) ? ' cur' : ''}" data-a="day" data-d="${iso(x.d)}" data-tip="${esc(tip)}" aria-label="${esc(tip)}">
-        <div class="fx-col-plot"><i class="dn" style="height:${x.T.kcal / max * 100}%"></i></div><small>${x.d.getDate()}</small></button>`;
-    }).join('') + `</div>${G.kcal ? fxLegend([['bar','Calories'],['goal','Goal']]) : ''}
+  const logged = days.filter(x=>x.n), elapsed = days.filter(x=>!x.fut).length;
+  const isNow = iso(R.from) <= t0 && t0 <= iso(R.to);
+  const label = month ? R.from.toLocaleDateString(undefined, { month:'long', year:'numeric' })
+    : (isNow ? 'This week' : fxShort(R.from) + ' – ' + fxShort(R.to));
+  const pick = v => R.p === v ? ' class="on" aria-selected="true"' : ' aria-selected="false"';
+  const head = `<div class="fx-card-h"><h2>Progress</h2><span class="spacer"></span>
+      <div class="fx-seg sm" role="tablist" aria-label="Timeframe"><button type="button" data-a="nper" data-p="week"${pick('week')}>Weekly</button><button type="button" data-a="nper" data-p="month"${pick('month')}>Monthly</button></div></div>
+    <div class="fx-nav fx-nav-c">
+      <button type="button" class="fx-arrow-btn" data-a="nstep" data-n="-1" aria-label="Previous ${R.p}">${ico('chevL')}</button>
+      <span class="fx-nav-l">${esc(label)}</span>
+      <button type="button" class="fx-arrow-btn" data-a="nstep" data-n="1" aria-label="Next ${R.p}"${isNow ? ' disabled' : ''}>${ico('chevR')}</button>
+      ${isNow ? '' : `<button type="button" class="fx-pill-btn" data-a="nnow">${month ? 'This month' : 'This week'}</button>`}</div>`;
+  if(!logged.length) return head + fxEmpty(`Nothing logged ${month ? 'this month' : 'this week'}`, 'Days you log food will show up here.', '');
+  const max = Math.max(1, G.kcal || 0, ...days.map(x=>x.T.kcal)) * 1.12;
+  const avg = k => logged.reduce((a, x)=> a + x.T[k], 0) / logged.length;
+  const DN = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const bars = days.map((x, i)=>{
+    const tip = x.fut ? `${fxDayLabel(x.d)}: still to come` : x.n ? `${fxDayLabel(x.d)}: ${Math.round(x.T.kcal)} kcal · P ${fxR(x.T.protein, 1)} g · C ${fxR(x.T.carbs, 1)} g · F ${fxR(x.T.fat, 1)} g` : `${fxDayLabel(x.d)}: nothing logged`;
+    const dn = x.d.getDate();
+    const lab = month ? ((dn === 1 || dn % 5 === 0) ? dn : '') : DN[i];
+    return `<button type="button" class="fx-col${x.n ? '' : x.fut ? ' fut' : ' empty'}${x.di === iso(FX.sel) ? ' cur' : ''}" data-a="day" data-d="${x.di}" data-tip="${esc(tip)}" aria-label="${esc(tip)}">
+      <div class="fx-col-plot">${x.n ? `<i class="dn" style="height:${x.T.kcal / max * 100}%"></i>` : ''}</div><small>${lab}</small></button>`;
+  }).join('');
+  const onT = G.kcal ? logged.filter(x=>Math.abs(x.T.kcal - G.kcal) <= G.kcal * 0.1).length : 0;
+  const mac = (k, l) => { const v = avg(k), g = G[k];
+    return `<div class="fx-mac m-${k}"><div class="fx-mac-h"><span>${l}</span><b>${fxR(v, 1)}${g ? `<em> / ${g} g</em>` : '<em> g</em>'}</b></div>${g ? `<div class="fx-bar"><i style="width:${Math.min(100, v / g * 100)}%"></i></div>` : ''}</div>`; };
+  return head + `<div class="fx-chart tall${month ? ' dense' : ''}${G.kcal ? ' has-goal' : ''}" role="img" aria-label="Calories per day, ${esc(label)}" style="--goal:${G.kcal ? (G.kcal / max).toFixed(4) : 0}">${bars}</div>
+    ${fxLegend(G.kcal ? [['bar','Calories'],['goal','Goal'],['empty','Not logged']] : [['bar','Calories'],['empty','Not logged']])}
     <div class="fx-kv">
-      <div><span>Average</span><b>${logged.length ? Math.round(avg('kcal')).toLocaleString() + ' kcal' : '—'}</b></div>
-      <div><span>Protein</span><b>${logged.length ? fxR(avg('protein'), 1) + ' g' : '—'}</b></div>
-      <div><span>Carbs</span><b>${logged.length ? fxR(avg('carbs'), 1) + ' g' : '—'}</b></div>
-      <div><span>Fat</span><b>${logged.length ? fxR(avg('fat'), 1) + ' g' : '—'}</b></div>
+      <div><span>Average a day</span><b>${Math.round(avg('kcal')).toLocaleString()} kcal</b></div>
+      <div><span>Days logged</span><b>${logged.length} / ${elapsed}</b></div>
+      ${G.kcal ? `<div><span>Near calorie goal</span><b>${onT} day${onT === 1 ? '' : 's'}</b></div>` : ''}
     </div>
-    <p class="fx-sub">${logged.length ? `Averages use the ${logged.length} day${logged.length === 1 ? '' : 's'} with food logged.` : 'Log a meal to start seeing trends.'}</p>`;
+    <div class="fx-macs fx-macs-avg">${mac('protein', 'Protein')}${mac('carbs', 'Carbs')}${mac('fat', 'Fat')}</div>`;
 }
 
 /* ===================================================================
@@ -8398,7 +8455,7 @@ function fxCycHtml(){
   const ref = FX.cycRef || _dayOnly(new Date());
   const per = fxPeriodDays(info), pred = new Set();
   info.preds.forEach(p=>{ for(let d = parseISO(p.start); iso(d) <= p.end; d = addDays(d, 1)) if(!per.has(iso(d))) pred.add(iso(d)); });
-  const logs = new Map(D.cdays.map(c=>[c.date, c]));
+  const logs = new Map(D.cdays.filter(c=>(c.symptoms || []).length || c.energy).map(c=>[c.date, c]));
   const m0 = new Date(ref.getFullYear(), ref.getMonth(), 1), start = mondayOf(m0), end = new Date(ref.getFullYear(), ref.getMonth() + 1, 0);
   const weeks = Math.ceil(((end - start) / 86400000 + 1) / 7);
   let grid = `<div class="fx-mgrid cyc">` + DAY_SHORT.map(d=>`<span class="fx-mh">${d}</span>`).join('');
@@ -8406,12 +8463,12 @@ function fxCycHtml(){
     const d = addDays(start, i), di = iso(d), other = d.getMonth() !== ref.getMonth();
     const cls = per.has(di) ? 'per' : pred.has(di) ? 'pred' : '';
     const lg = logs.get(di);
-    const lbl = `${d.toDateString()}${per.has(di) ? ', period' : pred.has(di) ? ', predicted period' : ''}${lg ? ', notes logged' : ''}`;
+    const lbl = `${d.toDateString()}${per.has(di) ? ', period' : pred.has(di) ? ', predicted period' : ''}${lg ? ', symptoms logged' : ''}`;
     grid += `<button type="button" class="fx-mday ${cls}${other ? ' other' : ''}${di === t0 ? ' today' : ''}" data-a="cday" data-d="${di}" aria-label="${esc(lbl)}">${d.getDate()}${lg ? '<i class="fx-ldot"></i>' : ''}</button>`;
   }
   grid += '</div>';
   const open = info.cyc.filter(c=>!c.end_date && c.start_date <= t0).pop();
-  const recent = D.cdays.filter(c=>c.date <= t0).slice(-3).reverse();
+  const recent = D.cdays.filter(c=>c.date <= t0 && ((c.symptoms || []).length || c.energy)).slice(-3).reverse();
   const history = info.cyc.slice().reverse().map((c, idx, arr)=>{
     const i = info.cyc.indexOf(c), nxt = info.cyc[i + 1];
     const len = nxt ? fxDiff(nxt.start_date, c.start_date) : null;
@@ -8419,8 +8476,7 @@ function fxCycHtml(){
     return `<button type="button" class="fx-tr" role="row" data-a="cycedit" data-id="${c.id}">
       <span role="cell">${esc(parseISO(c.start_date).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }))}</span>
       <span role="cell">${plen ? plen + ' days' : c.start_date <= t0 && !c.end_date && fxDiff(t0, c.start_date) <= 9 ? 'ongoing' : '—'}</span>
-      <span role="cell">${len ? len + ' days' : 'current'}</span>
-      <span role="cell" class="fx-tr-note">${esc(c.notes || '')}</span></button>`;
+      <span role="cell">${len ? len + ' days' : 'current'}</span></button>`;
   }).join('');
   return `<div class="fx-cyc">
     <div class="fx-cyc-top">
@@ -8435,7 +8491,7 @@ function fxCycHtml(){
           ? (info.late ? `Expected about ${info.late} day${info.late === 1 ? '' : 's'} ago. Predictions are estimates from your past ${info.lens.length} cycle${info.lens.length === 1 ? '' : 's'}.`
                        : `Estimated from your last ${Math.min(6, info.lens.length)} cycle${info.lens.length === 1 ? '' : 's'}. It's a prediction, not a certainty.`)
           : 'Predictions appear once you have logged two period starts.'}</div>
-        ${recent.length ? `<div class="fx-cyc-notes"><small>Recent notes</small>${recent.map(c=>`<button type="button" data-a="cday" data-d="${c.date}"><b>${esc(fxShort(parseISO(c.date)))}</b><span>${esc([(c.symptoms || []).join(', '), c.energy ? 'energy ' + FX_ENERGY[c.energy - 1].toLowerCase() : '', c.notes || ''].filter(Boolean).join(' · '))}</span></button>`).join('')}</div>` : ''}
+        ${recent.length ? `<div class="fx-cyc-notes"><small>Recently logged</small>${recent.map(c=>`<button type="button" data-a="cday" data-d="${c.date}"><b>${esc(fxShort(parseISO(c.date)))}</b><span>${esc([(c.symptoms || []).join(', '), c.energy ? 'energy ' + FX_ENERGY[c.energy - 1].toLowerCase() : ''].filter(Boolean).join(' · '))}</span></button>`).join('')}</div>` : ''}
         <div class="fx-hero-a">
           ${open ? `<button type="button" class="btn btn-ghost btn-sm" data-a="perend">Period ended today</button>` : `<button type="button" class="btn btn-ghost btn-sm" data-a="perstart">Period started today</button>`}
           <button type="button" class="btn btn-ghost btn-sm" data-a="cday" data-d="${t0}">Log today</button></div>
@@ -8445,15 +8501,13 @@ function fxCycHtml(){
           <div class="fx-nav sm"><button type="button" class="fx-arrow-btn" data-a="cmon" data-n="-1" aria-label="Previous month">${ico('chevL')}</button>
           <button type="button" class="fx-arrow-btn" data-a="cmon" data-n="1" aria-label="Next month">${ico('chevR')}</button></div></div>
         ${grid}
-        ${fxLegend([['per','Period'],['pred','Predicted'],['log','Notes']])}
+        ${fxLegend([['per','Period'],['pred','Predicted'],['log','Symptoms logged']])}
       </section>
     </div>
     <section class="fx-card">
       <div class="fx-card-h"><h2>Cycle history</h2><span class="spacer"></span><button type="button" class="btn btn-ghost btn-sm" data-a="cycadd">${ico('plus','ico-sm')}Add past period</button></div>
-      ${info.cyc.length ? `<div class="fx-table cyc" role="table"><div class="fx-tr th" role="row"><span role="columnheader">Started</span><span role="columnheader">Period</span><span role="columnheader">Cycle length</span><span role="columnheader">Notes</span></div>${history}</div>`
+      ${info.cyc.length ? `<div class="fx-table cyc" role="table"><div class="fx-tr th" role="row"><span role="columnheader">Started</span><span role="columnheader">Period</span><span role="columnheader">Cycle length</span></div>${history}</div>`
         : fxEmpty('No cycles logged', 'Tap a day in the calendar, or add a past period.', '')}
-    </section>
-    <section class="fx-card fx-priv">
       <div class="fx-priv-r"><div><b>Show on the Fitness overview</b><span>Only you can see this data. Turn this off to keep it on this tab only.</span></div>
       <button type="button" class="switch" role="switch" data-a="cycpriv" aria-checked="${PREFS.fitCycleOverview !== false}" aria-label="Show cycle on overview"></button></div>
     </section>
@@ -8541,7 +8595,6 @@ function fxOpenWorkout(s, date){
       [fxDateField('fxWDate', 'Day', s ? s.date : date), { id:'fxWCat', type:'select', label:'Type', value:cat || fxCats()[0], options: fxCatOptions(s && s.category) }],
       [{ id:'fxWTitle', label:'Name', placeholder:'Same as type', value: s && s.kind !== 'rest' && s.title !== s.category ? s.title : '' }, { id:'fxWNew', label:'New type', placeholder:'e.g. Push day', value:'' }],
       [{ type:'html', html: fxExEditorHtml(s ? (s.exercises || []) : []) }],
-      [{ id:'fxWNotes', type:'textarea', label:'Notes', rows:2, value: s ? (s.notes || '') : '' }]
     ],
     actions: isNew ? [{ label:'Add workout' }] : [{ label:'Delete', value:'delete', danger:true }, { label:'Save' }],
     onBodyClick: fxExEditorClick,
@@ -8553,8 +8606,8 @@ function fxOpenWorkout(s, date){
         const rest = !v.fxWNew && v.fxWCat === '__rest';
         if(v.fxWNew) await fxAddCat(v.fxWNew);
         const exercises = rest ? [] : fxReadExercises(s && s.exercises);
-        const row = rest ? { kind:'rest', title:'Rest day', category:null, exercises:[], notes: v.fxWNotes || null }
-          : { kind:'gym', title: v.fxWTitle || category, category, exercises, notes: v.fxWNotes || null };
+        const row = rest ? { kind:'rest', title:'Rest day', category:null, exercises:[] }
+          : { kind:'gym', title: v.fxWTitle || category, category, exercises };
         await fxEnsureWeek(C, v.fxWDate);
         if(isNew){
           const { error } = await sb.from('fit_sessions').insert({ user_id: USER.id, date: v.fxWDate, sort: await fxNextSort(v.fxWDate), status:'planned', ...row });
@@ -8665,7 +8718,6 @@ function fxOpenRun(s, date, mode){
     [{ id:'fxRKm', type:'number', step:'0.01', label:'Distance km', placeholder:'8.2', value: s && s.distance_km != null ? s.distance_km : '' },
      { id:'fxRTime', label:'Time', placeholder:'49:10', value: s ? (fmtDuration(s.duration_sec) || '') : '' },
      { id:'fxRPace', label:'Pace /km', placeholder:'6:00', value: s ? (fmtPace(s.pace_sec) || '') : '' }]);
-  rows.push([{ id:'fxRNotes', type:'textarea', label:'Notes', rows:2, value: s ? (s.notes || '') : '' }]);
   const title = mode === 'plan' ? (s ? 'Edit run' : 'Plan a run') : mode === 'log' ? 'Log a run' : (s && s.status === 'completed' ? 'Edit result' : 'Log result');
   openForm({
     title, wide:true, rows,
@@ -8676,7 +8728,7 @@ function fxOpenRun(s, date, mode){
         if(mode !== 'result' && !v.fxRDate){ toast('Pick a day', true); return false; }
         const date = mode === 'result' ? s.date : v.fxRDate;
         await fxEnsureWeek(C, date);
-        let row = { notes: v.fxRNotes || null };
+        let row = {};
         if(mode !== 'result') Object.assign(row, { run_type: v.fxRType, title: v.fxRType });
         if(mode === 'plan') Object.assign(row, fxRunFromForm(v));
         if(mode !== 'plan'){
@@ -8714,7 +8766,6 @@ function fxWeekAsDays(mon){
       if(s.category) o.category = s.category;
       if(s.kind === 'run'){ o.run_type = s.run_type; if(s.target_km != null) o.target_km = s.target_km; if(s.target_sec != null) o.target_sec = s.target_sec; if(s.target_pace != null) o.target_pace = s.target_pace; }
       if(s.kind === 'gym') o.exercises = (s.exercises || []).map(e=>({ name:e.name, sets:e.sets, reps:e.reps, weight:e.weight }));
-      if(s.notes) o.notes = s.notes;
       return o;
     });
   });
@@ -8819,19 +8870,20 @@ function fxOpenCats(){
     }
   });
 }
-function fxOpenGoals(){
+function fxOpenGoals(scope){
   const G = fxGoals();
+  const rows = scope === 'workouts' ? [[{ id:'fxGW', type:'number', label:'Workouts per week', value: G.workouts || '' }]]
+    : scope === 'km' ? [[{ id:'fxGKm', type:'number', step:'0.5', label:'Running km per week', value: G.km || '' }]]
+    : [[{ id:'fxGKcal', type:'number', label:'Calories per day', value: G.kcal || '' }, { id:'fxGP', type:'number', label:'Protein g', value: G.protein || '' }],
+       [{ id:'fxGC', type:'number', label:'Carbs g', value: G.carbs || '' }, { id:'fxGF', type:'number', label:'Fat g', value: G.fat || '' }]];
   openForm({
-    title:'Goals', wide:true,
-    rows: [
-      [{ id:'fxGW', type:'number', label:'Workouts per week', value: G.workouts || '' }, { id:'fxGKm', type:'number', step:'0.5', label:'Running km per week', value: G.km || '' }],
-      [{ id:'fxGKcal', type:'number', label:'Calories per day', value: G.kcal || '' }, { id:'fxGP', type:'number', label:'Protein g', value: G.protein || '' }],
-      [{ id:'fxGC', type:'number', label:'Carbs g', value: G.carbs || '' }, { id:'fxGF', type:'number', label:'Fat g', value: G.fat || '' }]
-    ],
-    actions: [{ label:'Save goals' }],
+    title: scope === 'workouts' ? 'Workout goal' : scope === 'km' ? 'Running goal' : 'Nutrition goals', wide: scope === 'food',
+    rows, actions: [{ label:'Save' }],
     onSubmit: async v=>{
       const n = x => { const k = fxN(x); return k && k > 0 ? k : null; };
-      try{ await savePrefs({ fitGoals: { workouts:n(v.fxGW), km:n(v.fxGKm), kcal:n(v.fxGKcal), protein:n(v.fxGP), carbs:n(v.fxGC), fat:n(v.fxGF) } }); toast('Goals saved'); fxPaint(); }
+      const up = scope === 'workouts' ? { workouts:n(v.fxGW) } : scope === 'km' ? { km:n(v.fxGKm) }
+        : { kcal:n(v.fxGKcal), protein:n(v.fxGP), carbs:n(v.fxGC), fat:n(v.fxGF) };
+      try{ await savePrefs({ fitGoals: { ...fxGoals(), ...up } }); toast('Goal saved'); fxPaint(); }
       catch(err){ fail(err, 'Could not save'); return false; }
     }
   });
@@ -8862,9 +8914,8 @@ function fxOpenInjury(){
     openForm({
       title:'Injury mode is on', wide:true,
       rows: [
-        [{ type:'html', html:`<div class="fx-injnow"><span class="fx-pause-ico">${ico('pause')}</span><div><b>${esc(act.injury)}</b><small>Paused since ${esc(longDate(parseISO(act.start_date)))}${act.notes ? ' · ' + esc(act.notes) : ''}</small></div></div>` }],
+        [{ type:'html', html:`<div class="fx-injnow"><span class="fx-pause-ico">${ico('pause')}</span><div><b>${esc(act.injury)}</b><small>Paused since ${esc(longDate(parseISO(act.start_date)))}</small></div></div>` }],
         [fxDateField('fxIBack', 'Back to training from', t0)],
-        [{ id:'fxINotes', type:'textarea', label:'Notes', rows:2, value: act.notes || '' }],
         [{ type:'html', html: hist }]
       ],
       actions: [{ label:'Delete record', value:'delete', danger:true }, { label:'Resume tracking', value:'resume' }],
@@ -8879,7 +8930,7 @@ function fxOpenInjury(){
           }
           if(!v.fxIBack || v.fxIBack < act.start_date){ toast('Pick a day on or after ' + fxShort(parseISO(act.start_date)), true); return false; }
           const end = iso(addDays(parseISO(v.fxIBack), -1));
-          const r = await sb.from('fit_injuries').update({ end_date: end, notes: v.fxINotes || null }).eq('id', act.id); if(r.error) throw r.error;
+          const r = await sb.from('fit_injuries').update({ end_date: end }).eq('id', act.id); if(r.error) throw r.error;
           toast('Tracking is back on');
           await fxReload();
         }catch(err){ fail(err, 'Could not save'); return false; }
@@ -8891,7 +8942,6 @@ function fxOpenInjury(){
       rows: [
         [{ type:'note', text:'While paused, missed workouts aren\'t counted as missed, and this time is left out of completion rates, averages and streaks. Everything you already logged stays.' }],
         [{ id:'fxIName', label:'Injury', placeholder:'e.g. Sprained ankle', value:'' }, fxDateField('fxIStart', 'Since', t0)],
-        [{ id:'fxINotes', type:'textarea', label:'Notes', rows:2, placeholder:'Optional', value:'' }],
         [{ type:'html', html: hist }]
       ],
       actions: [{ label:'Pause tracking' }],
@@ -8900,7 +8950,7 @@ function fxOpenInjury(){
         if(!v.fxIName){ toast('What is the injury?', true); return false; }
         if(!v.fxIStart){ toast('Pick a start day', true); return false; }
         try{
-          const r = await sb.from('fit_injuries').insert({ user_id: USER.id, injury: v.fxIName, start_date: v.fxIStart, notes: v.fxINotes || null }); if(r.error) throw r.error;
+          const r = await sb.from('fit_injuries').insert({ user_id: USER.id, injury: v.fxIName, start_date: v.fxIStart }); if(r.error) throw r.error;
           toast('Tracking paused'); await fxReload();
         }catch(err){ fail(err, 'Could not save'); return false; }
       }
@@ -8912,8 +8962,7 @@ function fxEditInjury(i){
   openForm({
     title:'Injury break', wide:true,
     rows: [[{ id:'fxIName', label:'Injury', value:i.injury }],
-           [fxDateField('fxIStart', 'From', i.start_date), fxDateField('fxIEnd', 'Last paused day', i.end_date || '')],
-           [{ id:'fxINotes', type:'textarea', label:'Notes', rows:2, value:i.notes || '' }]],
+           [fxDateField('fxIStart', 'From', i.start_date), fxDateField('fxIEnd', 'Last paused day', i.end_date || '')]],
     actions: [{ label:'Delete', value:'delete', danger:true }, { label:'Save' }],
     onSubmit: async (v, a)=>{
       try{
@@ -8925,7 +8974,7 @@ function fxEditInjury(i){
         }
         if(!v.fxIName || !v.fxIStart){ toast('Injury and start day are needed', true); return false; }
         if(v.fxIEnd && v.fxIEnd < v.fxIStart){ toast('The end is before the start', true); return false; }
-        const r = await sb.from('fit_injuries').update({ injury:v.fxIName, start_date:v.fxIStart, end_date:v.fxIEnd || null, notes:v.fxINotes || null }).eq('id', i.id); if(r.error) throw r.error;
+        const r = await sb.from('fit_injuries').update({ injury:v.fxIName, start_date:v.fxIStart, end_date:v.fxIEnd || null }).eq('id', i.id); if(r.error) throw r.error;
         toast('Saved'); await fxReload();
       }catch(err){ fail(err, 'Could not save'); return false; }
     }
@@ -8967,7 +9016,7 @@ function fxOpenAddFood(meal, date, preselect){
       <button type="button" class="btn btn-ghost btn-sm" data-af="online">Search Open Food Facts</button></div>
     <div class="fx-af-list" id="fxFList" role="listbox" aria-label="Foods"></div>
     <div class="fx-af-sel" id="fxFSel" hidden></div>
-    <div class="fx-af-foot"><button type="button" class="fx-link" data-af="new">${ico('plus','ico-xs')} Create a food with its own values</button></div></div>`;
+    <div class="fx-af-foot"><button type="button" class="fx-link" data-af="new">${ico('plus','ico-xs')} Create a food with its own values</button><button type="button" class="fx-link" data-af="mine">${ico('food','ico-xs')} Manage my foods</button></div></div>`;
   openForm({
     title:'Add food', xwide:true,
     rows: [[fxDateField('fxFDate', 'Day', date), { id:'fxFMeal', type:'select', label:'Meal', value:meal, options: FX_MEALS.map(([v, l])=>({ value:v, label:l })) }],
@@ -8976,6 +9025,7 @@ function fxOpenAddFood(meal, date, preselect){
     onBodyClick: async e=>{
       const b = e.target.closest('[data-af]');
       if(b && b.dataset.af === 'online'){ await runOnline(); return; }
+      if(b && b.dataset.af === 'mine'){ closeForm(false); fxOpenMyFoods(); return; }
       if(b && b.dataset.af === 'new'){ const m = $('fxFMeal').value, d = $('fxFDate').value; closeForm(false); fxOpenFoodForm(null, { meal:m, date:d, name: st.q }); return; }
       const u = e.target.closest('[data-unit]');
       if(u){ st.unit = u.dataset.unit; const qi = $('fxFQty'); if(qi){ qi.value = st.unit === 'g' ? (st.food.serving_g ? fxR(st.food.serving_g, 1) : 100) : 1; } paintSel(); return; }
@@ -9198,15 +9248,14 @@ function fxOpenCycleDay(di){
       <div class="fx-cd-g"><b>Symptoms</b><div class="chip-pick" data-grp="sym">${FX_SYMPTOMS.map(s=>`<button type="button" class="${sym.has(s) ? 'on' : ''}" data-sym="${esc(s)}" aria-pressed="${sym.has(s)}">${esc(s)}</button>`).join('')}</div></div>
       <div class="fx-cd-g"><b>Energy</b><div class="chip-pick" data-grp="en">${FX_ENERGY.map((s, i)=>`<button type="button" class="${energy === i + 1 ? 'on' : ''}" data-en="${i + 1}" aria-pressed="${energy === i + 1}">${s}</button>`).join('')}</div></div></div>`;
   const acts = [];
-  if(lg) acts.push({ label:'Clear notes', value:'clear', danger:true });
+  if(lg) acts.push({ label:'Clear this day', value:'clear', danger:true });
   if(onPer && !onPer.end_date && di > onPer.start_date) acts.push({ label:'Period ended this day', value:'end', secondary:true });
   if(!onPer) acts.push({ label:'Period started this day', value:'start', secondary:true });
   acts.push({ label:'Save' });
   openForm({
     title: longDate(parseISO(di)), xwide:true,
     rows: [[{ type:'note', text: onPer ? `Period day ${fxDiff(di, onPer.start_date) + 1}` : 'No period logged on this day' }],
-           [{ type:'html', html }],
-           [{ id:'fxCDNotes', type:'textarea', label:'How you feel (energy, body, training)', rows:2, value: lg ? (lg.notes || '') : '' }]],
+           [{ type:'html', html }]],
     actions: acts,
     onBodyClick: e=>{
       const s = e.target.closest('[data-sym]');
@@ -9218,9 +9267,9 @@ function fxOpenCycleDay(di){
     onSubmit: async (v, a)=>{
       try{
         if(a === 'clear'){ const r = await sb.from('fit_cycle_days').delete().eq('id', lg.id); if(r.error) throw r.error; toast('Cleared'); await fxReload(); return; }
-        const has = sym.size || energy || v.fxCDNotes;
+        const has = sym.size || energy;
         if(has){
-          const row = { user_id: USER.id, date: di, symptoms:[...sym], energy: energy || null, notes: v.fxCDNotes || null };
+          const row = { user_id: USER.id, date: di, symptoms:[...sym], energy: energy || null };
           const r = await sb.from('fit_cycle_days').upsert(row, { onConflict:'user_id,date' }); if(r.error) throw r.error;
         } else if(lg){ const r = await sb.from('fit_cycle_days').delete().eq('id', lg.id); if(r.error) throw r.error; }
         if(a === 'start'){ closeForm(false); await fxPeriodStart(di); return; }
@@ -9234,7 +9283,7 @@ function fxOpenCycle(c){
   openForm({
     title: c ? 'Edit period' : 'Add a past period', wide:true,
     rows: [[fxDateField('fxCyS', 'Started', c ? c.start_date : ''), fxDateField('fxCyE', 'Ended', c ? (c.end_date || '') : '')],
-           [{ id:'fxCyN', type:'textarea', label:'Notes', rows:2, value: c ? (c.notes || '') : '' }]],
+           ],
     actions: c ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save' }] : [{ label:'Add' }],
     onSubmit: async (v, a)=>{
       try{
@@ -9245,7 +9294,7 @@ function fxOpenCycle(c){
         }
         if(!v.fxCyS){ toast('Pick the start day', true); return false; }
         if(v.fxCyE && (v.fxCyE < v.fxCyS || fxDiff(v.fxCyE, v.fxCyS) > 14)){ toast('The end should be within two weeks after the start', true); return false; }
-        const row = { start_date: v.fxCyS, end_date: v.fxCyE || null, notes: v.fxCyN || null };
+        const row = { start_date: v.fxCyS, end_date: v.fxCyE || null };
         const r = c ? await sb.from('fit_cycles').update(row).eq('id', c.id) : await sb.from('fit_cycles').insert({ user_id: USER.id, ...row });
         if(r.error) throw r.error;
         toast('Saved'); await fxReload();
@@ -9286,7 +9335,14 @@ $('fxBody').addEventListener('click', async e=>{
     case 'mon':    { const r = FX.calRef || FX.sel; FX.calRef = new Date(r.getFullYear(), r.getMonth() + Number(b.dataset.n), 1); fxPaint(); break; }
     case 'cmon':   { const r = FX.cycRef || new Date(); FX.cycRef = new Date(r.getFullYear(), r.getMonth() + Number(b.dataset.n), 1); fxPaint(); break; }
     case 'tab':    fxSetTab(b.dataset.t); break;
-    case 'goals':  fxOpenGoals(); break;
+    case 'goal':   fxOpenGoals(b.dataset.g); break;
+    case 'nper':   FX.nutPeriod = b.dataset.p; FX.nutRef = null; fxNutGo(); break;
+    case 'nnow':   FX.nutRef = new Date(); fxNutGo(); break;
+    case 'nstep': {
+      const r = fxNutRange(), n = Number(b.dataset.n);
+      FX.nutRef = r.p === 'month' ? new Date(r.from.getFullYear(), r.from.getMonth() + n, 1) : addDays(r.from, 7 * n);
+      fxNutGo(); break;
+    }
     case 'addact': fxOpenAddActivity(); break;
     case 'open':   if(s){ FX.sel = parseISO(s.date); fxSetTab(s.kind === 'run' ? 'running' : 'split'); } break;
     case 'tick':   if(s) await fxTick(s); break;
@@ -9319,6 +9375,12 @@ $('fxBody').addEventListener('click', async e=>{
       break;
     }
   }
+});
+$('fxBody').addEventListener('keydown', e=>{
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const c = e.target.closest('[role="link"][data-a]');
+  if(!c || e.target !== c) return;
+  e.preventDefault(); c.click();
 });
 /* one small tooltip for every chart mark */
 (function(){

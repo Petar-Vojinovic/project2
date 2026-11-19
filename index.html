@@ -11955,12 +11955,7 @@ function hmSchedHtml(){
       return `<button type="button" class="fx-sday ${lnDayState(its, d, today)}${sameDay(d, today) ? ' today' : ''}${sameDay(d, sel) ? ' sel' : ''}" data-hmday="${k}"
         aria-pressed="${sameDay(d, sel)}" aria-label="${esc(lnDayName(d))}${its.length ? ', ' + plural(its.length, 'chore') : ''}"><small>${DAY_SHORT[i]}</small><b>${d.getDate()}</b>
         <span class="fx-dots">${its.slice(0, 4).map(x=> `<i class="${x.done ? 'on' : ''}"></i>`).join('')}</span></button>`;
-    }).join('') + '</div>' + (items.length ? `<div class="ln2-wk">${Array.from({ length:7 }, (_, i)=>{
-      const d = addDays(mon, i), its = items.filter(x=> x.date === iso(d));
-      return `<div class="ln2-wkd${sameDay(d, sel) ? ' sel' : ''}" data-hmday="${iso(d)}">${its.map(x=>
-        `<button type="button" class="ln2-wkc${x.done ? ' done' : ''}${!x.done && d < today ? ' miss' : ''}" data-hmday="${iso(d)}" title="${esc(x.title)}${x.start ? ' · ' + x.start : ''}">
-          <small>${x.start || 'Any time'}</small><b>${esc(x.title)}</b></button>`).join('')}</div>`;
-    }).join('')}</div>` : '');
+    }).join('') + '</div>';
   }
   const dayItems = hmItems(sel, sel), isT = sameDay(sel, today);
   const late = isT ? hmOverdue() : [];

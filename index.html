@@ -11125,10 +11125,11 @@ const urlHost = u => { try{ return new URL(u).hostname.replace(/^www\./, ''); }c
    row with kind 'learning' or 'hustle'; its sessions and tasks are tasks /
    recurring_tasks rows with that page's category and learn_plan_id. */
 const LN_KIND = {
-  learning: { cat:'learning', body:'lnBody', title:'Learning', icon:'book', plan:'learning plan', plans:'learning plans', areas:true,
+  learning: { cat:'learning', body:'lnBody', title:'Learning', icon:'book', plan:'learning plan', plans:'learning plans', areas:true, area:'focus area', areaEx:'e.g. Components & Variants',
               hours:'Learning hours', did:'studied', item:'session', newItem:'study session', add:'Add session',
               tabs:[['schedule', 'Schedule'], ['areas', 'Focus areas'], ['stats', 'Statistics']] },
   hustle:   { cat:'side', body:'hsBody', title:'Hustle', icon:'briefcase', plan:'business plan', plans:'business plans', areas:false,
+              workAreas:true, area:'work area', areaEx:'e.g. Marketing',   // Tasks tab works like Learning's Focus areas (Ime 2026-11-19)
               hours:'Working hours', did:'worked', item:'task', newItem:'task', add:'Add task',
               tabs:[['schedule', 'Schedule'], ['tasks', 'Tasks'], ['stats', 'Statistics']] }
 };
@@ -11160,7 +11161,7 @@ async function lnLoad(kind){
   try{
     const [plans, areas, tasks, rules] = await Promise.all([
       sb.from('learn_plans').select('*').eq('kind', kind).order('position').order('created_at'),
-      S.K.areas ? sb.from('learn_areas').select('*').order('position').order('created_at') : Promise.resolve({ data:[] }),
+      S.K.areas || S.K.workAreas ? sb.from('learn_areas').select('*').order('position').order('created_at') : Promise.resolve({ data:[] }),
       sb.from('tasks').select('*').eq('category', S.K.cat),
       sb.from('recurring_tasks').select('*').eq('category', S.K.cat)
     ]);
@@ -11306,7 +11307,7 @@ function lnPlanHtml(){
   const p = lnPlan(LN.planId);
   const tabs = LN.K.tabs;
   if(!tabs.some(([k])=> k === LN.tab)) LN.tab = 'schedule';
-  const body = LN.tab === 'areas' ? lnAreasHtml(p) : LN.tab === 'tasks' ? lnTasksHtml(p) : LN.tab === 'stats' ? lnStatsHtml(p) : lnSchedHtml(p);
+  const body = LN.tab === 'areas' ? lnAreasHtml(p) : LN.tab === 'tasks' ? (LN.K.workAreas ? lnAreasHtml(p) : lnTasksHtml(p)) : LN.tab === 'stats' ? lnStatsHtml(p) : lnSchedHtml(p);
   return `<div class="fx-head ln2-ph">
       <button type="button" class="fx-arrow-btn" data-ln="back" aria-label="All ${LN.K.plans}" title="All ${LN.K.plans}">${ico('chevL')}</button>
       <div class="ln2-ph-t"><span class="ln2-crumb">${LN.K.title}</span><h1 class="page-title">${esc(p.name)}</h1></div>
@@ -11376,7 +11377,8 @@ function lnSchedHtml(p){
 function lnAreasHtml(p){
   const areas = lnAreasOf(p.id), today = _dayOnly(new Date());
   const loose = LN.tasks.some(t=> t.learn_plan_id === p.id && !t.learn_area_id) || LN.rules.some(r=> r.learn_plan_id === p.id && !r.learn_area_id);
-  const list = areas.map(a=> ({ id:a.id, name:a.name, a })).concat(loose ? [{ id:null, name:'No focus area', a:null }] : []);
+  const W = LN.K.area, Wc = lnCap(W);   // 'focus area' (Learning) / 'work area' (Hustle)
+  const list = areas.map(a=> ({ id:a.id, name:a.name, a })).concat(loose ? [{ id:null, name:'No ' + W, a:null }] : []);
   if(!list.some(x=> x.id === LN.area)) LN.area = list.length ? list[0].id : undefined;
   const cards = list.map(x=>{
     const pr = lnProgress(p.id, x.id);
@@ -11388,7 +11390,7 @@ function lnAreasHtml(p){
       <span class="ln2-area-m">${pr.total ? `${pr.done} of ${plural(pr.total, 'task')} done` : 'No tasks yet'}${nOpen ? ` · ${nOpen} open` : ''}</span>
       <span class="ln2-area-n">${next ? `${ico('clock', 'ico-xs')}${sameDay(parseISO(next.date), today) ? 'Today' : lnShort(parseISO(next.date))}${next.start ? ' ' + next.start : ''} · ${esc(next.title)}` : 'Nothing scheduled'}</span>
     </button>`;
-  }).join('') + `<button type="button" class="ln2-area ln2-add" data-ln="add-area"><span>${ico('plus')}</span>Add focus area</button>`;
+  }).join('') + `<button type="button" class="ln2-area ln2-add" data-ln="add-area"><span>${ico('plus')}</span>Add ${W}</button>`;
 
   let panel = '';
   if(list.length && LN.area !== undefined){
@@ -11399,20 +11401,20 @@ function lnAreasHtml(p){
     const reps = LN.rules.filter(r=> r.learn_plan_id === p.id && (r.learn_area_id || null) === cur.id);
     const taskLi = i => `<li class="ln2-row${i.done ? ' done' : ''}" data-key="${esc(i.key)}">
         <button type="button" class="fx-check${i.done ? ' on' : ''}" data-ln="tick" role="checkbox" aria-checked="${i.done}" aria-label="${i.done ? 'Mark not done' : 'Mark done'}: ${esc(i.title)}">${ico('check')}</button>
-        <span class="ln2-time${i.date ? '' : ' any'}">${i.date ? lnShort(parseISO(i.date)) + (i.start ? '<br>' + i.start + (i.end ? '–' + i.end : '') : '') : 'Not scheduled'}</span>
+        <span class="ln2-time${i.date ? '' : ' any'}">${i.date ? lnShort(parseISO(i.date)) + (i.start ? '<br>' + i.start + (i.end ? '–' + i.end : '') : i.dur ? '<br>' + lnHours(i.dur) : '') : 'Not scheduled'}</span>
         <button type="button" class="ln2-main" data-ln="edit" aria-label="Edit ${esc(i.title)}"><b>${esc(i.title)}</b></button>
         <span class="fx-acts">${i.date ? '' : `<button type="button" data-ln="move" aria-label="Schedule ${esc(i.title)}" title="Schedule">${ico('calendar')}</button>`}
           <button type="button" data-ln="del" aria-label="Delete ${esc(i.title)}" title="Delete">${ico('trash')}</button></span></li>`;
-    panel = `<section class="fx-card ln2-apanel"><div class="fx-card-h"><div><h2>${esc(cur.name)}</h2><p class="fx-sub">${plural(open.length, 'open task')}${reps.length ? ' · ' + plural(reps.length, 'repeating session') : ''}</p></div><span class="spacer"></span>
+    panel = `<section class="fx-card ln2-apanel"><div class="fx-card-h"><div><h2>${esc(cur.name)}</h2><p class="fx-sub">${plural(open.length, 'open task')}${reps.length ? ' · ' + plural(reps.length, 'repeating ' + LN.K.item) : ''}</p></div><span class="spacer"></span>
         ${cur.a ? `<button type="button" class="fx-icon-btn" data-ln="edit-area" data-id="${cur.id}" aria-label="Rename or delete ${esc(cur.name)}" title="Rename or delete">${ico('pencil')}</button>` : ''}</div>
       <form class="ln2-quick" data-lnquick="${cur.id || ''}" autocomplete="off">${ico('plus')}<input placeholder="Add a task to ${esc(cur.name)}…" aria-label="New task in ${esc(cur.name)}" /><button type="submit">Add</button></form>
       ${open.length ? `<ul class="ln2-day">${open.map(taskLi).join('')}</ul>` : `<p class="ln2-none">No open tasks here. Add one above, then schedule it.</p>`}
-      ${reps.length ? `<h3 class="ln2-h3">Repeating sessions</h3><ul class="ln2-reps">${reps.map(r=> `<li><button type="button" class="ln2-repc" data-ln="edit-rule" data-id="${r.id}">
-          ${ico('repeat', 'ico-xs')}<b>${esc(r.title)}</b><span>${esc(freqLabel(r))}${r.start_time ? ' · ' + lnT5(r.start_time) + (r.end_time ? '–' + lnT5(r.end_time) : '') : ''}</span></button></li>`).join('')}</ul>` : ''}
+      ${reps.length ? `<h3 class="ln2-h3">Repeating ${LN.K.item}s</h3><ul class="ln2-reps">${reps.map(r=> `<li><button type="button" class="ln2-repc" data-ln="edit-rule" data-id="${r.id}">
+          ${ico('repeat', 'ico-xs')}<b>${esc(r.title)}</b><span>${esc(freqLabel(r))}${r.start_time ? ' · ' + lnT5(r.start_time) + (r.end_time ? '–' + lnT5(r.end_time) : '') : r.duration_min ? ' · ' + lnHours(r.duration_min) : ''}</span></button></li>`).join('')}</ul>` : ''}
       ${done.length ? `<details class="ln2-donef"><summary>Done (${done.length})</summary><ul class="ln2-day">${done.map(taskLi).join('')}</ul></details>` : ''}
     </section>`;
   }
-  return `<section class="fx-card"><div class="fx-card-h"><div><h2>Focus areas</h2><p class="fx-sub">What you are working on inside ${esc(p.name)}. Progress counts tasks you tick off.</p></div></div>
+  return `<section class="fx-card"><div class="fx-card-h"><div><h2>${Wc}s</h2><p class="fx-sub">What you are working on inside ${esc(p.name)}. Progress counts tasks you tick off.</p></div></div>
       <div class="ln2-area-g">${cards}</div></section>${panel}`;
 }
 
@@ -11548,7 +11550,7 @@ function lnPlanForm(p){
 }
 async function lnDeletePlan(p){
   const n = LN.tasks.filter(t=> t.learn_plan_id === p.id).length + LN.rules.filter(r=> r.learn_plan_id === p.id).length;
-  const yes = await askConfirm({ title:`Delete "${p.name}"?`, message: LN.K.areas ? `Its focus areas${n ? ' and ' + plural(n, 'task or session', 'tasks and sessions') : ''} are deleted too. This can't be undone.`
+  const yes = await askConfirm({ title:`Delete "${p.name}"?`, message: LN.K.areas || LN.K.workAreas ? `Its ${LN.K.area}s${n ? ' and ' + (LN.K.areas ? plural(n, 'task or session', 'tasks and sessions') : plural(n, 'task')) : ''} are deleted too. This can't be undone.`
       : `${n ? 'Its ' + plural(n, 'task') + ' are deleted too. ' : ''}This can't be undone.`, ok:'Delete plan' });
   if(!yes) return;
   const { error } = await sb.from('learn_plans').delete().eq('id', p.id);
@@ -11557,28 +11559,28 @@ async function lnDeletePlan(p){
 }
 function lnAreaForm(a){
   openForm({
-    title: a ? 'Edit focus area' : 'New focus area',
-    rows: [[{ id:'lnaName', label:'Focus area', placeholder:'e.g. Components & Variants', value: a ? a.name : '' }]],
-    actions: a ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add focus area', value:'save' }],
+    title: a ? `Edit ${LN.K.area}` : `New ${LN.K.area}`,
+    rows: [[{ id:'lnaName', label: lnCap(LN.K.area), placeholder: LN.K.areaEx, value: a ? a.name : '' }]],
+    actions: a ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:`Add ${LN.K.area}`, value:'save' }],
     onSubmit: async (v, act)=>{
       if(act === 'delete'){ setTimeout(()=> lnDeleteArea(a), 0); return; }
-      if(!v.lnaName){ toast('Give the focus area a name', true); return false; }
+      if(!v.lnaName){ toast(`Give the ${LN.K.area} a name`, true); return false; }
       const res = a ? await sb.from('learn_areas').update({ name: v.lnaName }).eq('id', a.id).select().single()
                     : await sb.from('learn_areas').insert({ user_id: USER.id, plan_id: LN.planId, name: v.lnaName, position: lnAreasOf(LN.planId).length }).select().single();
-      if(res.error){ fail(res.error, 'Could not save the focus area'); return false; }
-      toast(a ? 'Focus area renamed' : 'Focus area added');
+      if(res.error){ fail(res.error, `Could not save the ${LN.K.area}`); return false; }
+      toast(a ? `${lnCap(LN.K.area)} renamed` : `${lnCap(LN.K.area)} added`);
       if(!a && res.data) LN.area = res.data.id;
       dataChanged();
     }
   });
 }
 async function lnDeleteArea(a){
-  const n = LN.tasks.filter(t=> t.learn_area_id === a.id).length;
-  const yes = await askConfirm({ title:`Delete "${a.name}"?`, message: n ? `Its ${plural(n, 'task')} stay in the plan, without a focus area.` : 'It has no tasks.', ok:'Delete focus area' });
+  const n = LN.tasks.filter(t=> t.learn_area_id === a.id).length, W = LN.K.area;
+  const yes = await askConfirm({ title:`Delete "${a.name}"?`, message: n ? `Its ${plural(n, 'task')} stay in the plan, without a ${W}.` : 'It has no tasks.', ok:`Delete ${W}` });
   if(!yes) return;
   const { error } = await sb.from('learn_areas').delete().eq('id', a.id);
-  if(error) return fail(error, 'Could not delete the focus area');
-  toast('Focus area deleted'); LN.area = undefined; dataChanged();
+  if(error) return fail(error, `Could not delete the ${W}`);
+  toast(`${lnCap(W)} deleted`); LN.area = undefined; dataChanged();
 }
 
 // add or edit a session / task. `it` is an item (task or one repeat), or null for a new one
@@ -11735,7 +11737,9 @@ function hsTaskForm(it, preset){
       const dur = (Number($('hsfH').value) || 0) * 60 + (Number($('hsfM').value) || 0) || null;
       // a task that already has a clock time keeps it; the end follows the duration
       const timeOf = s => s ? { s: lnT5(s), e: dur ? lnPlusMin(lnT5(s), dur) : null } : { s:null, e:null };
-      const base = { title: v.hsfTitle, category: LN.K.cat, learn_plan_id: v.hsfPlan, learn_area_id: null, duration_min: dur };
+      const area0 = it ? it.area : (preset.areaId || null);
+      const area = area0 && LN.areas.some(a=> a.id === area0 && a.plan_id === v.hsfPlan) ? area0 : null;
+      const base = { title: v.hsfTitle, category: LN.K.cat, learn_plan_id: v.hsfPlan, learn_area_id: area, duration_min: dur };
       const ruleRow = (s, from) => ({ ...base, repeat:'weekly', weekdays: st.days, frequency: freqLabel({ repeat:'weekly', weekdays: st.days }),
         start_time: s.s, end_time: s.e, start_date: from, end_date: end, active:true });
       let error;
@@ -11900,7 +11904,7 @@ body.addEventListener('click', e=>{
     case 'edit-area': return lnAreaForm(lnArea(b.dataset.id));
     case 'edit-rule': { const r = LN.rules.find(x=> x.id === b.dataset.id); if(r) lnRuleForm(r); return; }
     case 'add-session': {
-      const area = LN.view === 'plan' && LN.tab === 'areas' && LN.area ? LN.area : null;
+      const area = LN.view === 'plan' && (LN.tab === 'areas' || (LN.tab === 'tasks' && LN.K.workAreas)) && LN.area ? LN.area : null;
       return lnSessionForm(null, { planId: LN.view === 'plan' ? LN.planId : null, anyPlan: LN.view !== 'plan', areaId: area, date: b.dataset.date || (LN.view === 'plan' ? iso(LN.sel) : iso(new Date())) });
     }
     case 'prev': case 'next': {

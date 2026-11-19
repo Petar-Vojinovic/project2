@@ -2943,6 +2943,12 @@
   .ln2-donef{margin-top:14px;}
   /* business plan tasks (Hustle) */
   .ln2-time.late{color:var(--danger);}
+  .fx-two.ln2-tasks{margin-top:0;align-items:start;}
+  .ln2-tasks .ln2-day + .ln2-h3{margin-top:16px;}
+  .ln2-tstat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px;}
+  .ln2-tstat > div{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:14px;background:rgba(var(--foreground-rgb),.045);}
+  .ln2-tstat small{font-size:11.5px;font-weight:600;color:var(--muted-foreground);}
+  .ln2-tstat b{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;}
   .ln2-donef summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--muted-foreground);padding:4px 0 8px;}
 
   /* statistics */
@@ -3913,201 +3919,6 @@
   /* lessons in the Calendar */
   .cd-card[data-lesson] .cd-title .ico{color:var(--cat-work);}
   .cd-item.is-cancel .cd-title{text-decoration:line-through;color:var(--dz-ink-3);}
-  /* ===================================================================
-     HUSTLE (2026-11-19, v3): one workspace, four tabs — Business plans,
-     Tasks (work areas), Statistics, Notes. Theme tokens only; reuses the
-     .fx-* kit and Learning's ln2-row / ln2-tag rows.
-     =================================================================== */
-  main.content:has(> #page-side.active){max-width:1560px;}
-  #page-side .hs-head{margin-bottom:12px;}
-  .hs-tabs{margin-bottom:var(--fx-gap);}
-  .hs-tabs .hs-ts{display:none;}
-  .hs-ibtn{width:32px;height:32px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:10px;background:transparent;color:var(--muted-foreground);cursor:pointer;}
-  .hs-ibtn:hover{background:rgba(var(--foreground-rgb),.07);color:var(--foreground);}
-  .hs-ibtn.on{background:var(--primary);color:var(--foreground);}
-  .hs-ibtn .ico{width:16px;height:16px;}
-  .hs-empty{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:4px 0;font-size:13px;color:var(--muted-foreground);}
-  .hs-empty b{color:var(--foreground);font-size:14px;}
-  .hs-sel{height:40px;padding:0 12px;border:0;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1px var(--border);font:inherit;font-size:13px;color:var(--foreground);max-width:100%;min-width:0;}
-
-  /* business plans + today */
-  .hs-pgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);gap:var(--fx-gap);align-items:start;}
-  #hsBody .fx-card{margin-top:0;}
-  .hs-side{display:flex;flex-direction:column;gap:var(--fx-gap);min-width:0;}
-  .hs-pc-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;}
-  .hs-pc{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;padding:12px 12px 12px 16px;border-radius:18px;cursor:pointer;color:var(--foreground);
-    background:color-mix(in srgb, var(--fx-tone, var(--ring)) 18%, var(--card));background-image:var(--sheen-sm);
-    box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge), inset 4px 0 0 var(--fx-tone, var(--ring));transition:box-shadow .15s;}
-  .hs-pc:hover{box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px rgba(var(--shadow-rgb),.14), inset 4px 0 0 var(--fx-tone, var(--ring)), 0 12px 22px -16px rgba(var(--shadow-rgb),.45);}
-  .hs-pc:focus-visible{outline:2px solid var(--ring);outline-offset:2px;}
-  .hs-pc-top{display:flex;align-items:center;gap:10px;min-width:0;}
-  .hs-pc-top h3{flex:1;min-width:0;margin:0;font-size:15px;font-weight:800;line-height:1.25;overflow-wrap:anywhere;}
-  .hs-pc-ico{width:32px;height:32px;flex-shrink:0;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--card);box-shadow:inset 0 0 0 1px var(--edge);}
-  .hs-pc-ico .ico{width:16px;height:16px;}
-  .hs-pc-focus{margin:-2px 0 0;font-size:12px;color:var(--muted-foreground);line-height:1.35;overflow-wrap:anywhere;}
-  .hs-pc-focus span{font-weight:700;}
-  .hs-pc-prog{display:flex;flex-direction:column;gap:5px;margin-top:auto;}
-  .hs-pc-prog > span{font-size:12px;font-weight:600;color:var(--muted-foreground);}
-  .hs-pc-prog b{color:var(--foreground);}
-  :is(.hs-pc, .hs-psum) .fx-bar{background:rgba(var(--foreground-rgb),.09);}
-  :is(.hs-pc, .hs-psum) .fx-bar i{background:var(--foreground);}
-  .hs-pc-kv{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12px;color:var(--muted-foreground);}
-  .hs-pc-kv b{color:var(--foreground);font-weight:800;}
-  .hs-pc-kv .late, .hs-pc-kv .late b{color:var(--danger);}
-  .hs-pc-next{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted-foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .hs-pc-next .ico{flex-shrink:0;}
-  .hs-pc-add{flex-direction:row;align-items:center;justify-content:center;gap:8px;min-height:118px;font:inherit;font-size:13px;font-weight:700;color:var(--muted-foreground);
-    border:0;background:transparent;box-shadow:none;outline:1.5px dashed var(--border);outline-offset:-1.5px;}
-  .hs-pc-add span{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--muted);color:var(--foreground);}
-  .hs-pc-add:hover{outline-color:var(--ring);color:var(--foreground);box-shadow:none;}
-
-  /* business plan filter + summary */
-  .hs-pbar{margin-bottom:12px;}
-  .hs-pchips{display:flex;flex-wrap:wrap;gap:6px;}
-  .hs-pchip{display:inline-flex;align-items:center;min-height:34px;padding:6px 14px;border:0;border-radius:999px;font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
-    color:var(--muted-foreground);background:var(--card);box-shadow:inset 0 0 0 1px var(--border);text-align:left;}
-  .hs-pchip:hover{color:var(--foreground);}
-  .hs-pchip.on{background:var(--primary);color:var(--foreground);box-shadow:inset 0 0 0 1px var(--ring);}
-  .hs-psel{display:none;}
-  .hs-psum{display:grid;grid-template-columns:minmax(0,1fr) minmax(200px,340px) auto;align-items:center;gap:16px;padding:12px 12px 12px 18px;border-radius:var(--fx-r-sm);margin-bottom:12px;
-    background:color-mix(in srgb, var(--fx-tone) 16%, var(--card));box-shadow:inset 0 0 0 1px var(--edge), inset 4px 0 0 var(--fx-tone);}
-  .hs-psum-t{display:flex;flex-direction:column;gap:1px;min-width:0;}
-  .hs-psum-t b{font-size:15px;font-weight:800;overflow-wrap:anywhere;}
-  .hs-psum-t span, .hs-psum-p span{font-size:12px;color:var(--muted-foreground);font-weight:600;}
-  .hs-psum-p{display:flex;flex-direction:column;gap:5px;min-width:0;}
-  .hs-psum-p b{color:var(--foreground);}
-
-  /* tasks: work areas on the left, the chosen area on the right */
-  .hs-tgrid{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:var(--fx-gap);align-items:start;}
-  .hs-tgrid > .fx-card{margin-top:0;}
-  .hs-ac-g{display:flex;flex-direction:column;gap:8px;min-width:0;}
-  .hs-ac{display:flex;flex-direction:column;gap:7px;min-width:0;padding:12px 14px;border:0;border-radius:16px;text-align:left;font:inherit;color:var(--foreground);cursor:pointer;
-    background:var(--card);background-image:var(--sheen-sm);box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge);}
-  .hs-ac:hover{box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px rgba(var(--shadow-rgb),.18);}
-  .hs-ac.on{background-color:var(--primary);box-shadow:inset 0 0 0 2px var(--ring);}
-  .hs-ac.none{background:transparent;box-shadow:inset 0 0 0 1px var(--border);}
-  .hs-ac.none.on{background:var(--primary);box-shadow:inset 0 0 0 2px var(--ring);}
-  .hs-ac.is-over{outline:2px dashed var(--ring);outline-offset:2px;}
-  .hs-ac-h{display:flex;align-items:center;gap:8px;min-width:0;}
-  .hs-ac-h b{flex:1;min-width:0;font-size:14px;font-weight:800;line-height:1.25;overflow-wrap:anywhere;}
-  .hs-ac-h em{font-style:normal;font-size:12px;font-weight:800;min-width:24px;height:22px;padding:0 7px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:rgba(var(--foreground-rgb),.08);}
-  .hs-ac .fx-bar{height:6px;}
-  .hs-ac-m{font-size:11.5px;color:var(--muted-foreground);font-weight:600;}
-  .hs-ac-add{flex-direction:row;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--muted-foreground);background:transparent;box-shadow:none;outline:1.5px dashed var(--border);outline-offset:-1.5px;}
-  .hs-ac-add:hover{outline-color:var(--ring);color:var(--foreground);box-shadow:none;}
-  .hs-ac-add span{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--muted);color:var(--foreground);}
-  .hs-ap-t{display:flex;align-items:center;gap:4px;min-width:0;}
-  .hs-ap-t h2{overflow-wrap:anywhere;}
-  .hs-donel{margin:12px 0 0;font-size:12.5px;color:var(--muted-foreground);}
-  .hs-dragging .hs-ac{outline:1.5px dashed var(--border);outline-offset:-1px;}
-
-  /* statistics */
-  .hs-snav{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
-  .hs-snav .fx-nav{margin:0;}
-  .hs-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--fx-gap);margin-bottom:var(--fx-gap);}
-  .hs-kpi{display:flex;flex-direction:column;gap:2px;min-width:0;padding:14px 16px;border-radius:var(--fx-r-sm);background:var(--card);background-image:var(--sheen-sm);box-shadow:inset 0 1px 0 var(--hi), inset 0 0 0 1px var(--edge);}
-  .hs-kpi:first-child{background-color:color-mix(in srgb, var(--primary) 70%, var(--card));}
-  .hs-kpi small{font-size:12px;font-weight:700;color:var(--muted-foreground);}
-  .hs-kpi b{font-size:24px;font-weight:800;letter-spacing:-.01em;line-height:1.2;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;}
-  .hs-kpi span{font-size:12px;color:var(--muted-foreground);font-weight:600;}
-  .hs-kpi span.late{color:var(--danger);}
-  .hs-sgrid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:var(--fx-gap);margin-bottom:var(--fx-gap);}
-  .hs-sgrid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--fx-gap);align-items:start;}
-  :is(.hs-sgrid, .hs-sgrid3) > .fx-card{margin-top:0;}
-  .hs-sgrid3 .fx-bar[class*=" t"] i{background:var(--fx-tone);}
-  .hs-gsub{display:block;margin-top:4px;font-size:11.5px;color:var(--muted-foreground);}
-  .hs-arows{display:flex;flex-direction:column;}
-  .hs-arow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:baseline;padding:9px 0;border-top:1px solid var(--border);font-size:13px;}
-  .hs-arow:first-child{border-top:0;padding-top:2px;}
-  .hs-arow span{overflow-wrap:anywhere;}
-  .hs-arow b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;}
-  .hs-arow em{font-style:normal;font-size:12px;color:var(--muted-foreground);}
-  .hs-more{margin-top:10px;}
-  .hs-donelist{gap:6px;}
-
-  /* notes: list + editor */
-  .hs-notes{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:var(--fx-gap);height:calc(100vh - 220px);min-height:460px;}
-  .hs-notes > .fx-card{margin-top:0;min-height:0;display:flex;flex-direction:column;}
-  .hs-nl-top{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
-  .hs-search{flex:1;min-width:0;display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1px var(--border);cursor:text;}
-  .hs-search .ico{width:15px;height:15px;color:var(--muted-foreground);flex-shrink:0;}
-  .hs-search input{flex:1;min-width:0;height:100%;border:0 !important;box-shadow:none !important;background:transparent !important;padding:0 !important;font:inherit;font-size:13.5px;color:var(--foreground);outline:none;}
-  .hs-nlist > .sel-field{margin-bottom:8px;min-height:40px;}
-  .hs-nl{list-style:none;margin:0 -6px;padding:2px 6px;overflow-y:auto;flex:1;min-height:0;display:flex;flex-direction:column;gap:2px;}
-  .hs-ni{width:100%;display:flex;flex-direction:column;gap:3px;padding:10px 12px;border:0;border-radius:14px;background:transparent;text-align:left;font:inherit;color:var(--foreground);cursor:pointer;}
-  .hs-ni:hover{background:rgba(var(--foreground-rgb),.05);}
-  .hs-ni.on{background:var(--primary);}
-  .hs-ni-h{display:flex;align-items:center;gap:6px;min-width:0;}
-  .hs-ni-h b{flex:1;min-width:0;font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .hs-pin{display:inline-flex;color:var(--muted-foreground);}
-  .hs-ni-s{font-size:12px;color:var(--muted-foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .hs-ni-m{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted-foreground);min-width:0;}
-  .hs-ni-m .ln2-tag{max-width:65%;}
-  .hs-nl-none{padding:12px;font-size:13px;color:var(--muted-foreground);}
-  .hs-ned{padding-bottom:12px;}
-  .hs-ned-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
-  .hs-ned-top .sel-field{width:auto;max-width:260px;min-height:36px;}
-  .hs-nback{display:none !important;}
-  .hs-nsave{font-size:12px;color:var(--muted-foreground);}
-  .hs-nt{width:100%;border:0 !important;box-shadow:none !important;background:transparent !important;padding:4px 0 !important;font:inherit;font-size:22px !important;font-weight:800;letter-spacing:-.01em;color:var(--foreground);outline:none;}
-  .hs-nb{flex:1;width:100%;min-height:200px;resize:none;border:0 !important;box-shadow:none !important;background:transparent !important;padding:6px 0 0 !important;font:inherit;font-size:15px;line-height:1.6;color:var(--foreground);outline:none;}
-  .hs-ned-empty{margin:auto;align-items:center;text-align:center;}
-
-  /* task form */
-  .chip-pick.hs-pp button{--acc:var(--fx-tone);}
-  .fm-label.hs-fl{margin-top:14px;}
-  .hs-order{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;}
-  .hs-obtn{height:34px;padding:0 14px;border:0;border-radius:999px;cursor:pointer;font:inherit;font-size:12.5px;font-weight:700;color:var(--foreground);background:rgba(var(--foreground-rgb),.05);box-shadow:inset 0 0 0 1px rgba(var(--foreground-rgb),.1);}
-  .hs-obtn:hover{background:var(--primary);}
-
-  @media (max-width:1100px){
-    .hs-pgrid{grid-template-columns:minmax(0,1fr);}
-    .hs-side{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start;}
-  }
-  @media (max-width:900px){
-    .hs-tgrid{grid-template-columns:minmax(0,1fr);}
-    .hs-ac-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));}
-    .hs-psum{grid-template-columns:minmax(0,1fr) auto;}
-    .hs-psum-p{grid-column:1 / -1;grid-row:2;}
-  }
-  @media (max-width:760px){
-    #page-side .hs-head{display:none;}
-    #hsBody .hs-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));}
-    .hs-pc .is-empty{display:none;}
-    .hs-sgrid{grid-template-columns:minmax(0,1fr);}
-    .hs-tabs button{padding:10px 4px;font-size:13px;text-align:center;}
-    .hs-tabs .hs-tl{display:none;}
-    .hs-tabs .hs-ts{display:inline;}
-    .hs-pchips{display:none;}
-    .hs-psel{display:flex;align-items:center;gap:10px;}
-    .hs-psel span{font-size:12px;font-weight:700;color:var(--muted-foreground);white-space:nowrap;}
-    .hs-psel .sel-field{flex:1;min-width:0;min-height:44px;font-size:14px;}
-    .hs-pc-g{grid-template-columns:minmax(0,1fr);gap:8px;}
-    /* compact task rows: tick · day/time above the name · actions */
-    #hsBody .ln2-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"c t a" "c m a";column-gap:10px;row-gap:1px;align-items:center;padding:8px 6px 8px 10px;}
-    #hsBody .ln2-row > .fx-check{grid-area:c;}
-    #hsBody .ln2-time{grid-area:t;width:auto;padding:0;font-size:11.5px;}
-    #hsBody .ln2-time br{display:none;}
-    #hsBody .ln2-main{grid-area:m;padding:0;}
-    #hsBody .ln2-row > .fx-acts{grid-area:a;margin:0;}
-    .hs-pc-add{min-height:52px;}
-    .hs-ac-g{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .hs-ac{padding:10px 12px;}
-    .hs-kpis{gap:8px;}
-    .hs-kpi{padding:10px 12px;}
-    .hs-kpi b{font-size:18px;}
-    .hs-kpi span, .hs-kpi small{font-size:11px;}
-    .hs-snav{justify-content:space-between;}
-    .hs-notes{display:block;height:auto;min-height:0;}
-    .hs-notes .hs-ned{display:none;}
-    .hs-notes.is-open .hs-nlist{display:none;}
-    .hs-notes.is-open .hs-ned{display:flex;}
-    .hs-nback{display:inline-flex !important;}
-    .hs-nl{overflow:visible;margin:0;padding:0;}
-    .hs-ned-top .sel-field{flex:1;max-width:none;min-width:0;}
-    .hs-nt{font-size:20px !important;}
-    .hs-nb{min-height:260px;}
-  }
   /* kept from the old Side Hustle styles: shared form bits */
   #fmModal .modal-card{max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;}
   .modal-card.xwide{max-width:600px;}
@@ -6662,7 +6473,7 @@ const BACKUP_TABLES = [
   'schedule_events','budget_entries','budget_recurring','birthdays',
   'meals','notification_state','user_prefs',
   'fit_sessions','fit_templates','fit_weeks','fit_injuries','fit_foods','fit_food_log','fit_saved_meals','fit_cycles','fit_cycle_days',
-  'learn_plans','learn_areas','hustle_areas','hustle_notes',
+  'learn_plans','learn_areas',
   'biz_goals','biz_milestones','biz_projects','biz_content','biz_posts','biz_profiles','biz_leads','biz_opps','biz_months'
 ];
 const LAST_BACKUP_KEY = 'pa_last_backup';
@@ -6728,7 +6539,7 @@ const BACKUP_LABELS = {
   meals:'Meals', notification_state:'Notification states', user_prefs:'Settings',
   fit_sessions:'Workouts & runs', fit_templates:'Workout templates', fit_weeks:'Planned weeks', fit_injuries:'Injury breaks',
   fit_foods:'Foods', fit_food_log:'Food log', fit_saved_meals:'Saved meals', fit_cycles:'Cycles', fit_cycle_days:'Cycle logs',
-  learn_plans:'Learning and business plans', learn_areas:'Learning focus areas', hustle_areas:'Hustle work areas', hustle_notes:'Hustle notes',
+  learn_plans:'Learning plans', learn_areas:'Learning focus areas',
   biz_goals:'Business goals', biz_milestones:'Milestones', biz_projects:'Portfolio projects', biz_content:'Content ideas', biz_posts:'Content per platform',
   biz_profiles:'Freelance profiles', biz_leads:'Freelance leads', biz_opps:'Opportunities', biz_months:'Monthly reviews'
 };
@@ -11303,16 +11114,21 @@ function safeUrl(u){
 }
 const urlHost = u => { try{ return new URL(u).hostname.replace(/^www\./, ''); }catch(e){ return u; } };
 
-/* A learning plan is a learn_plans row with kind 'learning' (Hustle's
-   business plans are kind 'hustle', see the HUSTLE module). */
+/* Learning and Hustle are the same plan pages (2026-11-19): Learning plans
+   (focus areas) and Business plans (a Tasks tab). A plan is a learn_plans
+   row with kind 'learning' or 'hustle'; its sessions and tasks are tasks /
+   recurring_tasks rows with that page's category and learn_plan_id. */
 const LN_KIND = {
   learning: { cat:'learning', body:'lnBody', title:'Learning', icon:'book', plan:'learning plan', plans:'learning plans', areas:true,
               hours:'Learning hours', did:'studied', item:'session', newItem:'study session', add:'Add session',
-              tabs:[['schedule', 'Schedule'], ['areas', 'Focus areas'], ['stats', 'Statistics']] }
+              tabs:[['schedule', 'Schedule'], ['areas', 'Focus areas'], ['stats', 'Statistics']] },
+  hustle:   { cat:'side', body:'hsBody', title:'Hustle', icon:'briefcase', plan:'business plan', plans:'business plans', areas:false,
+              hours:'Working hours', did:'worked', item:'task', newItem:'task', add:'Add task',
+              tabs:[['schedule', 'Schedule'], ['tasks', 'Tasks'], ['stats', 'Statistics']] }
 };
 const lnState = kind => ({ kind, K: LN_KIND[kind], plans:[], areas:[], tasks:[], rules:[], comps:[], done:new Set(), view:'overview', planId:null, tab:'schedule',
              cal:'week', ref:null, sel:null, stat:'week', statRef:null, area:null, loaded:false });
-const LNS = { learning: lnState('learning') };
+const LNS = { learning: lnState('learning'), hustle: lnState('hustle') };
 let LN = LNS.learning;
 const lnCap = t => t.charAt(0).toUpperCase() + t.slice(1);
 const LN_TONES = [1, 2, 3, 4, 5, 6];
@@ -11332,6 +11148,7 @@ const lnDayName = d => d.toLocaleDateString(undefined, { weekday:'long', day:'nu
 const lnShort = d => d.toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' });
 
 function loadLearning(){ return lnLoad('learning'); }
+function loadHustle(){ return lnLoad('hustle'); }
 async function lnLoad(kind){
   const S = LNS[kind], body = $(S.K.body);
   try{
@@ -11479,7 +11296,7 @@ function lnPlanHtml(){
   const p = lnPlan(LN.planId);
   const tabs = LN.K.tabs;
   if(!tabs.some(([k])=> k === LN.tab)) LN.tab = 'schedule';
-  const body = LN.tab === 'areas' ? lnAreasHtml(p) : LN.tab === 'stats' ? lnStatsHtml(p) : lnSchedHtml(p);
+  const body = LN.tab === 'areas' ? lnAreasHtml(p) : LN.tab === 'tasks' ? lnTasksHtml(p) : LN.tab === 'stats' ? lnStatsHtml(p) : lnSchedHtml(p);
   return `<div class="fx-head ln2-ph">
       <button type="button" class="fx-arrow-btn" data-ln="back" aria-label="All ${LN.K.plans}" title="All ${LN.K.plans}">${ico('chevL')}</button>
       <div class="ln2-ph-t"><span class="ln2-crumb">${LN.K.title}</span><h1 class="page-title">${esc(p.name)}</h1></div>
@@ -11589,6 +11406,35 @@ function lnAreasHtml(p){
       <div class="ln2-area-g">${cards}</div></section>${panel}`;
 }
 
+/* ---------- B2. tasks (business plans): pending first, completed folded ---------- */
+function lnTasksHtml(p){
+  const t0 = iso(new Date());
+  const items = LN.tasks.filter(t=> t.learn_plan_id === p.id).map(lnTaskItem);
+  const open = items.filter(i=> !i.done).sort((x, y)=> (x.date || '9999').localeCompare(y.date || '9999') || (x.start || '99').localeCompare(y.start || '99') || x.title.localeCompare(y.title));
+  const done = items.filter(i=> i.done).sort((x, y)=> (y.raw.completed_at || '').localeCompare(x.raw.completed_at || ''));
+  const reps = LN.rules.filter(r=> r.learn_plan_id === p.id);
+  const li = i => {
+    const late = !i.done && i.date && i.date < t0;
+    return `<li class="ln2-row${i.done ? ' done' : ''}" data-key="${esc(i.key)}">
+      <button type="button" class="fx-check${i.done ? ' on' : ''}" data-ln="tick" role="checkbox" aria-checked="${i.done}" aria-label="${i.done ? 'Mark not done' : 'Mark done'}: ${esc(i.title)}">${ico('check')}</button>
+      <span class="ln2-time${i.date ? '' : ' any'}${late ? ' late' : ''}">${i.date ? (i.date === t0 ? 'Today' : lnShort(parseISO(i.date))) + (i.start ? '<br>' + i.start + (i.end ? '–' + i.end : '') : '') : 'No date'}</span>
+      <button type="button" class="ln2-main" data-ln="edit" aria-label="Edit ${esc(i.title)}"><b>${esc(i.title)}</b></button>
+      <span class="fx-acts"><button type="button" data-ln="move" aria-label="${i.date ? 'Change the date of' : 'Set a date for'} ${esc(i.title)}" title="${i.date ? 'Change date' : 'Set date'}">${ico('calendar')}</button>
+        <button type="button" data-ln="del" aria-label="Delete ${esc(i.title)}" title="Delete">${ico('trash')}</button></span></li>`;
+  };
+  // pending and completed side by side (stacked on small screens)
+  return `<div class="fx-two ln2-tasks">
+    <section class="fx-card"><div class="fx-card-h"><h2>Pending</h2><span class="spacer"></span><span class="fx-count">${open.length}</span></div>
+      <form class="ln2-quick" data-lnquick="" autocomplete="off">${ico('plus')}<input placeholder="Add a task to ${esc(p.name)}…" aria-label="New task in ${esc(p.name)}" /><button type="submit">Add</button></form>
+      ${open.length ? `<ul class="ln2-day">${open.map(li).join('')}</ul>` : `<p class="ln2-none">No pending tasks.</p>`}
+      ${reps.length ? `<h3 class="ln2-h3">Repeating</h3><ul class="ln2-reps">${reps.map(r=> `<li><button type="button" class="ln2-repc" data-ln="edit-rule" data-id="${r.id}">
+          ${ico('repeat', 'ico-xs')}<b>${esc(r.title)}</b><span>${esc(repeatLabel(r))}${r.start_time ? ' · ' + lnT5(r.start_time) + (r.end_time ? '–' + lnT5(r.end_time) : '') : ''}</span></button></li>`).join('')}</ul>` : ''}
+    </section>
+    <section class="fx-card"><div class="fx-card-h"><h2>Completed</h2><span class="spacer"></span><span class="fx-count">${done.length}</span></div>
+      ${done.length ? `<ul class="ln2-day">${done.map(li).join('')}</ul>` : `<p class="ln2-none">Nothing completed yet.</p>`}
+    </section></div>`;
+}
+
 /* ---------- C. statistics ---------- */
 function lnStatRange(){
   const r = LN.statRef;
@@ -11636,7 +11482,7 @@ function lnStatsHtml(p){
   <div class="fx-two">
     ${LN.K.areas ? `<section class="fx-card"><div class="fx-card-h"><h2>By focus area</h2><span class="spacer"></span><span class="fx-count">${label}</span></div>
       ${byArea.length ? `<div class="fx-goal-rows">${byArea.map(x=> `<div class="fx-goal-row"><div><span>${esc(x.name)}</span><b>${x.d}/${x.n}${x.min ? ' · ' + lnHours(x.min) : ''}</b></div>
-        <div class="fx-bar"><i style="width:${Math.round(x.d / x.n * 100)}%"></i></div></div>`).join('')}</div>` : `<p class="ln2-none">No tasks in this period.</p>`}</section>` : ''}
+        <div class="fx-bar"><i style="width:${Math.round(x.d / x.n * 100)}%"></i></div></div>`).join('')}</div>` : `<p class="ln2-none">No tasks in this period.</p>`}</section>` : lnTaskStatsHtml(p, a, b, label)}
     <section class="fx-card"><div class="fx-card-h"><h2>Last 12 weeks</h2><span class="spacer"></span><span class="fx-count">hours ${LN.K.did}</span></div>
       <div class="fx-chart">${weeks.map((x, i)=> `<div class="fx-col${i === 11 ? ' cur' : ''}${x.pl ? '' : ' empty'}" tabindex="0" data-tip="Week of ${esc(lnShort(x.m))}: ${lnHours(x.dn)} ${LN.K.did}, ${plural(x.n, 'item')} done" aria-label="Week of ${esc(lnShort(x.m))}: ${lnHours(x.dn)} ${LN.K.did}, ${plural(x.n, 'item')} done">
         <span class="fx-col-plot">${x.pl ? `<i class="pl" style="height:${x.pl / wmax * 100}%"></i>` : ''}${x.dn ? `<i class="dn" style="height:${x.dn / wmax * 100}%"></i>` : ''}</span>
@@ -11644,6 +11490,25 @@ function lnStatsHtml(p){
       <div class="fx-legend"><span><i class="lg-bar"></i>${lnCap(LN.K.did)}</span><span><i class="lg-track"></i>Planned</span></div></section>
   </div>`;
 }
+// business plans: the plan's tasks, counted from the rows (nothing estimated)
+function lnTaskStatsHtml(p, a, b, label){
+  const t0 = iso(new Date()), from = iso(a), to = iso(b);
+  const ts = LN.tasks.filter(t=> t.learn_plan_id === p.id);
+  const doneIn = ts.filter(t=> t.completed && t.completed_at && iso(new Date(t.completed_at)) >= from && iso(new Date(t.completed_at)) <= to).length;
+  const pending = ts.filter(t=> !t.completed), late = pending.filter(t=> t.due_date && t.due_date < t0).length, noDate = pending.filter(t=> !t.due_date).length;
+  const pr = lnProgress(p.id);
+  return `<section class="fx-card"><div class="fx-card-h"><h2>Tasks</h2><span class="spacer"></span><span class="fx-count">${label}</span></div>
+    <div class="fx-goal-rows">
+      <div class="fx-goal-row"><div><span>Whole plan</span><b>${pr.total ? `${pr.done}/${pr.total} · ${pr.pct}%` : 'No tasks yet'}</b></div><div class="fx-bar"><i style="width:${pr.pct || 0}%"></i></div></div>
+    </div>
+    <div class="ln2-tstat">
+      <div><small>Completed in this period</small><b>${doneIn}</b></div>
+      <div><small>Pending</small><b>${pending.length}</b></div>
+      <div><small>Overdue</small><b>${late}</b></div>
+      <div><small>No date yet</small><b>${noDate}</b></div>
+    </div></section>`;
+}
+
 /* ---------- forms ---------- */
 function lnPlanForm(p){
   let tone = p ? (p.tone || 2) : 2;
@@ -11979,590 +11844,7 @@ body.addEventListener('drop', e=>{
   lnMoveTo(it, d.dataset.lnday);
 });
 }
-lnBind('learning');
-
-/* ===================================================================
-   HUSTLE (2026-11-19, v3) — one workspace in four tabs:
-   Business plans · Tasks · Statistics · Notes.
-   Data: learn_plans (kind 'hustle') = business plans; hustle_areas =
-   work areas; tasks (category 'side', learn_plan_id = business plan,
-   work_area_id = work area); hustle_notes (plan_id optional).
-   Tasks are created and managed only in the Tasks tab; Today and
-   Statistics read the same rows. Every number is counted, never estimated.
-   =================================================================== */
-const HS_TABS = [['plans', 'Business plans', 'Plans'], ['tasks', 'Tasks', 'Tasks'], ['stats', 'Statistics', 'Stats'], ['notes', 'Notes', 'Notes']];
-const HS = { plans:[], areas:[], tasks:[], notes:[], tab:'plans', plan:'', area:undefined, stat:'week', statRef:null, allDone:false,
-             noteId:null, noteQ:'', notePlan:'', noteOpen:false, loaded:false };
-try{ const t = localStorage.getItem('pa_hustle_tab'); if(HS_TABS.some(([k])=> k === t)) HS.tab = t; }catch(e){}
-const hsPlan = id => HS.plans.find(p=> p.id === id) || null;
-const hsArea = id => HS.areas.find(a=> a.id === id) || null;
-const hsT0 = () => iso(new Date());
-const hsInPlan = t => !HS.plan || t.learn_plan_id === HS.plan;
-const hsDur = t => { const s = lnMin(lnT5(t.due_time)), e = lnMin(lnT5(t.end_time)); return s != null && e != null && e > s ? e - s : 0; };
-const hsDoneOn = t => t.completed ? (t.completed_at ? iso(new Date(t.completed_at)) : (t.due_date || null)) : null;
-const hsByDate = (x, y)=> (x.due_date || '9999').localeCompare(y.due_date || '9999') || (x.due_time || '99').localeCompare(y.due_time || '99') || x.title.localeCompare(y.title);
-const hsInArea = (t, id) => id === null ? !(t.work_area_id && hsArea(t.work_area_id)) : t.work_area_id === id;
-
-async function loadHustle(){
-  const body = $('hsBody');
-  await hsFlushNote();
-  try{
-    const [plans, areas, tasks, notes] = await Promise.all([
-      sb.from('learn_plans').select('*').eq('kind', 'hustle').order('position').order('created_at'),
-      sb.from('hustle_areas').select('*').order('position').order('created_at'),
-      sb.from('tasks').select('*').eq('category', 'side'),
-      sb.from('hustle_notes').select('*').order('updated_at', { ascending:false })
-    ]);
-    [plans, areas, tasks, notes].forEach(r=>{ if(r.error) throw r.error; });
-    HS.plans = (plans.data || []).filter(p=> !p.archived);
-    HS.areas = areas.data || [];
-    HS.tasks = tasks.data || [];
-    HS.notes = (notes.data || []).map(n=> ({ ...n }));
-    if(!HS.statRef) HS.statRef = _dayOnly(new Date());
-    if(HS.plan && !hsPlan(HS.plan)) HS.plan = '';
-    if(HS.noteId && !HS.notes.some(n=> n.id === HS.noteId)){ HS.noteId = null; HS.noteOpen = false; }
-    HS.loaded = true;
-    hsPaint();
-  }catch(err){ showError(body, err, loadHustle); }
-}
-
-/* ---------- frame: title + the four tabs ---------- */
-function hsPaint(){
-  if(!HS.loaded) return;
-  const tabs = HS_TABS.map(([k, l, s])=> `<button type="button" role="tab" data-hstab="${k}" class="${HS.tab === k ? 'on' : ''}" aria-selected="${HS.tab === k}"><span class="hs-tl">${l}</span><span class="hs-ts">${s}</span></button>`).join('');
-  const inner = HS.tab === 'tasks' ? hsTasksHtml() : HS.tab === 'stats' ? hsStatsHtml() : HS.tab === 'notes' ? hsNotesHtml() : hsPlansHtml();
-  $('hsBody').innerHTML = `<div class="fx-head hs-head"><h1 class="page-title">Hustle</h1></div>
-    <nav class="fx-tabs hs-tabs" role="tablist" aria-label="Hustle">${tabs}</nav>
-    <div class="hs-tab hs-tab-${HS.tab}">${inner}</div>`;
-  enhanceSelects($('hsBody'));
-  $('hsBody').querySelectorAll('select').forEach(x=> x.addEventListener('change', hsOnChange));
-  if(HS.tab === 'notes') hsNotesAfter();
-}
-function hsGo(tab){
-  if(tab === HS.tab) return;
-  hsFlushNote();
-  HS.tab = tab;
-  try{ localStorage.setItem('pa_hustle_tab', tab); }catch(e){}
-  hsPaint();
-}
-
-// business plan filter (Tasks, Statistics): chips on wide screens, a select on phones
-function hsPlanBar(){
-  if(!HS.plans.length) return '';
-  const opts = [['', 'All plans', 0]].concat(HS.plans.map(p=> [p.id, p.name, p.tone || 2]));
-  return `<div class="hs-pbar"><div class="hs-pchips" role="group" aria-label="Business plan">${opts.map(([id, n, t])=>
-      `<button type="button" class="hs-pchip${t ? ' t' + t : ''}${HS.plan === id ? ' on' : ''}" data-hsplan="${id}" aria-pressed="${HS.plan === id}">${t ? '<i class="fx-cdot"></i>' : ''}${esc(n)}</button>`).join('')}</div>
-    <label class="hs-psel"><span>Business plan</span><select id="hsPlanSel">${opts.map(([id, n])=> `<option value="${id}"${HS.plan === id ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select></label></div>`;
-}
-
-// one task row (Today, work areas, completed list)
-function hsRow(t, o){
-  o = o || {};
-  const t0 = hsT0(), late = !t.completed && t.due_date && t.due_date < t0;
-  const p = hsPlan(t.learn_plan_id), a = hsArea(t.work_area_id);
-  const day = t.due_date ? (t.due_date === t0 ? (o.today ? '' : 'Today') : lnShort(parseISO(t.due_date))) : 'No date';
-  const time = t.due_time ? lnT5(t.due_time) + (t.end_time ? '–' + lnT5(t.end_time) : '') : '';
-  const when = [day, time].filter(Boolean).join('<br> ') || 'Any time';
-  const tags = [o.plan && p ? `<span class="ln2-tag t${p.tone || 2}"><i class="fx-cdot"></i>${esc(p.name)}</span>` : '',
-                o.area && a ? `<span class="ln2-tag soft">${esc(a.name)}</span>` : ''].join('');
-  return `<li class="ln2-row${t.completed ? ' done' : ''}" data-tid="${t.id}"${o.drag ? ' draggable="true"' : ''}>
-    <button type="button" class="fx-check${t.completed ? ' on' : ''}" data-hs="tick" role="checkbox" aria-checked="${!!t.completed}" aria-label="${t.completed ? 'Mark not done' : 'Mark done'}: ${esc(t.title)}">${ico('check')}</button>
-    <span class="ln2-time${t.due_date || time ? '' : ' any'}${late ? ' late' : ''}">${when}</span>
-    <button type="button" class="ln2-main" data-hs="edit" aria-label="Edit ${esc(t.title)}"><b>${esc(t.title)}</b>${tags ? `<span class="ln2-tags">${tags}</span>` : ''}</button>
-    <span class="fx-acts">${o.move ? `<button type="button" data-hs="move" aria-label="Move ${esc(t.title)} to another work area" title="Move to another work area">${ico('layers')}</button>` : ''}
-      <button type="button" data-hs="del" aria-label="Delete ${esc(t.title)}" title="Delete">${ico('trash')}</button></span></li>`;
-}
-
-/* ---------- 1. Business plans ---------- */
-function hsPlansHtml(){
-  const t0 = hsT0(), mon = iso(mondayOf(new Date())), sun = iso(addDays(mondayOf(new Date()), 6));
-  const cards = HS.plans.map(p=>{
-    const ts = HS.tasks.filter(t=> t.learn_plan_id === p.id);
-    const done = ts.filter(t=> t.completed).length, open = ts.length - done, pct = ts.length ? Math.round(done / ts.length * 100) : 0;
-    const late = ts.filter(t=> !t.completed && t.due_date && t.due_date < t0).length;
-    const wk = ts.filter(t=> t.completed && t.due_date >= mon && t.due_date <= sun).reduce((s, t)=> s + hsDur(t), 0);
-    const next = ts.filter(t=> !t.completed && t.due_date && t.due_date >= t0).sort(hsByDate)[0];
-    return `<article class="hs-pc t${p.tone || 2}" data-hs="open-plan" data-id="${p.id}" tabindex="0" role="button" aria-label="Open the tasks of ${esc(p.name)}">
-      <div class="hs-pc-top"><span class="hs-pc-ico">${ico('briefcase')}</span><h3>${esc(p.name)}</h3>
-        <button type="button" class="hs-ibtn" data-hs="edit-plan" data-id="${p.id}" aria-label="Edit ${esc(p.name)}" title="Edit plan">${ico('pencil')}</button></div>
-      <p class="hs-pc-focus${p.focus ? '' : ' is-empty'}">${p.focus ? `<span>Now:</span> ${esc(p.focus)}` : 'No current focus'}</p>
-      <div class="hs-pc-prog"><div class="fx-bar"><i style="width:${pct}%"></i></div><span>${ts.length ? `<b>${pct}%</b> · ${done} of ${plural(ts.length, 'task')} done` : 'No tasks yet'}</span></div>
-      <div class="hs-pc-kv">${ts.length && !open ? '<span><b>All done</b></span>' : `<span><b>${open}</b> open</span>`}${late ? `<span class="late"><b>${late}</b> overdue</span>` : ''}${wk ? `<span><b>${lnHours(wk)}</b> this week</span>` : ''}</div>
-      <div class="hs-pc-next${next ? '' : ' is-empty'}">${next ? `${ico('clock', 'ico-xs')}${next.due_date === t0 ? 'Today' : lnShort(parseISO(next.due_date))} · ${esc(next.title)}` : 'Nothing scheduled'}</div>
-    </article>`;
-  }).join('') + `<button type="button" class="hs-pc hs-pc-add" data-hs="add-plan"><span>${ico('plus')}</span>Add business plan</button>`;
-  const today = HS.tasks.filter(t=> t.due_date === t0).sort(hsByDate);
-  const nDone = today.filter(t=> t.completed).length;
-  // what is overdue or due in the next 7 days (read from the same tasks)
-  const wk = iso(addDays(_dayOnly(new Date()), 7));
-  const soon = HS.tasks.filter(t=> !t.completed && t.due_date && t.due_date !== t0 && t.due_date <= wk).sort(hsByDate);
-  return `<div class="hs-pgrid">
-    <section class="fx-card hs-plans"><div class="fx-card-h"><h2>Business plans</h2><span class="spacer"></span><span class="fx-count">${HS.plans.length}</span></div>
-      <div class="hs-pc-g">${cards}</div></section>
-    <div class="hs-side"><section class="fx-card hs-today"><div class="fx-card-h"><div><h2>Today</h2><p class="fx-sub">${esc(lnDayName(_dayOnly(new Date())))}</p></div><span class="spacer"></span>
-        <span class="fx-count">${today.length ? `${nDone} of ${today.length} done` : ''}</span></div>
-      ${today.length ? `<ul class="ln2-day">${today.map(t=> hsRow(t, { plan:true, today:true })).join('')}</ul>`
-        : `<div class="hs-empty"><b>Nothing scheduled today</b><button type="button" class="fx-link" data-hs="goto-tasks">Plan tasks in Tasks</button></div>`}
-    </section>
-    ${soon.length ? `<section class="fx-card hs-soon"><div class="fx-card-h"><h2>Coming up</h2><span class="spacer"></span><span class="fx-count">next 7 days</span></div>
-      <ul class="ln2-day">${soon.slice(0, 6).map(t=> hsRow(t, { plan:true })).join('')}</ul>
-      ${soon.length > 6 ? `<button type="button" class="fx-link hs-more" data-hs="goto-tasks">${plural(soon.length - 6, 'more task')} in Tasks</button>` : ''}</section>` : ''}
-    </div></div>`;
-}
-
-/* ---------- 2. Tasks, grouped by work area ---------- */
-function hsTasksHtml(){
-  const tasks = HS.tasks.filter(hsInPlan);
-  const loose = tasks.some(t=> hsInArea(t, null));
-  const list = HS.areas.map(a=> ({ id:a.id, name:a.name, a })).concat(loose ? [{ id:null, name:'No work area', a:null }] : []);
-  if(!list.some(x=> x.id === HS.area)) HS.area = list.length ? list[0].id : undefined;
-  const cards = list.map(x=>{
-    const ts = tasks.filter(t=> hsInArea(t, x.id)), done = ts.filter(t=> t.completed).length, open = ts.length - done;
-    return `<button type="button" class="hs-ac${HS.area === x.id ? ' on' : ''}${x.a ? '' : ' none'}" data-hsarea="${x.id || ''}" aria-pressed="${HS.area === x.id}">
-      <span class="hs-ac-h"><b>${esc(x.name)}</b><em aria-label="${plural(open, 'open task')}">${open}</em></span>
-      <span class="fx-bar"><i style="width:${ts.length ? Math.round(done / ts.length * 100) : 0}%"></i></span>
-      <span class="hs-ac-m">${ts.length ? `${done} of ${plural(ts.length, 'task')} done` : 'No tasks yet'}</span></button>`;
-  }).join('') + `<button type="button" class="hs-ac hs-ac-add" data-hs="add-area"><span>${ico('plus')}</span>Add work area</button>`;
-
-  const P = hsPlan(HS.plan);
-  let sum = '';
-  if(P){
-    const ts = HS.tasks.filter(t=> t.learn_plan_id === P.id), d = ts.filter(t=> t.completed).length, pct = ts.length ? Math.round(d / ts.length * 100) : 0;
-    sum = `<div class="hs-psum t${P.tone || 2}"><div class="hs-psum-t"><b>${esc(P.name)}</b>${P.focus ? `<span>Now: ${esc(P.focus)}</span>` : ''}</div>
-      <div class="hs-psum-p"><div class="fx-bar"><i style="width:${pct}%"></i></div><span>${ts.length ? `<b>${pct}%</b> · ${d} of ${plural(ts.length, 'task')} done` : 'No tasks yet'}</span></div>
-      <button type="button" class="hs-ibtn" data-hs="edit-plan" data-id="${P.id}" aria-label="Edit ${esc(P.name)}" title="Edit plan">${ico('pencil')}</button></div>`;
-  }
-
-  let panel;
-  if(HS.area === undefined){
-    panel = `<section class="fx-card hs-apanel"><div class="hs-empty"><b>No work areas yet</b><span>Work areas group your tasks by the kind of work.</span>
-      <button type="button" class="btn btn-primary btn-sm" data-hs="add-area">${ico('plus')}Add work area</button></div></section>`;
-  } else {
-    const cur = list.find(x=> x.id === HS.area);
-    const open = tasks.filter(t=> hsInArea(t, cur.id) && !t.completed).sort(hsByDate);
-    const doneN = tasks.filter(t=> hsInArea(t, cur.id) && t.completed).length;
-    panel = `<section class="fx-card hs-apanel"><div class="fx-card-h"><div class="hs-ap-t"><h2>${esc(cur.name)}</h2>
-        ${cur.a ? `<button type="button" class="hs-ibtn" data-hs="edit-area" data-id="${cur.id}" aria-label="Edit work area ${esc(cur.name)}" title="Rename, reorder or delete">${ico('pencil')}</button>` : ''}</div>
-        <span class="spacer"></span><button type="button" class="btn btn-primary btn-sm" data-hs="add-task">${ico('plus')}Task</button></div>
-      ${open.length ? `<ul class="ln2-day">${open.map(t=> hsRow(t, { plan: !HS.plan, move:true, drag:true })).join('')}</ul>` : `<p class="ln2-none">No open tasks here.</p>`}
-      ${doneN ? `<p class="hs-donel">${plural(doneN, 'task')} done here · <button type="button" class="fx-link" data-hs="goto-stats">See Statistics</button></p>` : ''}
-    </section>`;
-  }
-  return `${hsPlanBar()}${sum}<div class="hs-tgrid"><nav class="hs-ac-g" aria-label="Work areas">${cards}</nav>${panel}</div>`;
-}
-
-/* ---------- 3. Statistics ---------- */
-function hsStatRange(){
-  const r = HS.statRef;
-  if(HS.stat === 'month'){ const a = new Date(r.getFullYear(), r.getMonth(), 1), b = new Date(r.getFullYear(), r.getMonth() + 1, 0); return [a, b, `${MONTHS_FULL[a.getMonth()]} ${a.getFullYear()}`]; }
-  const a = mondayOf(r), b = addDays(a, 6); return [a, b, `${lnShort(a)} – ${lnShort(b)}`];
-}
-function hsStatsHtml(){
-  const [a, b, label] = hsStatRange(), A = iso(a), B = iso(b), t0 = hsT0(), today = _dayOnly(new Date());
-  const ts = HS.tasks.filter(hsInPlan);
-  const inR = d => d && d >= A && d <= B;
-  const done = ts.filter(t=> inR(hsDoneOn(t))).sort((x, y)=> (hsDoneOn(y) || '').localeCompare(hsDoneOn(x) || '') || (y.completed_at || '').localeCompare(x.completed_at || ''));
-  const planned = ts.filter(t=> inR(t.due_date)), plannedDone = planned.filter(t=> t.completed).length;
-  const minDone = planned.filter(t=> t.completed).reduce((s, t)=> s + hsDur(t), 0), minPlan = planned.reduce((s, t)=> s + hsDur(t), 0);
-  const open = ts.filter(t=> !t.completed), late = open.filter(t=> t.due_date && t.due_date < t0).length;
-  const isNow = today >= a && today <= b;
-  // tasks completed per day
-  const days = Array.from({ length: Math.round((b - a) / 864e5) + 1 }, (_, i)=> addDays(a, i));
-  const per = days.map(d=>{ const k = iso(d), its = done.filter(t=> hsDoneOn(t) === k); return { d, n: its.length, min: its.reduce((s, t)=> s + hsDur(t), 0) }; });
-  const max = Math.max(3, ...per.map(x=> x.n));
-  const chart = `<div class="fx-chart${HS.stat === 'month' ? ' ln2-mchart' : ''}">${per.map(x=>
-    `<div class="fx-col${sameDay(x.d, today) ? ' cur' : ''}${x.n ? '' : ' empty'}" tabindex="0" data-tip="${esc(lnShort(x.d))}: ${plural(x.n, 'task')} done${x.min ? ', ' + lnHours(x.min) : ''}" aria-label="${esc(lnShort(x.d))}: ${plural(x.n, 'task')} done">
-      <span class="fx-col-plot">${x.n ? `<i class="dn" style="height:${x.n / max * 100}%"></i>` : ''}</span>
-      <small>${HS.stat === 'month' ? (x.d.getDate() === 1 || x.d.getDate() % 5 === 0 ? x.d.getDate() : '') : DAY_SHORT[(x.d.getDay() + 6) % 7]}</small></div>`).join('')}</div>`;
-  // last 12 weeks, tasks completed
-  const w0 = addDays(mondayOf(today), -77);
-  const weeks = Array.from({ length:12 }, (_, i)=>{ const m = addDays(w0, i * 7), e = iso(addDays(m, 6)), ms = iso(m);
-    const its = ts.filter(t=>{ const d = hsDoneOn(t); return d && d >= ms && d <= e; }); return { m, n: its.length, min: its.reduce((s, t)=> s + hsDur(t), 0) }; });
-  const wmax = Math.max(3, ...weeks.map(x=> x.n));
-  const wchart = `<div class="fx-chart">${weeks.map((x, i)=> `<div class="fx-col${i === 11 ? ' cur' : ''}${x.n ? '' : ' empty'}" tabindex="0" data-tip="Week of ${esc(lnShort(x.m))}: ${plural(x.n, 'task')} done${x.min ? ', ' + lnHours(x.min) : ''}" aria-label="Week of ${esc(lnShort(x.m))}: ${plural(x.n, 'task')} done">
-      <span class="fx-col-plot">${x.n ? `<i class="dn" style="height:${x.n / wmax * 100}%"></i>` : ''}</span><small>${i % 3 ? '' : x.m.getDate() + '/' + (x.m.getMonth() + 1)}</small></div>`).join('')}</div>`;
-  // progress per business plan (all time) with what got done in the period
-  const byPlan = HS.plan ? '' : HS.plans.map(p=>{
-    const all = HS.tasks.filter(t=> t.learn_plan_id === p.id); if(!all.length) return '';
-    const d = all.filter(t=> t.completed).length, inP = done.filter(t=> t.learn_plan_id === p.id);
-    return `<div class="fx-goal-row"><div><span><i class="fx-cdot t${p.tone || 2}"></i>${esc(p.name)}</span><b>${Math.round(d / all.length * 100)}% · ${d}/${all.length}</b></div>
-      <div class="fx-bar t${p.tone || 2}"><i style="width:${Math.round(d / all.length * 100)}%"></i></div>
-      <small class="hs-gsub">${inP.length ? `${inP.length} done in this period${inP.reduce((s, t)=> s + hsDur(t), 0) ? ' · ' + lnHours(inP.reduce((s, t)=> s + hsDur(t), 0)) : ''}` : 'Nothing done in this period'}</small></div>`;
-  }).join('');
-  const areaRows = HS.areas.map(x=> ({ id:x.id, name:x.name })).concat(ts.some(t=> hsInArea(t, null)) ? [{ id:null, name:'No work area' }] : []).map(x=>{
-    const its = ts.filter(t=> hsInArea(t, x.id)); if(!its.length) return '';
-    const d = done.filter(t=> hsInArea(t, x.id)).length, o = its.filter(t=> !t.completed).length;
-    return `<div class="hs-arow"><span>${esc(x.name)}</span><b>${d}</b><em>${o} open</em></div>`;
-  }).join('');
-  const shown = HS.allDone ? done : done.slice(0, 6);
-  const scope = HS.plan ? esc(hsPlan(HS.plan).name) : 'All plans';
-  return `${hsPlanBar()}
-  <div class="hs-snav"><div class="fx-seg sm" role="group" aria-label="Period">${[['week', 'Week'], ['month', 'Month']].map(([k, l])=> `<button type="button" data-hsstat="${k}" class="${HS.stat === k ? 'on' : ''}">${l}</button>`).join('')}</div>
-    <div class="fx-nav"><button type="button" class="fx-arrow-btn" data-hs="sprev" aria-label="Previous ${HS.stat}">${ico('chevL')}</button><span class="fx-nav-l" aria-live="polite">${label}</span>
-      <button type="button" class="fx-arrow-btn" data-hs="snext" aria-label="Next ${HS.stat}">${ico('chevR')}</button>${isNow ? '' : `<button type="button" class="fx-pill-btn" data-hs="snow">Now</button>`}</div></div>
-  <div class="hs-kpis">
-    <div class="hs-kpi"><small>Tasks completed</small><b>${done.length}</b><span>${planned.length ? `${plannedDone} of ${planned.length} planned` : 'none planned'}</span></div>
-    <div class="hs-kpi"><small>Time worked</small><b>${lnHours(minDone)}</b><span>${minPlan ? `of ${lnHours(minPlan)} planned` : 'no timed tasks'}</span></div>
-    <div class="hs-kpi"><small>Open tasks</small><b>${open.length}</b><span${late ? ' class="late"' : ''}>${late ? `${late} overdue` : 'none overdue'}</span></div>
-  </div>
-  <div class="hs-sgrid">
-    <section class="fx-card"><div class="fx-card-h"><h2>Completed per day</h2><span class="spacer"></span><span class="fx-count">${scope}</span></div>${chart}</section>
-    <section class="fx-card"><div class="fx-card-h"><h2>Last 12 weeks</h2><span class="spacer"></span><span class="fx-count">tasks done</span></div>${wchart}</section>
-  </div>
-  <div class="hs-sgrid3">
-    ${HS.plan ? '' : `<section class="fx-card"><div class="fx-card-h"><h2>Business plans</h2><span class="spacer"></span><span class="fx-count">overall</span></div>
-      ${byPlan ? `<div class="fx-goal-rows">${byPlan}</div>` : '<p class="ln2-none">No tasks in your plans yet.</p>'}</section>`}
-    <section class="fx-card"><div class="fx-card-h"><h2>Work areas</h2><span class="spacer"></span><span class="fx-count">done in period</span></div>
-      ${areaRows ? `<div class="hs-arows">${areaRows}</div>` : '<p class="ln2-none">No tasks yet.</p>'}</section>
-    <section class="fx-card"><div class="fx-card-h"><h2>Completed</h2><span class="spacer"></span><span class="fx-count">${done.length}</span></div>
-      ${done.length ? `<ul class="ln2-day hs-donelist">${shown.map(t=> hsRow(t, { plan: !HS.plan })).join('')}</ul>
-        ${done.length > 6 ? `<button type="button" class="fx-link hs-more" data-hs="all-done">${HS.allDone ? 'Show less' : `Show all ${done.length}`}</button>` : ''}`
-        : '<p class="ln2-none">Nothing completed in this period.</p>'}</section>
-  </div>`;
-}
-
-/* ---------- 4. Notes: list + editor (one column on phones) ---------- */
-function hsNoteList(){
-  const q = HS.noteQ.trim().toLowerCase();
-  const ns = HS.notes.filter(n=> (!HS.notePlan || (HS.notePlan === 'none' ? !n.plan_id : n.plan_id === HS.notePlan))
-      && (!q || ((n.title || '') + ' ' + (n.body || '')).toLowerCase().includes(q)))
-    .sort((x, y)=> (y.pinned ? 1 : 0) - (x.pinned ? 1 : 0) || (y.updated_at || '').localeCompare(x.updated_at || ''));
-  if(!ns.length) return `<li class="hs-nl-none">${HS.notes.length ? 'No notes match.' : 'No notes yet.'}</li>`;
-  return ns.map(n=>{
-    const p = hsPlan(n.plan_id), first = (n.body || '').split('\n').find(l=> l.trim()) || '';
-    const d = n.updated_at ? new Date(n.updated_at) : null;
-    return `<li><button type="button" class="hs-ni${n.id === HS.noteId ? ' on' : ''}" data-hsnote="${n.id}" aria-current="${n.id === HS.noteId}">
-      <span class="hs-ni-h"><b>${esc(n.title || 'Untitled')}</b>${n.pinned ? `<span class="hs-pin" title="Pinned">${ico('star', 'ico-xs')}</span>` : ''}</span>
-      ${first ? `<span class="hs-ni-s">${esc(first.slice(0, 140))}</span>` : ''}
-      <span class="hs-ni-m">${p ? `<span class="ln2-tag t${p.tone || 2}"><i class="fx-cdot"></i>${esc(p.name)}</span>` : ''}<span>${d ? (sameDay(d, new Date()) ? 'Today' : lnShort(d)) : ''}</span></span>
-    </button></li>`;
-  }).join('');
-}
-function hsNotesHtml(){
-  const cur = HS.notes.find(n=> n.id === HS.noteId) || null;
-  const planOpts = (sel, any) => (any ? [['', 'All notes'], ['none', 'Not linked to a plan']] : [['', 'No business plan']]).concat(HS.plans.map(p=> [p.id, p.name]))
-    .map(([v, l])=> `<option value="${v}"${sel === v ? ' selected' : ''}>${esc(l)}</option>`).join('');
-  const editor = cur ? `<div class="hs-ned-top">
-        <button type="button" class="fx-arrow-btn hs-nback" data-hs="note-back" aria-label="All notes">${ico('chevL')}</button>
-        <select id="hsNoteP" class="hs-sel" aria-label="Business plan">${planOpts(cur.plan_id || '', false)}</select>
-        <span class="hs-nsave" id="hsNoteSaved" aria-live="polite"></span><span class="spacer"></span>
-        <button type="button" class="hs-ibtn${cur.pinned ? ' on' : ''}" data-hs="note-pin" aria-pressed="${!!cur.pinned}" aria-label="${cur.pinned ? 'Unpin' : 'Pin'} note" title="${cur.pinned ? 'Unpin' : 'Pin to top'}">${ico('star')}</button>
-        <button type="button" class="hs-ibtn" data-hs="note-del" aria-label="Delete note" title="Delete note">${ico('trash')}</button></div>
-      <input id="hsNoteT" class="hs-nt" placeholder="Title" aria-label="Note title" value="${esc(cur.title || '')}" autocomplete="off" />
-      <textarea id="hsNoteB" class="hs-nb" placeholder="Write your note…" aria-label="Note">${esc(cur.body || '')}</textarea>`
-    : `<div class="hs-empty hs-ned-empty"><b>${HS.notes.length ? 'Pick a note' : 'No notes yet'}</b><button type="button" class="btn btn-primary btn-sm" data-hs="new-note">${ico('plus')}New note</button></div>`;
-  return `<div class="hs-notes${HS.noteOpen && cur ? ' is-open' : ''}">
-    <aside class="fx-card hs-nlist" aria-label="Notes">
-      <div class="hs-nl-top"><label class="hs-search">${ico('search')}<input type="search" id="hsNoteQ" placeholder="Search notes" aria-label="Search notes" value="${esc(HS.noteQ)}" autocomplete="off" /></label>
-        <button type="button" class="btn btn-primary btn-sm" data-hs="new-note">${ico('plus')}Note</button></div>
-      ${HS.plans.length ? `<select id="hsNotePlan" class="hs-sel" aria-label="Show notes for">${planOpts(HS.notePlan, true)}</select>` : ''}
-      <ul class="hs-nl" id="hsNoteList">${hsNoteList()}</ul>
-    </aside>
-    <section class="fx-card hs-ned">${editor}</section></div>`;
-}
-function hsNotesAfter(){
-  const ta = $('hsNoteB');
-  if(ta) hsGrow(ta);
-}
-function hsGrow(ta){
-  if(window.innerWidth > 760) return;          // desktop: the editor fills its card
-  ta.style.height = 'auto'; ta.style.height = Math.max(ta.scrollHeight, 260) + 'px';
-}
-let _hsNoteTimer = null, _hsNoteDirty = null;
-function hsNoteChanged(){
-  const n = HS.notes.find(x=> x.id === HS.noteId); if(!n) return;
-  n.title = $('hsNoteT').value; n.body = $('hsNoteB').value; n.updated_at = new Date().toISOString();
-  _hsNoteDirty = n.id;
-  const s = $('hsNoteSaved'); if(s) s.textContent = 'Saving…';
-  clearTimeout(_hsNoteTimer);
-  _hsNoteTimer = setTimeout(hsFlushNote, 700);
-  const l = $('hsNoteList'); if(l) l.innerHTML = hsNoteList();
-}
-async function hsFlushNote(){
-  clearTimeout(_hsNoteTimer);
-  const id = _hsNoteDirty; if(!id) return;
-  _hsNoteDirty = null;
-  const n = HS.notes.find(x=> x.id === id); if(!n) return;
-  const { error } = await sb.from('hustle_notes').update({ title: n.title || '', body: n.body || '', updated_at: n.updated_at }).eq('id', id);
-  const s = $('hsNoteSaved');
-  if(error){ _hsNoteDirty = id; if(s) s.textContent = 'Not saved'; return fail(error, 'Could not save the note'); }
-  if(s && HS.noteId === id) s.textContent = 'Saved';
-}
-async function hsNoteNew(){
-  await hsFlushNote();
-  await hsDropEmptyNote();
-  const plan = HS.notePlan && HS.notePlan !== 'none' ? HS.notePlan : null;
-  const { data, error } = await sb.from('hustle_notes').insert({ user_id: USER.id, plan_id: plan, title:'', body:'' }).select().single();
-  if(error) return fail(error, 'Could not add a note');
-  HS.notes.unshift({ ...data }); HS.noteId = data.id; HS.noteOpen = true; HS.noteQ = '';
-  hsPaint();
-  const t = $('hsNoteT'); if(t) t.focus();
-}
-// a note left without a title or text is not kept
-async function hsDropEmptyNote(){
-  const n = HS.notes.find(x=> x.id === HS.noteId);
-  if(!n || (n.title || '').trim() || (n.body || '').trim()) return;
-  HS.notes = HS.notes.filter(x=> x.id !== n.id);
-  await sb.from('hustle_notes').delete().eq('id', n.id);
-}
-async function hsNoteOpen(id){
-  if(id === HS.noteId){ HS.noteOpen = true; hsPaint(); return; }
-  await hsFlushNote();
-  await hsDropEmptyNote();
-  HS.noteId = id; HS.noteOpen = true;
-  hsPaint();
-}
-
-/* ---------- forms ---------- */
-function hsPlanForm(p){
-  let tone = p ? (p.tone || 2) : 2;
-  openForm({
-    title: p ? 'Edit business plan' : 'New business plan',
-    rows: [
-      [{ id:'hspName', label:'Plan name', placeholder:'Name your business plan', value: p ? p.name : '' }],
-      [{ id:'hspFocus', label:'Current focus (optional)', placeholder:'What you are working on now', value: p && p.focus ? p.focus : '' }],
-      [{ type:'html', html: `<div class="fm-label">Colour</div><div class="ln2-tones">${LN_TONES.map(t=> `<button type="button" class="ln2-tone t${t}${t === tone ? ' on' : ''}" data-tone="${t}" aria-pressed="${t === tone}" aria-label="${LN_TONE_NAMES[t]}" title="${LN_TONE_NAMES[t]}"></button>`).join('')}</div>` }]
-    ],
-    onBodyClick: e=>{ const b = e.target.closest('[data-tone]'); if(!b) return; tone = Number(b.dataset.tone);
-      $('fmBody').querySelectorAll('[data-tone]').forEach(x=>{ const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); },
-    actions: p ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Create plan', value:'save' }],
-    onSubmit: async (v, act)=>{
-      if(act === 'delete'){ setTimeout(()=> hsDeletePlan(p), 0); return; }
-      if(!v.hspName){ toast('Give the plan a name', true); return false; }
-      const row = { name: v.hspName, focus: v.hspFocus || null, tone, updated_at: new Date().toISOString() };
-      const res = p ? await sb.from('learn_plans').update(row).eq('id', p.id).select().single()
-                    : await sb.from('learn_plans').insert({ user_id: USER.id, kind:'hustle', position: HS.plans.length, ...row }).select().single();
-      if(res.error){ fail(res.error, 'Could not save the plan'); return false; }
-      toast(p ? 'Plan updated' : 'Plan created');
-      dataChanged();
-    }
-  });
-}
-async function hsDeletePlan(p){
-  const n = HS.tasks.filter(t=> t.learn_plan_id === p.id).length, nn = HS.notes.filter(x=> x.plan_id === p.id).length;
-  const yes = await askConfirm({ title:`Delete "${p.name}"?`, message:`${n ? 'Its ' + plural(n, 'task') + ' are deleted too. ' : ''}${nn ? plural(nn, 'note') + ' stay, without a plan. ' : ''}This can't be undone.`, ok:'Delete plan' });
-  if(!yes) return;
-  const { error } = await sb.from('learn_plans').delete().eq('id', p.id);
-  if(error) return fail(error, 'Could not delete the plan');
-  if(HS.plan === p.id) HS.plan = '';
-  toast('Plan deleted'); dataChanged();
-}
-function hsAreaForm(a){
-  const pos = () => { const i = HS.areas.findIndex(x=> x.id === a.id); return `${i + 1} of ${HS.areas.length}`; };
-  openForm({
-    title: a ? 'Edit work area' : 'New work area',
-    rows: [[{ id:'hsaName', label:'Work area', placeholder:'Name the work area', value: a ? a.name : '' }]]
-      .concat(a && HS.areas.length > 1 ? [[{ type:'html', html: `<div class="fm-label">Order</div><div class="hs-order"><button type="button" class="hs-obtn" data-move="-1">Move up</button>
-        <span id="hsaPos">${pos()}</span><button type="button" class="hs-obtn" data-move="1">Move down</button></div>` }]] : []),
-    onBodyClick: async e=>{
-      const m = e.target.closest('[data-move]'); if(!m) return;
-      const i = HS.areas.findIndex(x=> x.id === a.id), j = i + Number(m.dataset.move);
-      if(j < 0 || j >= HS.areas.length) return;
-      const arr = HS.areas.slice(); [arr[i], arr[j]] = [arr[j], arr[i]];
-      HS.areas = arr.map((x, k)=> ({ ...x, position:k }));
-      $('hsaPos').textContent = pos(); hsPaint();
-      const res = await Promise.all([HS.areas[i], HS.areas[j]].map(x=> sb.from('hustle_areas').update({ position:x.position }).eq('id', x.id)));
-      const err = res.find(r=> r.error); if(err) fail(err.error, 'Could not reorder');
-    },
-    actions: a ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add work area', value:'save' }],
-    onSubmit: async (v, act)=>{
-      if(act === 'delete'){ setTimeout(()=> hsDeleteArea(a), 0); return; }
-      if(!v.hsaName){ toast('Give the work area a name', true); return false; }
-      const res = a ? await sb.from('hustle_areas').update({ name: v.hsaName }).eq('id', a.id).select().single()
-                    : await sb.from('hustle_areas').insert({ user_id: USER.id, name: v.hsaName, position: HS.areas.length }).select().single();
-      if(res.error){ fail(res.error, 'Could not save the work area'); return false; }
-      toast(a ? 'Work area renamed' : 'Work area added');
-      if(!a && res.data) HS.area = res.data.id;
-      dataChanged();
-    }
-  });
-}
-async function hsDeleteArea(a){
-  const n = HS.tasks.filter(t=> t.work_area_id === a.id).length;
-  const yes = await askConfirm({ title:`Delete "${a.name}"?`, message: n ? `Its ${plural(n, 'task')} stay, under "No work area".` : 'It has no tasks.', ok:'Delete work area' });
-  if(!yes) return;
-  const { error } = await sb.from('hustle_areas').delete().eq('id', a.id);
-  if(error) return fail(error, 'Could not delete the work area');
-  toast('Work area deleted'); HS.area = undefined; dataChanged();
-}
-// add / edit a task: the Dashboard's task form, with only name, business plan and time
-function hsTaskForm(t){
-  if(!HS.plans.length){ toast('Add a business plan first', true); hsGo('plans'); return; }
-  let plan = t ? (t.learn_plan_id || '') : (HS.plan || (HS.plans.length === 1 ? HS.plans[0].id : ''));
-  let noTime = t ? !t.due_time : false;
-  const s0 = t ? lnT5(t.due_time) : '', e0 = t ? lnT5(t.end_time) : '';
-  const chips = HS.plans.map(p=> `<button type="button" class="t${p.tone || 2}${plan === p.id ? ' on' : ''}" data-v="${p.id}" aria-pressed="${plan === p.id}"><i></i>${esc(p.name)}</button>`).join('');
-  let confirmDel = false;
-  openForm({
-    title: t ? 'Edit task' : 'New task',
-    wide: true,
-    rows: [
-      [{ id:'hsfTitle', placeholder:'What will you work on?', value: t ? t.title : '' }],
-      [{ type:'html', html: `<div class="fm-label">Business plan</div><div class="chip-pick hs-pp" data-pick="plan">${chips}</div><div class="fm-label hs-fl">Time</div>` }],
-      [{ id:'hsfDate', type:'date', value: t ? (t.due_date || '') : hsT0() }],
-      [{ id:'hsfStart', type:'time', label:'From', value: s0 || '09:00' }, { id:'hsfEnd', type:'time', label:'To', value: e0 || (s0 ? lnPlusMin(s0, 60) : '10:00') }],
-      [{ type:'html', html: `<button type="button" class="ln2-notime${noTime ? ' on' : ''}" data-notime aria-pressed="${noTime}">${ico('clock', 'ico-xs')}Any time</button>` }]
-    ],
-    onBodyClick: e=>{
-      const nt = e.target.closest('[data-notime]');
-      if(nt){ noTime = !noTime; nt.classList.toggle('on', noTime); nt.setAttribute('aria-pressed', noTime); vis(); return; }
-      const b = e.target.closest('.chip-pick button'); if(!b) return;
-      plan = b.dataset.v;
-      b.parentNode.querySelectorAll('button').forEach(x=>{ const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
-    },
-    actions: t ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save', value:'save' }] : [{ label:'Add task', value:'save' }],
-    onSubmit: async (v, act)=>{
-      if(act === 'delete'){
-        if(!confirmDel){ confirmDel = true; const btn = $('fmActions').querySelector('.modal-danger'); btn.textContent = 'Tap again to delete'; btn.classList.add('confirming'); return false; }
-        const { error } = await sb.from('tasks').delete().eq('id', t.id);
-        if(error){ fail(error, 'Could not delete'); return false; }
-        toast('Task deleted'); dataChanged(); return;
-      }
-      if(!v.hsfTitle){ toast('Say what you will work on', true); $('hsfTitle').focus(); return false; }
-      if(!plan){ toast('Pick a business plan', true); return false; }
-      const timed = !noTime && !!v.hsfDate;
-      if(timed && v.hsfEnd <= v.hsfStart){ toast('The end time has to be after the start', true); return false; }
-      const row = { title: v.hsfTitle, category:'side', learn_plan_id: plan, due_date: v.hsfDate || null,
-                    due_time: timed ? v.hsfStart : null, end_time: timed ? v.hsfEnd : null };
-      const { error } = t ? await sb.from('tasks').update(row).eq('id', t.id)
-        : await sb.from('tasks').insert({ user_id: USER.id, ...row, kind:'one-off', completed:false, work_area_id: HS.area || null });
-      if(error){ fail(error, t ? 'Could not save the task' : 'Could not add the task'); return false; }
-      toast(t ? 'Task saved' : 'Task added');
-      dataChanged();
-    }
-  });
-  function vis(){ const r = $('hsfStart').closest('.modal-row'); if(r) r.hidden = noTime; }
-  vis();
-  const len = s0 && e0 && lnMin(e0) > lnMin(s0) ? lnMin(e0) - lnMin(s0) : 60;
-  $('hsfStart').addEventListener('change', ()=>{ if($('hsfStart').value) $('hsfEnd').value = lnPlusMin($('hsfStart').value, len); });
-}
-function hsMoveForm(t){
-  let to = t.work_area_id && hsArea(t.work_area_id) ? t.work_area_id : '';
-  const chips = HS.areas.map(a=> [a.id, a.name]).concat([['', 'No work area']]).map(([id, n])=>
-    `<button type="button" class="${to === id ? 'on' : ''}" data-v="${id}" aria-pressed="${to === id}">${esc(n)}</button>`).join('');
-  openForm({
-    title: 'Move to a work area',
-    rows: [[{ type:'note', text: t.title }], [{ type:'html', html: `<div class="chip-pick hs-ap">${chips}</div>` }]],
-    onBodyClick: e=>{ const b = e.target.closest('.chip-pick button'); if(!b) return; to = b.dataset.v;
-      b.parentNode.querySelectorAll('button').forEach(x=>{ const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); }); },
-    actions: [{ label:'Move', value:'ok' }],
-    onSubmit: async ()=>{ await hsMoveTo(t, to || null); }
-  });
-}
-async function hsMoveTo(t, areaId){
-  if(!t || (t.work_area_id || null) === areaId) return;
-  const { error } = await sb.from('tasks').update({ work_area_id: areaId }).eq('id', t.id);
-  if(error) return fail(error, 'Could not move it');
-  toast(`Moved to ${areaId ? hsArea(areaId).name : 'No work area'}`);
-  dataChanged();
-}
-async function hsTick(t){
-  const done = !t.completed, at = done ? new Date().toISOString() : null;
-  const { error } = await sb.from('tasks').update({ completed: done, completed_at: at }).eq('id', t.id);
-  if(error) return fail(error, 'Could not save');
-  t.completed = done; t.completed_at = at;
-  if(done) toast('Done · counted in Statistics');
-  hsPaint(); refreshBadge();
-  setTimeout(dataChanged, 300);
-}
-async function hsDelete(t){
-  const yes = await askConfirm({ title:'Delete this task?', message:`"${t.title}" will be removed.`, ok:'Delete' });
-  if(!yes) return;
-  const { error } = await sb.from('tasks').delete().eq('id', t.id);
-  if(error) return fail(error, 'Could not delete');
-  toast('Task deleted'); dataChanged();
-}
-
-/* ---------- events ---------- */
-(()=>{
-  const body = $('hsBody');
-  body.addEventListener('click', async e=>{
-    const x = e.target;
-    const tab = x.closest('[data-hstab]'); if(tab) return hsGo(tab.dataset.hstab);
-    const pl = x.closest('[data-hsplan]'); if(pl){ HS.plan = pl.dataset.hsplan; HS.area = undefined; hsPaint(); return; }
-    const ar = x.closest('[data-hsarea]'); if(ar){ HS.area = ar.dataset.hsarea || null; hsPaint(); return; }
-    const st = x.closest('[data-hsstat]'); if(st){ HS.stat = st.dataset.hsstat; hsPaint(); return; }
-    const nt = x.closest('[data-hsnote]'); if(nt) return hsNoteOpen(nt.dataset.hsnote);
-    const b = x.closest('[data-hs]'); if(!b) return;
-    const row = b.closest('[data-tid]'), t = row ? HS.tasks.find(z=> z.id === row.dataset.tid) : null;
-    const note = HS.notes.find(n=> n.id === HS.noteId);
-    switch(b.dataset.hs){
-      case 'open-plan': HS.plan = b.dataset.id; HS.area = undefined; hsGo('tasks'); window.scrollTo(0, 0); return;
-      case 'add-plan': return hsPlanForm(null);
-      case 'edit-plan': e.stopPropagation(); return hsPlanForm(hsPlan(b.dataset.id));
-      case 'add-area': return hsAreaForm(null);
-      case 'edit-area': return hsAreaForm(hsArea(b.dataset.id));
-      case 'add-task': return hsTaskForm(null);
-      case 'goto-tasks': return hsGo('tasks');
-      case 'goto-stats': return hsGo('stats');
-      case 'tick': if(t) hsTick(t); return;
-      case 'edit': if(t) hsTaskForm(t); return;
-      case 'move': if(t) hsMoveForm(t); return;
-      case 'del': if(t) hsDelete(t); return;
-      case 'sprev': case 'snext': { const d = b.dataset.hs === 'sprev' ? -1 : 1, r = HS.statRef;
-        HS.statRef = HS.stat === 'week' ? addDays(r, d * 7) : new Date(r.getFullYear(), r.getMonth() + d, 1); hsPaint(); return; }
-      case 'snow': HS.statRef = _dayOnly(new Date()); hsPaint(); return;
-      case 'all-done': HS.allDone = !HS.allDone; hsPaint(); return;
-      case 'new-note': return hsNoteNew();
-      case 'note-back': await hsFlushNote(); await hsDropEmptyNote(); HS.noteOpen = false; HS.noteId = window.innerWidth > 760 ? HS.noteId : null; hsPaint(); return;
-      case 'note-pin': {
-        if(!note) return;
-        const { error } = await sb.from('hustle_notes').update({ pinned: !note.pinned }).eq('id', note.id);
-        if(error) return fail(error, 'Could not pin the note');
-        note.pinned = !note.pinned; hsPaint(); return;
-      }
-      case 'note-del': {
-        if(!note) return;
-        const yes = await askConfirm({ title:'Delete this note?', message:`"${note.title || 'Untitled'}" will be removed.`, ok:'Delete' });
-        if(!yes) return;
-        clearTimeout(_hsNoteTimer); _hsNoteDirty = null;
-        const { error } = await sb.from('hustle_notes').delete().eq('id', note.id);
-        if(error) return fail(error, 'Could not delete the note');
-        HS.notes = HS.notes.filter(n=> n.id !== note.id); HS.noteId = null; HS.noteOpen = false;
-        toast('Note deleted'); hsPaint(); return;
-      }
-    }
-  });
-  body.addEventListener('keydown', e=>{
-    if((e.key === 'Enter' || e.key === ' ') && e.target.matches('.hs-pc[data-hs="open-plan"]')){ e.preventDefault(); e.target.click(); }
-  });
-  body.addEventListener('input', e=>{
-    if(e.target.id === 'hsNoteQ'){ HS.noteQ = e.target.value; $('hsNoteList').innerHTML = hsNoteList(); return; }
-    if(e.target.id === 'hsNoteT' || e.target.id === 'hsNoteB'){ if(e.target.id === 'hsNoteB') hsGrow(e.target); hsNoteChanged(); }
-  });
-  window.hsOnChange = async e=>{
-    const id = e.target.id;
-    if(id === 'hsPlanSel'){ HS.plan = e.target.value; HS.area = undefined; hsPaint(); return; }
-    if(id === 'hsNotePlan'){ HS.notePlan = e.target.value; $('hsNoteList').innerHTML = hsNoteList(); return; }
-    if(id === 'hsNoteP'){
-      const n = HS.notes.find(x=> x.id === HS.noteId); if(!n) return;
-      const v = e.target.value || null;
-      const { error } = await sb.from('hustle_notes').update({ plan_id: v }).eq('id', n.id);
-      if(error) return fail(error, 'Could not link the note');
-      n.plan_id = v; $('hsNoteList').innerHTML = hsNoteList();
-      const s = $('hsNoteSaved'); if(s) s.textContent = 'Saved';
-    }
-  };
-  body.addEventListener('focusout', e=>{ if(e.target.id === 'hsNoteT' || e.target.id === 'hsNoteB') hsFlushNote(); });
-  // drag a task onto a work area to move it there
-  body.addEventListener('dragstart', e=>{
-    const r = e.target.closest && e.target.closest('.ln2-row[data-tid][draggable]'); if(!r) return;
-    e.dataTransfer.setData('text/plain', r.dataset.tid); e.dataTransfer.effectAllowed = 'move'; r.classList.add('is-drag'); body.classList.add('hs-dragging');
-  });
-  body.addEventListener('dragend', ()=>{ body.classList.remove('hs-dragging'); body.querySelectorAll('.is-drag, .is-over').forEach(x=> x.classList.remove('is-drag', 'is-over')); });
-  body.addEventListener('dragover', e=>{
-    const a = e.target.closest && e.target.closest('.hs-ac[data-hsarea]'); if(!a || !body.classList.contains('hs-dragging')) return;
-    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
-    body.querySelectorAll('.is-over').forEach(x=> x !== a && x.classList.remove('is-over')); a.classList.add('is-over');
-  });
-  body.addEventListener('drop', e=>{
-    const a = e.target.closest && e.target.closest('.hs-ac[data-hsarea]'); if(!a) return;
-    e.preventDefault(); body.classList.remove('hs-dragging');
-    const t = HS.tasks.find(z=> z.id === e.dataTransfer.getData('text/plain'));
-    hsMoveTo(t, a.dataset.hsarea || null);
-  });
-  window.addEventListener('beforeunload', ()=>{ if(_hsNoteDirty) hsFlushNote(); });
-})();
+['learning', 'hustle'].forEach(lnBind);
 
 /* ===================================================================
    HOME TASKS / CHORES (2026-11-19, built like a Learning plan page)

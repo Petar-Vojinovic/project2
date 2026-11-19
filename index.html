@@ -7332,11 +7332,11 @@ function weekItems(d){
   return out;
 }
 /* ---------- the selected day ---------- */
-function dayHead(d, sub, addBtn){
+function dayHead(d, sub){
   const isT = sameDay(d, new Date());
   return `<div class="cd-head"><div class="cd-date"><b>${d.getDate()}</b><span>${isT ? '<small class="cd-tag">Today</small>' : ''}
       ${d.toLocaleDateString(undefined, { weekday:'long' })}<small>${MONTHS_FULL[d.getMonth()]} ${d.getFullYear()}</small></span></div>
-      <span class="spacer"></span>${addBtn}</div>${sub ? `<div class="cd-sum">${sub}</div>` : ''}`;
+      </div>${sub ? `<div class="cd-sum">${sub}</div>` : ''}`;
 }
 const actsHtml = (kind, id, what)=>`<div class="cd-acts">
   <button type="button" data-act="edit" data-${kind}="${id}" aria-label="Edit ${esc(what)}" title="Edit">${ico('pencil')}</button>
@@ -7386,7 +7386,6 @@ function paintCalDay(){
   items.sort((a, b)=> (a.s ? a.s.getTime() : 0) - (b.s ? b.s.getTime() : 0));
   const nEv = items.filter(i=>i.kind === 'ev').length, nT = items.filter(i=>i.kind === 'task').length, nB = items.filter(i=>i.kind === 'biz').length;
   const sum = [nEv ? `${nEv} event${nEv > 1 ? 's' : ''}` : '', nT ? `${nT} study task${nT > 1 ? 's' : ''}` : '', nB ? `${nB} side hustle item${nB > 1 ? 's' : ''}` : '', bds.length ? `${bds.length} birthday${bds.length > 1 ? 's' : ''}` : ''].filter(Boolean).join(' · ');
-  const add = `<button type="button" class="dz-ghost" data-act="add-ev">${ico('plus', 'ico-sm')}Event</button>`;
   const bdHtml = bds.map(b=>`<li class="cd-item is-bday"><div class="cd-time"><b>${b.time ? b.time.slice(0, 5) : ''}</b></div>
       <div class="cd-card" data-bd="${b.id}" data-act="open" tabindex="0" role="button" aria-label="${esc(b.name)}'s birthday">
         <div class="cd-title">${ico('cake')}${esc(b.name)}'s birthday</div>
@@ -7394,10 +7393,9 @@ function paintCalDay(){
         ${b.note ? `<div class="cd-note">${esc(b.note)}</div>` : ''}
         ${actsHtml('bd', b.id, b.name + "'s birthday")}
       </div></li>`).join('');
-  $('calDay').innerHTML = dayHead(d, sum || 'Nothing planned', add) + ((items.length || bds.length)
+  $('calDay').innerHTML = dayHead(d, sum || 'Nothing planned') + ((items.length || bds.length)
     ? `<ul class="cd-list">${bdHtml}${items.map(i=>i.html).join('')}</ul>`
-    : `<div class="cd-empty">${typeof doodleSvg === 'function' ? doodleSvg('free') : ''}<b>A free day</b>Nothing on the calendar yet.<br>
-        <button type="button" class="dz-ghost" data-act="add-ev">${ico('plus', 'ico-sm')}Add an event</button></div>`);
+    : `<div class="cd-empty">${typeof doodleSvg === 'function' ? doodleSvg('free') : ''}<b>A free day</b>Nothing on the calendar yet.</div>`);
 }
 
 /* ---------- birthdays of the month ---------- */
@@ -7522,7 +7520,6 @@ function calDayAction(e){
   const el = e.target.closest('[data-act]');
   if(!el) return;
   const act = el.dataset.act;
-  if(act === 'add-ev') return openEventModal(iso(calSel));
   const evId = el.dataset.ev, bdId = el.dataset.bd, ltId = el.dataset.ltask;
   if(el.dataset.biz) return bizCalOpen(el.dataset.biz);
   if(evId){ const x = CAL.events.find(z=> z.id === evId); if(!x) return; return act === 'del' ? deleteEvent(x) : openEditEvent(x); }

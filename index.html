@@ -1719,7 +1719,7 @@
   .task-item.carried.done .carry-tag, .pt-item.carried.done .carry-tag{opacity:.45;}
 
   /* ---------- recurring: repeat picker ---------- */
-  .rp-seg{display:grid;grid-template-columns:1.45fr repeat(3,1fr);gap:6px;margin-bottom:12px;}
+  .rp-seg{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;}
   .rp-chip, .day-chip{
     border:none;cursor:pointer;font-family:inherit;border-radius:10px;
     background:rgba(var(--foreground-rgb),0.028);box-shadow:inset 0 0 0 1px rgba(var(--foreground-rgb),0.088);
@@ -1736,9 +1736,7 @@
   .day-chips{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:12px;}
   .day-chip{height:36px;font-size:11.5px;}
   .day-chip.wknd:not(.on){color:var(--c-sky);}
-  .rp-days[hidden], .rp-mhint[hidden]{display:none;}
-  .fm-hint.rp-mhint{display:block;margin:-4px 0 12px;font-size:12px;}
-  .fm-hint.rp-mhint[hidden]{display:none;}
+  .rp-days[hidden]{display:none;}
 
   /* ---------- recurring rows in Today ---------- */
   .rep-tag{
@@ -10511,15 +10509,14 @@ function openTaskForm(item, defaults){
   const until0 = rule && rule.end_date ? rule.end_date : iso(addMonthsClamp(parseISO(start0 || today), 1));
   const wdOf = s => (parseISO(s || today).getDay() + 6) % 7;
   if(st.repeat === 'weekly' && !st.weekdays.size) st.weekdays.add(wdOf(start0));
-  const monthHint = s => `Every month on the ${ORD(parseISO(s || today).getDate())}` + (parseISO(s || today).getDate() > 28 ? ' (skipped in months without that day)' : '');
 
   const html = `
     <div class="fm-label">Area</div>
     <div class="chip-pick" data-pick="cat">${CAT_ORDER.map(k=>
       `<button type="button" class="${CATS[k].acc}${st.cat === k ? ' on' : ''}" data-v="${k}" aria-pressed="${st.cat === k}"><i></i>${CATS[k].label}</button>`).join('')}</div>
-    <div class="fm-label">Repeats</div>
+    <div class="fm-label">Repeats <span class="fm-hint">optional, tap again to turn off</span></div>
     <div class="rp-seg" role="group" aria-label="Repeats">
-      ${[['none','Does not repeat'], ['daily','Daily'], ['weekly','Weekly'], ['monthly','Monthly']].map(([v, l])=>
+      ${[['daily','Daily'], ['weekly','Weekly']].map(([v, l])=>
         `<button type="button" class="rp-chip${st.repeat === v ? ' on' : ''}" data-repeat="${v}" aria-pressed="${st.repeat === v}">${l}</button>`).join('')}
     </div>
     <div class="rp-days"${st.repeat === 'weekly' ? '' : ' hidden'}>
@@ -10527,7 +10524,7 @@ function openTaskForm(item, defaults){
         ${DAY_SHORT.map((d, i)=>`<button type="button" class="day-chip${st.weekdays.has(i) ? ' on' : ''}${i >= 5 ? ' wknd' : ''}" data-wd="${i}" aria-pressed="${st.weekdays.has(i)}" aria-label="${d}">${d.slice(0, 2)}</button>`).join('')}
       </div>
     </div>
-    <div class="fm-hint rp-mhint"${st.repeat === 'monthly' ? '' : ' hidden'}>${monthHint(start0)}</div>`;
+    `;
   const endHtml = `<div class="chip-pick rp-noend" data-pick="noend"><button type="button" class="${st.noEnd ? 'on' : ''}" aria-pressed="${st.noEnd}">No end date (someday)</button></div>`;
 
   const actions = item
@@ -10548,8 +10545,9 @@ function openTaskForm(item, defaults){
       const body = $('fmBody');
       const rp = e.target.closest('[data-repeat]');
       if(rp){
-        st.repeat = rp.dataset.repeat;
-        body.querySelectorAll('[data-repeat]').forEach(b=>{ const on = b === rp; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+        // Daily / Weekly; tapping the one that is on again = does not repeat
+        st.repeat = st.repeat === rp.dataset.repeat ? 'none' : rp.dataset.repeat;
+        body.querySelectorAll('[data-repeat]').forEach(b=>{ const on = b.dataset.repeat === st.repeat; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
         if(st.repeat === 'weekly' && !st.weekdays.size){
           st.weekdays.add(wdOf($('fmDate').value));
           body.querySelectorAll('[data-wd]').forEach(b=>{ const on = st.weekdays.has(Number(b.dataset.wd)); b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
@@ -10650,7 +10648,6 @@ function openTaskForm(item, defaults){
   function tfVis(){
     const body = $('fmBody'), rep = st.repeat !== 'none';
     body.querySelector('.rp-days').hidden = st.repeat !== 'weekly';
-    body.querySelector('.rp-mhint').hidden = st.repeat !== 'monthly';
     const untilRow = $('fmUntil').closest('.modal-row');
     untilRow.hidden = !rep || st.noEnd;
     body.querySelector('.rp-noend').closest('.modal-row').hidden = !rep;
@@ -10658,7 +10655,6 @@ function openTaskForm(item, defaults){
   tfVis();
   $('fmDate').addEventListener('change', ()=>{
     const s = $('fmDate').value;
-    const h = $('fmBody').querySelector('.rp-mhint'); if(h) h.textContent = monthHint(s);
     // keep "Repeat until" after the start
     if(s && $('fmUntil').value && $('fmUntil').value < s){ $('fmUntil').value = iso(addMonthsClamp(parseISO(s), 1)); $('fmUntil').dispatchEvent(new Event('change')); }
   });

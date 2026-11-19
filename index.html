@@ -2885,7 +2885,7 @@
   .ln2-h3.hm-h3-late{margin-top:0;color:var(--danger);}
   .hm-undated{border-top:1px solid var(--border);padding-top:10px;}
   #page-home .ln2-day + .ln2-h3{margin-top:16px;}
-  @media (max-width:760px){ #page-home .fx-head{display:none;} }
+  @media (max-width:760px){ #page-home .fx-head, #page-side .fx-head.ln2-ovh-bare{display:none;} }
 
   /* plan dashboard */
   .ln2-ph{align-items:center;}
@@ -11256,15 +11256,19 @@ function lnOverviewHtml(){
     ? `<ul class="ln2-day">${todayItems.map(i=> lnRow(i, true)).join('')}</ul>`
     : `<div class="fx-empty">${typeof doodleSvg === 'function' ? doodleSvg('free') : ''}<b>Nothing planned today</b><span>${LN.plans.length ? `Add a ${LN.K.newItem} to one of your plans.` : `Start with a ${LN.K.plan}.`}</span></div>`;
 
-  return `<div class="fx-head"><h1 class="page-title">${LN.K.title}</h1><span class="spacer"></span>
-      <button type="button" class="btn btn-ghost" data-ln="add-session"${LN.plans.length ? '' : ' hidden'}>${ico('plus')}${lnCap(LN.K.newItem)}</button>
-      <button type="button" class="btn btn-primary" data-ln="add-plan">${ico('plus')}Add ${LN.K.plan}</button></div>
+  // Hustle (Ime 2026-11-19): the two add buttons live inside their sections, not in the page header
+  const inCards = LN.kind === 'hustle';
+  const addTaskBtn = `<button type="button" class="btn btn-ghost${inCards ? ' btn-sm' : ''}" data-ln="add-session"${LN.plans.length ? '' : ' hidden'}>${ico('plus')}${lnCap(LN.K.newItem)}</button>`;
+  const addPlanBtn = `<button type="button" class="btn ${inCards ? 'btn-ghost btn-sm' : 'btn-primary'}" data-ln="add-plan">${ico('plus')}Add ${LN.K.plan}</button>`;
+  return `<div class="fx-head${inCards ? ' ln2-ovh-bare' : ''}"><h1 class="page-title">${LN.K.title}</h1>${inCards ? '' : `<span class="spacer"></span>
+      ${addTaskBtn}
+      ${addPlanBtn}`}</div>
     <div class="ln2-ov">
-      <section class="fx-card ln2-plans"><div class="fx-card-h"><h2>Your ${LN.K.plans}</h2></div>
+      <section class="fx-card ln2-plans"><div class="fx-card-h"><h2>Your ${LN.K.plans}</h2>${inCards ? `<span class="spacer"></span>${addPlanBtn}` : ''}</div>
         <div class="ln2-plan-g">${cards}${addCard}</div></section>
       <aside class="ln2-side">
         <section class="fx-card ln2-today"><div class="fx-card-h"><div><h2>Today</h2><p class="fx-sub">${lnDayName(today)}</p></div><span class="spacer"></span>
-          <span class="fx-count">${todayItems.length ? `${todayItems.filter(i=>i.done).length} of ${todayItems.length} done` : ''}</span></div>${todayHtml}</section>
+          <span class="fx-count">${todayItems.length ? `${todayItems.filter(i=>i.done).length} of ${todayItems.length} done` : ''}</span>${inCards ? addTaskBtn : ''}</div>${todayHtml}</section>
         <section class="fx-hero ln2-week"><div class="fx-hero-h"><b>This week</b><span>${lnShort(mon)} – ${lnShort(sun)}, all plans</span></div>
           <div class="fx-hero-g">
             <div><small>${LN.K.hours}</small><b>${lnHours(week.minDone)}</b><small>of ${lnHours(week.min)} planned</small></div>

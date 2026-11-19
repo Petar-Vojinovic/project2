@@ -3063,44 +3063,6 @@
   .cz-kind-bdays .cm-day.has-bday .cm-num{background:rgba(var(--cat-training-rgb),.26);}
   .cz-kind-bdays .cm-day.has-bday.is-sel .cm-num{background:var(--primary);}
 
-  /* ---- week view: day pills, then a light time grid ---- */
-  .cw{--row:40px;}
-  .cw-head{display:grid;grid-template-columns:48px repeat(7,minmax(0,1fr));gap:4px;margin-bottom:6px;}
-  .cw-day{border:none;background:transparent;font:inherit;color:var(--dz-ink);cursor:pointer;border-radius:16px;
-    display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 7px;position:relative;transition:background .15s ease, transform .18s ease;}
-  .cw-day:hover{background:var(--dz-line-2);}
-  .cw-wd{font-size:11px;font-weight:600;color:var(--dz-ink-3);text-transform:uppercase;letter-spacing:.04em;}
-  .cw-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
-  .cw-day.is-today .cw-num{box-shadow:inset 0 0 0 1.5px var(--ring);}
-  .cw-day.is-sel{background:var(--primary);box-shadow:inset 0 0 0 1.5px var(--ring);}
-  .cw-day.is-sel .cw-wd{color:var(--foreground);}
-  .cw-cake{position:absolute;top:5px;right:6px;color:var(--c-sun);}
-  .cw-cake .ico{width:13px;height:13px;}
-  .cw-body{display:grid;grid-template-columns:48px repeat(7,minmax(0,1fr));gap:4px;position:relative;}
-  .cw-times{position:relative;height:calc(var(--rows) * var(--row));}
-  .cw-times span{position:absolute;right:6px;transform:translateY(-50%);font-size:10.5px;font-weight:600;color:var(--dz-ink-3);font-variant-numeric:tabular-nums;}
-  .cw-col{position:relative;height:calc(var(--rows) * var(--row));border-radius:12px;cursor:pointer;
-    background-image:linear-gradient(var(--dz-line-2) 1px, transparent 1px);background-size:100% var(--row);transition:background-color .15s ease;}
-  .cw-col:hover{background-color:rgba(var(--foreground-rgb),.015);}
-  .cw-col.is-today{background-color:rgba(var(--primary-rgb),.18);}
-  .cw-col.is-sel{background-color:rgba(var(--primary-rgb),.3);}
-  .cw-ev{position:absolute;border:none;font:inherit;text-align:left;cursor:pointer;color:var(--foreground);overflow:hidden;
-    border-radius:10px;padding:5px 7px 5px 9px;display:flex;flex-direction:column;gap:1px;min-height:22px;
-    background:rgba(var(--acc-rgb),.24);box-shadow:inset 3px 0 0 0 var(--acc);transition:transform .15s ease, box-shadow .15s ease;}
-  .cw-ev:hover{transform:translateY(-1px);box-shadow:inset 3px 0 0 0 var(--acc), 0 6px 14px -8px rgba(var(--shadow-rgb),.25);z-index:3;}
-  .cw-ev b{font-size:12px;font-weight:700;line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
-  .cw-ev small{font-size:10.5px;font-weight:600;color:var(--muted-foreground);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .cw-ev.is-short{justify-content:center;padding-top:2px;padding-bottom:2px;}
-  .cw-ev.is-short b{-webkit-line-clamp:1;}
-  .cw-ev.is-short small{display:none;}
-  .cw-ev .s-star{color:var(--warning);}
-  .cw-ev.is-task{background:var(--card);box-shadow:inset 0 0 0 1.5px var(--acc);}
-  .cw-ev.is-task.done{opacity:.6;}
-  .cw-ev.is-task.done b{text-decoration:line-through;}
-  .cw-ev .ico{width:12px;height:12px;flex-shrink:0;}
-  .cw-now{position:absolute;left:-3px;right:0;height:2px;background:var(--danger);border-radius:2px;z-index:4;pointer-events:none;}
-  .cw-now::before{content:"";position:absolute;left:-2px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--danger);}
-
   /* ---- the selected day (or month of birthdays) ---- */
   .cd-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
   .cd-date{display:flex;align-items:center;gap:10px;padding-left:10px;border-left:3px solid var(--ring);min-width:0;}
@@ -3182,15 +3144,11 @@
     .cm-day{min-height:54px;padding:3px 0 4px;border-radius:12px;}
     .cm-num{width:34px;height:34px;font-size:14px;}
     .cm-wd{font-size:10px;}
-    /* phones: the week is the day pills; the chosen day's list sits right under it */
-    .cw-head{grid-template-columns:repeat(7,minmax(0,1fr));margin-bottom:0;}
-    .cw-head > :first-child{display:none;}
-    .cw-body{display:none;}
     .cd-card{padding-right:70px;}
   }
   @media (prefers-reduced-motion: reduce){
     .cz-body.is-swap{animation:none;}
-    .cm-num, .cw-ev, .cd-card, .cz-seg button{transition:none;}
+    .cm-num, .cd-card, .cz-seg button{transition:none;}
     .cm-day.is-sel .cm-num{transform:none;}
   }
 
@@ -5458,11 +5416,6 @@
           <h2 class="ds-month" id="calLabel" aria-live="polite">—</h2>
           <button type="button" class="ds-arrow" id="calNext" aria-label="Next"><i data-ico="chevR"></i></button>
           <button type="button" class="ds-today" id="calToday">Today</button>
-          <span class="spacer"></span>
-          <div class="cz-seg" id="calView" aria-label="View">
-            <button type="button" id="btnWeek">Week</button>
-            <button type="button" id="btnMonth">Month</button>
-          </div>
         </div>
         <div class="cz-body" id="calBody">
           <div class="cz-main" id="calMain"><div class="skel"></div></div>
@@ -7258,16 +7211,14 @@ $('evAdd').addEventListener('click', async ()=>{
 
 /* ===================================================================
    CALENDAR (2026-11 redesign)
-   One card: month or week view on the left, the chosen day's list on the
+   One card: the month on the left (week view removed 2026-11-19), the chosen day's list on the
    right. "Birthdays" mode uses the same card for the birthday calendar.
    Reads schedule_events, birthdays and learning tasks; nothing is copied.
    =================================================================== */
-let calMode = (()=>{ try{ return localStorage.getItem('pa_cal_view') === 'week' ? 'week' : 'month'; }catch(e){ return 'month'; } })();
 let calKind = 'events';                      // 'events' | 'bdays'
-let calRef  = new Date();                    // the week / month on screen
+let calRef  = new Date();                    // the month on screen
 let calSel  = _dayOnly(new Date());          // the day the list shows
 let CAL = null, calSeq = 0, calSwap = false;
-const ROW_H = 40;
 
 const isLeap = y => new Date(y, 1, 29).getMonth() === 1;
 // a birthday's date in a given year (29 Feb falls on the 28th in other years)
@@ -7282,12 +7233,8 @@ function evEnd(e){                            // an event that ends at midnight 
 function durLabel(mins){ const h = Math.floor(mins / 60), m = mins % 60; return h ? (m ? `${h}h ${m}m` : `${h}h`) : `${m}m`; }
 
 function calRange(){
-  if(calKind === 'bdays' || calMode === 'month'){
-    const y = calRef.getFullYear(), m = calRef.getMonth();
-    return { from: new Date(y, m, 1), to: new Date(y, m + 1, 0) };
-  }
-  const from = mondayOf(calRef);
-  return { from, to: addDays(from, 6) };
+  const y = calRef.getFullYear(), m = calRef.getMonth();
+  return { from: new Date(y, m, 1), to: new Date(y, m + 1, 0) };
 }
 const inRange = d => { const { from, to } = calRange(); return d >= from && d <= to; };
 
@@ -7325,24 +7272,13 @@ function paintCalChrome(){
   const bd = calKind === 'bdays', y = calRef.getFullYear();
   $('page-schedule').classList.toggle('cz-kind-bdays', bd);
   document.querySelectorAll('[data-calkind]').forEach(b=>{ const on = b.dataset.calkind === calKind; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
-  $('calView').hidden = bd;
-  $('btnWeek').classList.toggle('on', calMode === 'week');
-  $('btnMonth').classList.toggle('on', calMode === 'month');
-  if(bd || calMode === 'month'){
-    $('calLabel').innerHTML = `${MONTHS_FULL[calRef.getMonth()]} <span>${y}</span>`;
-  } else {
-    const a = mondayOf(calRef), z = addDays(a, 6);
-    $('calLabel').innerHTML = a.getMonth() === z.getMonth()
-      ? `${MONTHS_SH[a.getMonth()]} ${a.getDate()} – ${z.getDate()} <span>${z.getFullYear()}</span>`
-      : `${MONTHS_SH[a.getMonth()]} ${a.getDate()} – ${MONTHS_SH[z.getMonth()]} ${z.getDate()} <span>${z.getFullYear()}</span>`;
-  }
+  $('calLabel').innerHTML = `${MONTHS_FULL[calRef.getMonth()]} <span>${y}</span>`;
   const t = _dayOnly(new Date());
   $('calToday').hidden = inRange(t) && sameDay(calSel, t);
 }
 
 /* ---------- month grid (events and birthdays) ---------- */
 function paintCalMain(){
-  if(calKind === 'events' && calMode === 'week') return paintWeek();
   const y = calRef.getFullYear(), m = calRef.getMonth();
   const first = new Date(y, m, 1), offset = (first.getDay() + 6) % 7, days = new Date(y, m + 1, 0).getDate();
   const total = Math.ceil((offset + days) / 7) * 7, today = _dayOnly(new Date());
@@ -7395,40 +7331,6 @@ function weekItems(d){
   flush();
   return out;
 }
-function paintWeek(){
-  const mon = mondayOf(calRef), dates = Array.from({ length:7 }, (_, i)=> addDays(mon, i)), today = _dayOnly(new Date());
-  const cols = dates.map(weekItems);
-  // only the hours that matter: 8:00–20:00, stretched to fit anything earlier or later
-  let h0 = 8, h1 = 20;
-  cols.flat().forEach(it=>{ h0 = Math.min(h0, Math.floor(it.sh)); h1 = Math.max(h1, Math.ceil(it.eh)); });
-  h0 = Math.max(0, h0); h1 = Math.min(24, h1);
-  const rows = h1 - h0, now = new Date(), nowH = now.getHours() + now.getMinutes() / 60;
-
-  let html = `<div class="cw" style="--rows:${rows};--row:${ROW_H}px"><div class="cw-head"><span></span>`;
-  dates.forEach((d, i)=>{
-    const bd = bdaysOn(d).length;
-    html += `<button type="button" class="cw-day${sameDay(d, today) ? ' is-today' : ''}${sameDay(d, calSel) ? ' is-sel' : ''}" data-day="${iso(d)}" aria-pressed="${sameDay(d, calSel)}"
-      aria-label="${esc(d.toLocaleDateString(undefined, { weekday:'long', day:'numeric', month:'long' }))}${bd ? ', birthday' : ''}">
-      <span class="cw-wd">${DAY_SHORT[i]}</span><span class="cw-num">${d.getDate()}</span>${bd ? `<span class="cw-cake" title="Birthday">${ico('cake')}</span>` : ''}</button>`;
-  });
-  html += '</div><div class="cw-body"><div class="cw-times">' +
-    Array.from({ length: rows - 1 }, (_, i)=>`<span style="top:${(i + 1) * ROW_H}px">${pad2(h0 + i + 1)}:00</span>`).join('') + '</div>';
-  dates.forEach((d, i)=>{
-    html += `<div class="cw-col${sameDay(d, today) ? ' is-today' : ''}${sameDay(d, calSel) ? ' is-sel' : ''}" data-day="${iso(d)}">`;
-    cols[i].forEach(it=>{
-      const top = (Math.max(it.sh, h0) - h0) * ROW_H + 1, h = Math.max(22, (Math.min(it.eh, h1) - Math.max(it.sh, h0)) * ROW_H - 3);
-      const w = 100 / it.lanes;
-      html += `<button type="button" class="cw-ev ${catAcc(it.cat)}${it.kind === 'task' ? ' is-task' : ''}${it.done ? ' done' : ''}${h < 42 ? ' is-short' : ''}"
-        style="top:${top}px;height:${h}px;left:calc(${it.lane * w}% + 2px);width:calc(${w}% - 4px)"
-        data-${it.kind === 'ev' ? 'ev' : it.kind === 'lesson' ? 'lesson' : 'ltask'}="${esc(it.id)}" title="${esc(it.title)} · ${it.time}">
-        <b>${it.star ? '<span class="s-star">★</span> ' : ''}${it.kind === 'task' ? ico(it.done ? 'check' : 'book') + ' ' : it.kind === 'lesson' ? ico('cap') + ' ' : ''}${esc(it.title)}</b><small>${it.time}</small></button>`;
-    });
-    if(sameDay(d, today) && nowH >= h0 && nowH <= h1) html += `<div class="cw-now" style="top:${(nowH - h0) * ROW_H}px"></div>`;
-    html += '</div>';
-  });
-  $('calMain').innerHTML = html + '</div></div>';
-}
-
 /* ---------- the selected day ---------- */
 function dayHead(d, sub, addBtn){
   const isT = sameDay(d, new Date());
@@ -7594,17 +7496,11 @@ function calOpenBirthdays(d){
   renderCalendar();
 }
 
-$('btnWeek').addEventListener('click', ()=>{ if(calMode === 'week') return; calMode = 'week'; try{ localStorage.setItem('pa_cal_view', 'week'); }catch(e){} calRef = new Date(calSel); calSwap = true; renderCalendar(); });
-$('btnMonth').addEventListener('click', ()=>{ if(calMode === 'month') return; calMode = 'month'; try{ localStorage.setItem('pa_cal_view', 'month'); }catch(e){} calRef = new Date(calSel); calSwap = true; renderCalendar(); });
 document.querySelectorAll('[data-calkind]').forEach(b=> b.addEventListener('click', ()=> calSetKind(b.dataset.calkind)));
 function calStep(dir){
-  if(calKind === 'events' && calMode === 'week'){
-    calRef = addDays(mondayOf(calRef), 7 * dir); calSel = addDays(calSel, 7 * dir);
-  } else {
-    calRef = new Date(calRef.getFullYear(), calRef.getMonth() + dir, 1);
-    const t = _dayOnly(new Date());
-    calSel = (t.getFullYear() === calRef.getFullYear() && t.getMonth() === calRef.getMonth()) ? t : new Date(calRef);
-  }
+  calRef = new Date(calRef.getFullYear(), calRef.getMonth() + dir, 1);
+  const t = _dayOnly(new Date());
+  calSel = (t.getFullYear() === calRef.getFullYear() && t.getMonth() === calRef.getMonth()) ? t : new Date(calRef);
   renderCalendar();
 }
 $('calPrev').addEventListener('click', ()=> calStep(-1));

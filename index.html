@@ -2811,9 +2811,9 @@
      focus areas and statistics. Built from the Fitness kit (.fx-*),
      plus a few ln2-* pieces; only theme tokens, light and dark.
      =================================================================== */
-  #page-learning{--fx-r:26px;--fx-r-sm:18px;--fx-gap:16px;}
-  #page-learning .ico-xs{width:12px;height:12px;}
-  #page-learning .spacer{flex:1 1 auto;min-width:0;}
+  #page-learning, #page-home{--fx-r:26px;--fx-r-sm:18px;--fx-gap:16px;}
+  :is(#page-learning, #page-home) .ico-xs{width:12px;height:12px;}
+  :is(#page-learning, #page-home) .spacer{flex:1 1 auto;min-width:0;}
   #page-learning .fx-head .btn{border-radius:999px;}
   #lnBody > .skel{height:220px;border-radius:var(--fx-r);}
 
@@ -2871,6 +2871,13 @@
   .ln2-rep{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--muted-foreground);}
   .ln2-none{margin:4px 0 0;font-size:13px;color:var(--muted-foreground);}
   .ln2-hint{margin:12px 0 0;font-size:11.5px;color:var(--muted-foreground);}
+  /* Home Tasks (chores) reuse the Learning plan parts */
+  .ln2-wkc.miss{box-shadow:inset 3px 0 0 var(--danger);}
+  .ln2-tag.hm-late{background:color-mix(in srgb, var(--danger) 16%, var(--card));color:var(--danger);}
+  .ln2-h3.hm-h3-late{margin-top:0;color:var(--danger);}
+  .hm-undated{border-top:1px solid var(--border);padding-top:10px;}
+  #page-home .ln2-day + .ln2-h3{margin-top:16px;}
+  @media (max-width:760px){ #page-home .fx-head{display:none;} }
 
   /* plan dashboard */
   .ln2-ph{align-items:center;}
@@ -2934,7 +2941,7 @@
   .ln2-mchart .fx-col-plot{max-width:14px;}
   .ln2-mchart .fx-col-plot i{border-radius:4px 4px 2px 2px;}
   .ln2-mchart .fx-col-plot .dn{left:1px;right:1px;}
-  #page-learning .fx-col[data-tip]:focus-visible{outline:2px solid var(--ring);outline-offset:2px;}
+  :is(#page-learning, #page-home) .fx-col[data-tip]:focus-visible{outline:2px solid var(--ring);outline-offset:2px;}
 
   /* dialogs */
   .ln2-tones{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;}
@@ -2955,8 +2962,8 @@
     .ln2-sched{grid-template-columns:minmax(0,1fr);}
   }
   @media (max-width:760px){
-    #page-learning{--fx-r:22px;--fx-gap:12px;}
-    #page-learning .fx-head > .page-title{display:none;}      /* the top bar already says Learning */
+    #page-learning, #page-home{--fx-r:22px;--fx-gap:12px;}
+    :is(#page-learning, #page-home) .fx-head > .page-title{display:none;}      /* the top bar already says the page name */
     #page-learning .fx-head > .spacer{display:none;}
     #page-learning .fx-head > .btn{flex:1;justify-content:center;padding-left:8px;padding-right:8px;}
     .ln2-ph{flex-wrap:wrap;}
@@ -5566,9 +5573,7 @@
 
     <!-- ---------- HOME TASKS ---------- -->
     <section class="page" id="page-home">
-      <div class="page-head"><h1 class="page-title">Home Tasks</h1>
-        <div class="ph-actions"><button class="btn btn-primary" data-cat-add="home"><i data-ico="plus"></i>Add task</button></div></div>
-      <div id="catBody-home"><div class="skel"></div><div class="skel"></div></div>
+      <div id="hmBody"><div class="skel"></div><div class="skel"></div></div>
     </section>
 
     <!-- ---------- LEARNING ---------- -->
@@ -9395,7 +9400,7 @@ $('fxBody').addEventListener('keydown', e=>{
     tip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
   };
   const hide = ()=>{ tip.hidden = true; };
-  ['page-training', 'page-learning'].forEach(id=>{
+  ['page-training', 'page-learning', 'page-home'].forEach(id=>{
     const host = $(id);
     host.addEventListener('mouseover', e=>{ const el = e.target.closest('[data-tip]'); if(el) show(el); });
     host.addEventListener('mouseout', e=>{ if(e.target.closest('[data-tip]')) hide(); });
@@ -10259,7 +10264,7 @@ const LOADERS = {
   tasks:         ()=>loadTasks(),
   budget:        ()=>Promise.all([ loadBudget(), renderCatTasksCard('money') ]),
   side:          ()=>loadSide(),
-  home:          ()=>loadCategoryPage('home'),
+  home:          ()=>loadChores(),
   learning:      ()=>loadLearning(),
   notifications: ()=>loadNotifications(),
   progress:      ()=>loadProgress(),
@@ -11096,18 +11101,6 @@ setInterval(()=>{
 /* ===================================================================
    AREA PAGES — Work, Side Hustle, Home (+ task cards on Training / Money)
    =================================================================== */
-async function fetchCatData(cat){
-  const now = new Date(), today = _dayOnly(now);
-  const res = await Promise.all([
-    sb.from('tasks').select('*').eq('category', cat),
-    fetchRecurringState(),
-    sb.from('schedule_events').select('*').eq('category', cat)
-      .gte('starts_at', today.toISOString()).lte('starts_at', addDays(today, 15).toISOString()).order('starts_at')
-  ]);
-  if(res[0].error) throw res[0].error;
-  if(res[2].error) throw res[2].error;
-  return { tasks: res[0].data || [], rec: res[1], events: res[2].data || [] };
-}
 
 function catGroups(tasks, opts){
   opts = opts || {};
@@ -11126,90 +11119,6 @@ function catGroups(tasks, opts){
   ];
 }
 
-async function loadCategoryPage(cat){
-  if(!USER) return;
-  const body = $('catBody-' + cat);
-  try{
-    const { tasks, rec, events } = await fetchCatData(cat);
-    const now = new Date(), t0 = iso(now);
-    const mStart = iso(new Date(now.getFullYear(), now.getMonth(), 1));
-    const wkEnd = iso(addDays(_dayOnly(now), 7));
-    const open = tasks.filter(t=>!t.completed);
-    const doneMonth = tasks.filter(t=>t.completed && t.completed_at && iso(new Date(t.completed_at)) >= mStart).length;
-    const overdue = open.filter(t=>t.due_date && t.due_date < t0).length;
-    const dueWeek = open.filter(t=>t.due_date && t.due_date >= t0 && t.due_date <= wkEnd).length;
-    const rules = rec.rules.filter(r=>r.category === cat);
-    const recToday = todayRecurring({ rules, completions: rec.completions }, now);
-    const projects = open.filter(t=>t.kind === 'long-term').length;
-    const C = CATS[cat];
-
-    body.innerHTML = `
-      <div class="stat-strip">
-        <div class="card stat"><b>${open.length}</b><span>Open tasks</span></div>
-        <div class="card stat"><b>${dueWeek}</b><span>Due in 7 days</span></div>
-        <div class="card stat"><b>${overdue}</b><span>Overdue</span></div>
-        <div class="card stat"><b>${doneMonth}</b><span>Done this month</span></div>
-      </div>
-      <div class="cat-cols">
-        <div>
-          <div class="card ${C.acc}">
-            <div class="card-head"><span class="card-icon">${ico(C.icon)}</span><h2 class="card-title">Tasks</h2>
-              <span class="card-count">${open.length} open</span>${projects ? `<span class="card-count">${projects} long-term</span>` : ''}</div>
-            <div class="cat-list"></div>
-            <form class="quick-add" autocomplete="off"><input placeholder="Quick add to ${esc(C.label)} for today…" aria-label="Quick add task" />
-              <button class="btn btn-ghost" type="submit">Add</button></form>
-          </div>
-          <div class="card">
-            <details class="fold"><summary>Completed recently</summary><div class="cat-done" style="margin-top:8px;"></div></details>
-          </div>
-        </div>
-        <div>
-          <div class="card ${C.acc}">
-            <div class="card-head"><span class="card-icon">${ico('repeat')}</span><h2 class="card-title">${cat === 'home' ? 'Chores' : 'Recurring'}</h2>
-              <span class="spacer"></span><button class="btn btn-ghost btn-sm" data-add-rec>${ico('plus','ico-sm')}Add</button></div>
-            <div class="cat-rec"></div>
-            ${rules.length ? `<div class="tgroup" style="margin-top:14px;">All ${cat === 'home' ? 'chores' : 'recurring'}</div>
-              <div class="tlist">${rules.map(r=>`<button class="srow" data-rule="${r.id}"><span class="s-body"><span class="s-title">${esc(r.title)}</span>
-                <span class="tmeta"><span class="ttime">${esc(freqLabel(r))}</span></span></span></button>`).join('')}</div>` : ''}
-          </div>
-          <div class="card ${C.acc}">
-            <div class="card-head"><span class="card-icon">${ico('calendar')}</span><h2 class="card-title">Upcoming events</h2>
-              <span class="spacer"></span><button class="btn btn-ghost btn-sm" data-add-ev>${ico('plus','ico-sm')}Event</button></div>
-            ${events.length ? '<div class="slist">' + events.map((e, i)=>{ const s = new Date(e.starts_at);
-              return `<button class="srow ${catAcc(e.category)}" data-ev="${i}"><span class="s-time"><b>${fmtT(s)}</b><span>${esc(relDay(s))}</span></span>
-                <span class="s-line"></span><span class="s-body"><span class="s-title">${e.highlight ? `<span class="s-star">${ico('star','ico-sm')}</span>` : ''}${esc(e.title)}</span></span></button>`; }).join('') + '</div>'
-              : `<div class="empty">No ${esc(C.label)} events in the next two weeks.</div>`}
-          </div>
-        </div>
-      </div>`;
-
-    renderTaskList(body.querySelector('.cat-list'), catGroups(tasks, { todayDone:true }),
-      `<div class="empty"><b>No ${esc(C.label)} tasks yet</b>Add your first one to start planning this area.
-        <br><button class="btn btn-primary btn-sm" data-cat-add="${cat}">${ico('plus','ico-sm')}Add task</button></div>`);
-    const done = tasks.filter(t=>t.completed).sort((a,b)=>(b.completed_at || '').localeCompare(a.completed_at || '')).slice(0, 15)
-      .map(t=>({ key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat, done:true, hideCat:true, raw:t,
-        dateLabel: t.completed_at ? 'done ' + relDayLc(new Date(t.completed_at)) : '' }));
-    renderTaskList(body.querySelector('.cat-done'), done, '<div class="empty">Nothing completed yet.</div>');
-    const recItems = recToday.carried.concat(recToday.due).map(r=>({ key:'r:' + r.rule.id + '|' + iso(r.date), type:'rec', id:r.rule.id,
-      date:iso(r.date), title:r.rule.title, cat, hideCat:true, done:r.done, carried:r.carried, daysLate:r.daysLate, raw:r.rule }));
-    renderTaskList(body.querySelector('.cat-rec'), recItems.length ? [{ label:'Due today', items: recItems }] : [],
-      `<div class="empty">${rules.length ? 'Nothing due today.' : `No ${cat === 'home' ? 'chores' : 'recurring tasks'} yet — add things that repeat, like ${cat === 'home' ? 'laundry every Sunday' : 'a weekly review'}.`}</div>`);
-
-    body.querySelector('.quick-add').addEventListener('submit', async e=>{
-      e.preventDefault();
-      const inp = e.target.querySelector('input'), title = inp.value.trim();
-      if(!title) return inp.focus();
-      inp.value = '';
-      const { error } = await sb.from('tasks').insert({ user_id: USER.id, title, due_date: t0, kind:'one-off', category: cat });
-      if(error){ fail(error, 'Could not add task'); inp.value = title; return; }
-      toast('Task added'); dataChanged();
-    });
-    body.querySelector('[data-add-rec]').addEventListener('click', ()=> openRecurringForm(null, cat));
-    body.querySelectorAll('[data-rule]').forEach(b=> b.addEventListener('click', ()=> openRecurringForm(rules.find(r=>r.id === b.dataset.rule))));
-    body.querySelector('[data-add-ev]').addEventListener('click', ()=>{ openEventModal(); setEventCat(cat); });
-    body.querySelectorAll('[data-ev]').forEach(b=> b.addEventListener('click', ()=> openEditEvent(events[Number(b.dataset.ev)])));
-  }catch(err){ showError(body, err, ()=>loadCategoryPage(cat)); }
-}
 
 document.addEventListener('click', e=>{
   const b = e.target.closest('[data-cat-add]');
@@ -15050,6 +14959,329 @@ $('lnBody').addEventListener('drop', e=>{
   const it = lnFind(e.dataTransfer.getData('text/plain'));
   document.body.classList.remove('ln2-dragging');
   lnMoveTo(it, d.dataset.lnday);
+});
+
+/* ===================================================================
+   HOME TASKS / CHORES (2026-11-19, built like a Learning plan page)
+   Schedule (Week / Month calendar + the chosen day) and Statistics.
+   Chores are the normal task rows: `tasks` with category 'home'
+   (one-time) and `recurring_tasks` with category 'home' (repeating,
+   ticked through recurring_completions). Nothing is copied, and none
+   of it goes to the main Calendar tab (events and birthdays only).
+   Adding uses the one task form, with Home preset.
+   =================================================================== */
+const HM = { tasks:[], rules:[], comps:[], done:new Set(), tab:'schedule', cal:'week', ref:null, sel:null, stat:'week', statRef:null, loaded:false };
+
+async function loadChores(){
+  const body = $('hmBody');
+  try{
+    const [tasks, rules] = await Promise.all([
+      sb.from('tasks').select('*').eq('category', 'home'),
+      sb.from('recurring_tasks').select('*').eq('category', 'home')
+    ]);
+    [tasks, rules].forEach(r=>{ if(r.error) throw r.error; });
+    HM.tasks = tasks.data || [];
+    HM.rules = (rules.data || []).filter(r=> r.active !== false);
+    const ids = HM.rules.map(r=> r.id);
+    if(ids.length){
+      const c = await sb.from('recurring_completions').select('*').in('recurring_id', ids);
+      if(c.error) throw c.error;
+      HM.comps = c.data || [];
+    } else HM.comps = [];
+    HM.done = new Set(HM.comps.map(c=> c.recurring_id + '|' + c.date));
+    if(!HM.ref){ HM.ref = _dayOnly(new Date()); HM.sel = _dayOnly(new Date()); HM.statRef = _dayOnly(new Date()); }
+    HM.loaded = true;
+    hmPaint();
+  }catch(err){ showError(body, err, loadChores); }
+}
+
+/* ---------- items: one-time chores + repeating occurrences ---------- */
+function hmTaskItem(t){
+  return { key:'t:' + t.id, type:'task', id:t.id, title:t.title, date:t.due_date || null, start:lnT5(t.due_time), end:lnT5(t.end_time), done:!!t.completed, raw:t };
+}
+function hmRecItem(r, d){
+  const k = iso(d);
+  return { key:'r:' + r.id + '|' + k, type:'rec', id:r.id, title:r.title, date:k, start:lnT5(r.start_time), end:lnT5(r.end_time), done: HM.done.has(r.id + '|' + k), raw:r };
+}
+function hmItems(from, to){
+  const a = iso(from), b = iso(to), out = [];
+  HM.tasks.forEach(t=>{ if(t.due_date && t.due_date >= a && t.due_date <= b) out.push(hmTaskItem(t)); });
+  HM.rules.forEach(r=>{ for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) if(occursOn(r, d)) out.push(hmRecItem(r, d)); });
+  return out.sort((x, y)=> (x.date || '').localeCompare(y.date || '') || (x.start || '99').localeCompare(y.start || '99') || x.title.localeCompare(y.title));
+}
+function hmFind(key){
+  if(key.startsWith('t:')){ const t = HM.tasks.find(x=> x.id === key.slice(2)); return t ? hmTaskItem(t) : null; }
+  const [id, date] = key.slice(2).split('|'), r = HM.rules.find(x=> x.id === id);
+  return r ? hmRecItem(r, parseISO(date)) : null;
+}
+// still open from before today: one-time chores, and the last missed repeat of each chore (it carries until it comes round again)
+function hmOverdue(){
+  const today = _dayOnly(new Date()), t0 = iso(today);
+  const late = HM.tasks.filter(t=> !t.completed && t.due_date && t.due_date < t0).map(hmTaskItem);
+  const { carried } = todayRecurring({ rules: HM.rules, completions: HM.comps }, today);
+  return late.concat(carried.filter(c=> !c.done).map(c=> hmRecItem(c.rule, c.date)))
+    .sort((a, b)=> a.date.localeCompare(b.date) || a.title.localeCompare(b.title));
+}
+
+/* ---------- painting ---------- */
+function hmPaint(){
+  if(!HM.loaded) return;
+  const tabs = [['schedule', 'Schedule'], ['stats', 'Statistics']];
+  $('hmBody').innerHTML = `<div class="fx-head"><h1 class="page-title">Home Tasks</h1></div>
+    <nav class="fx-tabs" role="tablist" aria-label="Home Tasks">${tabs.map(([k, l])=>
+      `<button type="button" role="tab" data-hmtab="${k}" class="${HM.tab === k ? 'on' : ''}" aria-selected="${HM.tab === k}">${l}</button>`).join('')}</nav>
+    <div class="ln2-tab">${HM.tab === 'stats' ? hmStatsHtml() : hmSchedHtml()}</div>`;
+}
+
+function hmRow(i, late){
+  const time = i.start ? `${i.start}${i.end ? '–' + i.end : ''}` : 'Any time';
+  const d = i.date ? parseISO(i.date) : null;
+  const tags = [late && d ? `<span class="ln2-tag hm-late">${esc(lnShort(d))}</span>` : '',
+                i.type === 'rec' ? `<span class="ln2-rep" title="${esc(repeatLabel(i.raw))}">${ico('repeat', 'ico-xs')}${esc(repeatLabel(i.raw))}</span>` : ''].join('');
+  return `<li class="ln2-row${i.done ? ' done' : ''}" data-key="${esc(i.key)}" draggable="true">
+    <button type="button" class="fx-check${i.done ? ' on' : ''}" data-hm="tick" role="checkbox" aria-checked="${i.done}" aria-label="${i.done ? 'Mark not done' : 'Mark done'}: ${esc(i.title)}">${ico('check')}</button>
+    <span class="ln2-time${i.start ? '' : ' any'}">${time}</span>
+    <button type="button" class="ln2-main" data-hm="edit" aria-label="Edit ${esc(i.title)}"><b>${esc(i.title)}</b>${tags ? `<span class="ln2-tags">${tags}</span>` : ''}</button>
+    <span class="fx-acts"><button type="button" data-hm="move" aria-label="Move ${esc(i.title)} to another day" title="Move to another day">${ico('swap')}</button>
+      <button type="button" data-hm="del" aria-label="Delete ${esc(i.title)}" title="Delete">${ico('trash')}</button></span>
+  </li>`;
+}
+
+/* ---------- A. schedule ---------- */
+function hmSchedHtml(){
+  const today = _dayOnly(new Date()), sel = HM.sel;
+  let cal, label;
+  if(HM.cal === 'month'){
+    const first = new Date(HM.ref.getFullYear(), HM.ref.getMonth(), 1), start = mondayOf(first);
+    const last = new Date(HM.ref.getFullYear(), HM.ref.getMonth() + 1, 0), end = addDays(mondayOf(last), 6);
+    const items = hmItems(start, end);
+    label = `${MONTHS_FULL[first.getMonth()]} ${first.getFullYear()}`;
+    cal = `<div class="fx-mgrid">${DAY_SHORT.map(d=>`<span class="fx-mh">${d}</span>`).join('')}` +
+      Array.from({ length: Math.round((end - start) / 864e5) + 1 }, (_, i)=>{
+        const d = addDays(start, i), k = iso(d), its = items.filter(x=> x.date === k), other = d.getMonth() !== first.getMonth();
+        return `<button type="button" class="fx-mday ${lnDayState(its, d, today)}${other ? ' other' : ''}${sameDay(d, today) ? ' today' : ''}${sameDay(d, sel) ? ' sel' : ''}"
+          data-hmday="${k}" aria-pressed="${sameDay(d, sel)}" aria-label="${esc(lnDayName(d))}${its.length ? ', ' + plural(its.length, 'chore') : ''}">${d.getDate()}</button>`;
+      }).join('') + '</div>';
+  } else {
+    const mon = mondayOf(HM.ref), sun = addDays(mon, 6), items = hmItems(mon, sun);
+    label = `${lnShort(mon)} – ${lnShort(sun)}`;
+    cal = `<div class="fx-strip ln2-strip">` + Array.from({ length:7 }, (_, i)=>{
+      const d = addDays(mon, i), k = iso(d), its = items.filter(x=> x.date === k);
+      return `<button type="button" class="fx-sday ${lnDayState(its, d, today)}${sameDay(d, today) ? ' today' : ''}${sameDay(d, sel) ? ' sel' : ''}" data-hmday="${k}"
+        aria-pressed="${sameDay(d, sel)}" aria-label="${esc(lnDayName(d))}${its.length ? ', ' + plural(its.length, 'chore') : ''}"><small>${DAY_SHORT[i]}</small><b>${d.getDate()}</b>
+        <span class="fx-dots">${its.slice(0, 4).map(x=> `<i class="${x.done ? 'on' : ''}"></i>`).join('')}</span></button>`;
+    }).join('') + '</div>' + (items.length ? `<div class="ln2-wk">${Array.from({ length:7 }, (_, i)=>{
+      const d = addDays(mon, i), its = items.filter(x=> x.date === iso(d));
+      return `<div class="ln2-wkd${sameDay(d, sel) ? ' sel' : ''}" data-hmday="${iso(d)}">${its.map(x=>
+        `<button type="button" class="ln2-wkc${x.done ? ' done' : ''}${!x.done && d < today ? ' miss' : ''}" data-hmday="${iso(d)}" title="${esc(x.title)}${x.start ? ' · ' + x.start : ''}">
+          <small>${x.start || 'Any time'}</small><b>${esc(x.title)}</b></button>`).join('')}</div>`;
+    }).join('')}</div>` : '');
+  }
+  const dayItems = hmItems(sel, sel), isT = sameDay(sel, today);
+  const late = isT ? hmOverdue() : [];
+  const undated = HM.tasks.filter(t=> !t.due_date && !t.completed).map(hmTaskItem);
+  const nDone = dayItems.filter(i=> i.done).length;
+  const showToday = HM.cal === 'month' ? !(HM.ref.getMonth() === today.getMonth() && HM.ref.getFullYear() === today.getFullYear()) : !sameDay(mondayOf(HM.ref), mondayOf(today));
+  const list = (its, l) => `<ul class="ln2-day">${its.map(i=> hmRow(i, l)).join('')}</ul>`;
+  return `<div class="ln2-sched">
+    <section class="fx-card"><div class="fx-card-h wrap"><h2>Calendar</h2><span class="spacer"></span>
+      <div class="fx-seg sm" role="group" aria-label="Calendar view"><button type="button" data-hmcal="week" class="${HM.cal === 'week' ? 'on' : ''}" aria-pressed="${HM.cal === 'week'}">Week</button><button type="button" data-hmcal="month" class="${HM.cal === 'month' ? 'on' : ''}" aria-pressed="${HM.cal === 'month'}">Month</button></div></div>
+      <div class="fx-nav"><button type="button" class="fx-arrow-btn" data-hm="prev" aria-label="Previous ${HM.cal}">${ico('chevL')}</button>
+        <span class="fx-nav-l" aria-live="polite">${label}</span>
+        <button type="button" class="fx-arrow-btn" data-hm="next" aria-label="Next ${HM.cal}">${ico('chevR')}</button>
+        ${showToday ? `<button type="button" class="fx-pill-btn" data-hm="today">Today</button>` : ''}</div>
+      ${cal}
+      <div class="fx-legend"><span><i class="lg-done"></i>All done</span><span><i class="lg-plan"></i>Planned</span><span><i class="lg-miss"></i>Missed</span></div>
+    </section>
+    <section class="fx-card ln2-dayc"><div class="fx-card-h"><div><h2>${isT ? 'Today' : esc(sel.toLocaleDateString(undefined, { weekday:'long' }))}</h2>
+        <p class="fx-sub">${esc(sel.toLocaleDateString(undefined, { day:'numeric', month:'long', year:'numeric' }))}${dayItems.length ? ` · ${nDone} of ${plural(dayItems.length, 'chore')} done` : ''}</p></div><span class="spacer"></span>
+        <button type="button" class="btn btn-ghost btn-sm" data-hm="add" data-date="${iso(sel)}">${ico('plus')}Add</button></div>
+      ${late.length ? `<h3 class="ln2-h3 hm-h3-late">Overdue · ${late.length}</h3>${list(late, true)}${dayItems.length ? `<h3 class="ln2-h3">Today</h3>` : ''}` : ''}
+      ${dayItems.length ? list(dayItems) : late.length ? '' : `<div class="fx-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>${isT ? 'Nothing today' : 'Nothing on this day'}</b></div>`}
+      ${undated.length ? `<details class="ln2-donef hm-undated"><summary>No date · ${undated.length}</summary>${list(undated)}</details>` : ''}
+      <p class="ln2-hint">Tip: drag a chore onto another day in the calendar to move it.</p>
+    </section></div>`;
+}
+
+/* ---------- B. statistics ---------- */
+function hmStatRange(){
+  const r = HM.statRef;
+  if(HM.stat === 'month'){ const a = new Date(r.getFullYear(), r.getMonth(), 1), b = new Date(r.getFullYear(), r.getMonth() + 1, 0); return [a, b, `${MONTHS_FULL[a.getMonth()]} ${a.getFullYear()}`]; }
+  const a = mondayOf(r), b = addDays(a, 6); return [a, b, `${lnShort(a)} – ${lnShort(b)}`];
+}
+const hmPct = (d, n)=> n ? Math.round(d / n * 100) : 0;
+function hmStatsHtml(){
+  const [a, b, label] = hmStatRange(), today = _dayOnly(new Date()), t0 = iso(today);
+  const items = hmItems(a, b);
+  const done = items.filter(i=> i.done).length;
+  const missed = items.filter(i=> !i.done && i.date < t0).length;
+  const pending = items.filter(i=> !i.done && i.date >= t0).length;
+  const due = items.filter(i=> i.date <= t0), dueDone = due.filter(i=> i.done).length;
+  const overdueNow = hmOverdue().length;
+  // per day: planned vs done
+  const days = Array.from({ length: Math.round((b - a) / 864e5) + 1 }, (_, i)=> addDays(a, i));
+  const per = days.map(d=>{ const its = items.filter(x=> x.date === iso(d)); return { d, n: its.length, dn: its.filter(x=> x.done).length }; });
+  const max = Math.max(3, ...per.map(x=> x.n));
+  const chart = `<div class="fx-chart${HM.stat === 'month' ? ' ln2-mchart' : ''}">${per.map(x=>
+    `<div class="fx-col${sameDay(x.d, today) ? ' cur' : ''}${x.n ? '' : ' empty'}" tabindex="0" data-tip="${esc(lnShort(x.d))}: ${x.dn} of ${plural(x.n, 'chore')} done" aria-label="${esc(lnShort(x.d))}: ${x.dn} of ${plural(x.n, 'chore')} done">
+      <span class="fx-col-plot">${x.n ? `<i class="pl" style="height:${x.n / max * 100}%"></i>` : ''}${x.dn ? `<i class="dn" style="height:${x.dn / max * 100}%"></i>` : ''}</span>
+      <small>${HM.stat === 'month' ? (x.d.getDate() === 1 || x.d.getDate() % 5 === 0 ? x.d.getDate() : '') : DAY_SHORT[(x.d.getDay() + 6) % 7]}</small></div>`).join('')}</div>
+    <div class="fx-legend"><span><i class="lg-bar"></i>Done</span><span><i class="lg-track"></i>Planned</span></div>`;
+  // repeating chores: how often each one got done when it came round (up to today)
+  const reps = HM.rules.map(r=>{
+    let n = 0, d0 = 0;
+    for(let d = _dayOnly(a); d <= b && d <= today; d = addDays(d, 1)) if(occursOn(r, d)){ n++; if(HM.done.has(r.id + '|' + iso(d))) d0++; }
+    return { r, n, d: d0 };
+  }).filter(x=> x.n).sort((x, y)=> hmPct(y.d, y.n) - hmPct(x.d, x.n) || x.r.title.localeCompare(y.r.title));
+  // the last 12 weeks: share of chores done
+  const w0 = addDays(mondayOf(today), -77), hist = hmItems(w0, addDays(mondayOf(today), 6));
+  const weeks = Array.from({ length:12 }, (_, i)=>{ const m = addDays(w0, i * 7), e = addDays(m, 6), its = hist.filter(x=> x.date >= iso(m) && x.date <= iso(e));
+    return { m, n: its.length, dn: its.filter(x=> x.done).length }; });
+  const wmax = Math.max(3, ...weeks.map(x=> x.n));
+  const isNow = today >= a && today <= b;
+  return `<section class="fx-card"><div class="fx-card-h wrap"><h2>Statistics</h2><span class="spacer"></span>
+      <div class="fx-seg sm" role="group" aria-label="Period">${[['week', 'Weekly'], ['month', 'Monthly']].map(([k, l])=> `<button type="button" data-hmstat="${k}" class="${HM.stat === k ? 'on' : ''}" aria-pressed="${HM.stat === k}">${l}</button>`).join('')}</div></div>
+    <div class="fx-nav fx-nav-c"><button type="button" class="fx-arrow-btn" data-hm="sprev" aria-label="Previous ${HM.stat}">${ico('chevL')}</button><span class="fx-nav-l">${label}</span>
+      <button type="button" class="fx-arrow-btn" data-hm="snext" aria-label="Next ${HM.stat}">${ico('chevR')}</button>${isNow ? '' : `<button type="button" class="fx-pill-btn" data-hm="snow">Now</button>`}</div>
+    <div class="fx-hero"><div class="fx-hero-h"><b>Chores</b><span>${HM.stat === 'week' ? 'Total for the week' : 'Total for the month'}</span></div>
+      <div class="fx-hero-g">
+        <div><small>Done</small><b>${done}<em>/${items.length}</em></b><small>${items.length ? hmPct(done, items.length) + '% of planned' : 'nothing planned'}</small></div>
+        <div><small>Done so far</small><b>${due.length ? hmPct(dueDone, due.length) + '%' : '—'}</b><small>${due.length ? `${dueDone} of ${plural(due.length, 'chore')} due by now` : 'nothing due yet'}</small></div>
+        <div><small>Still to do</small><b>${pending}</b><small>${plural(missed, 'missed day')}${isNow && overdueNow ? ` · ${overdueNow} overdue now` : ''}</small></div>
+      </div>
+      <div class="fx-bar"><i style="width:${hmPct(done, items.length)}%"></i></div></div>
+    <div class="ln2-chart">${chart}</div></section>
+  <div class="fx-two">
+    <section class="fx-card"><div class="fx-card-h"><h2>Repeating chores</h2><span class="spacer"></span><span class="fx-count">${label}</span></div>
+      ${reps.length ? `<div class="fx-goal-rows">${reps.map(x=> `<div class="fx-goal-row"><div><span>${esc(x.r.title)}</span><b>${x.d}/${x.n} · ${hmPct(x.d, x.n)}%</b></div>
+        <div class="fx-bar"><i style="width:${hmPct(x.d, x.n)}%"></i></div></div>`).join('')}</div>` : `<p class="ln2-none">No repeating chores came round in this period yet.</p>`}</section>
+    <section class="fx-card"><div class="fx-card-h"><h2>Last 12 weeks</h2><span class="spacer"></span><span class="fx-count">chores done</span></div>
+      <div class="fx-chart">${weeks.map((x, i)=> `<div class="fx-col${i === 11 ? ' cur' : ''}${x.n ? '' : ' empty'}" tabindex="0" data-tip="Week of ${esc(lnShort(x.m))}: ${x.dn} of ${plural(x.n, 'chore')} done" aria-label="Week of ${esc(lnShort(x.m))}: ${x.dn} of ${plural(x.n, 'chore')} done">
+        <span class="fx-col-plot">${x.n ? `<i class="pl" style="height:${x.n / wmax * 100}%"></i>` : ''}${x.dn ? `<i class="dn" style="height:${x.dn / wmax * 100}%"></i>` : ''}</span>
+        <small>${i % 2 ? '' : x.m.getDate() + '/' + (x.m.getMonth() + 1)}</small></div>`).join('')}</div>
+      <div class="fx-legend"><span><i class="lg-bar"></i>Done</span><span><i class="lg-track"></i>Planned</span></div></section>
+  </div>`;
+}
+
+/* ---------- tick, move, delete ---------- */
+async function hmTick(it){
+  const done = !it.done;
+  let error;
+  if(it.type === 'task'){
+    const at = done ? new Date().toISOString() : null;
+    ({ error } = await sb.from('tasks').update({ completed: done, completed_at: at }).eq('id', it.id));
+    if(!error){ it.raw.completed = done; it.raw.completed_at = at; }
+  } else {
+    ({ error } = done ? await sb.from('recurring_completions').insert({ user_id: USER.id, recurring_id: it.id, date: it.date })
+                      : await sb.from('recurring_completions').delete().eq('recurring_id', it.id).eq('date', it.date));
+    if(!error){
+      const k = it.id + '|' + it.date;
+      if(done){ HM.done.add(k); HM.comps.push({ recurring_id: it.id, date: it.date, created_at: new Date().toISOString() }); }
+      else { HM.done.delete(k); HM.comps = HM.comps.filter(c=> !(c.recurring_id === it.id && c.date === it.date)); }
+    }
+  }
+  if(error) return fail(error, 'Could not save');
+  if(done) toast('Nice — marked done');
+  hmPaint(); refreshBadge();
+  setTimeout(dataChanged, 300);
+}
+// one occurrence of a repeating chore moves as its own task; the series skips that day
+async function hmMoveTo(it, dateISO){
+  if(!it || it.date === dateISO) return;
+  let error;
+  if(it.type === 'task') ({ error } = await sb.from('tasks').update({ due_date: dateISO }).eq('id', it.id));
+  else {
+    const r = it.raw, skip = [...new Set([...(r.skip_dates || []), it.date])].sort();
+    ({ error } = await sb.from('recurring_tasks').update({ skip_dates: skip }).eq('id', r.id));
+    if(!error) ({ error } = await sb.from('tasks').insert({ user_id: USER.id, title: r.title, category:'home', kind:'one-off',
+      due_date: dateISO, due_time: r.start_time || null, end_time: r.end_time || null, completed:false }));
+  }
+  if(error) return fail(error, 'Could not move it');
+  toast(`Moved to ${lnShort(parseISO(dateISO))}`);
+  HM.sel = parseISO(dateISO);
+  dataChanged();
+}
+function hmMoveForm(it){
+  openForm({
+    title: it.date ? 'Move to another day' : 'Pick a day',
+    rows: [[{ type:'note', text: it.title }], [{ id:'hmmDate', type:'date', label:'Day', value: it.date || iso(new Date()) }]],
+    actions: [{ label:'Move', value:'ok' }],
+    onSubmit: v=>{
+      if(!v.hmmDate){ toast('Pick a day', true); return false; }
+      setTimeout(()=> hmMoveTo(it, v.hmmDate), 0);
+    }
+  });
+}
+async function hmDelete(it){
+  if(it.type === 'rec') return deleteRecurring(it.raw, it.date);
+  const yes = await askConfirm({ title:'Delete this chore?', message:`"${it.title}" will be removed everywhere. This can't be undone.`, ok:'Delete' });
+  if(!yes) return;
+  const { error } = await sb.from('tasks').delete().eq('id', it.id);
+  if(error) return fail(error, 'Could not delete');
+  toast('Deleted'); dataChanged();
+}
+
+/* ---------- one listener for the page ---------- */
+$('hmBody').addEventListener('click', e=>{
+  const t = e.target;
+  const tab = t.closest('[data-hmtab]');
+  if(tab){ HM.tab = tab.dataset.hmtab; hmPaint(); return; }
+  const cv = t.closest('[data-hmcal]');
+  if(cv){ HM.cal = cv.dataset.hmcal; HM.ref = HM.sel; hmPaint(); return; }
+  const sv = t.closest('[data-hmstat]');
+  if(sv){ HM.stat = sv.dataset.hmstat; hmPaint(); return; }
+  const day = t.closest('[data-hmday]');
+  if(day && !t.closest('[data-hm]')){ HM.sel = parseISO(day.dataset.hmday); if(HM.cal === 'week') HM.ref = HM.sel; hmPaint(); return; }
+  const b = t.closest('[data-hm]');
+  if(!b) return;
+  const act = b.dataset.hm, row = b.closest('[data-key]'), it = row ? hmFind(row.dataset.key) : null;
+  switch(act){
+    case 'add': return openTaskForm(null, { category:'home', date: b.dataset.date || iso(HM.sel) });
+    case 'prev': case 'next': {
+      const dir = act === 'prev' ? -1 : 1;
+      if(HM.cal === 'week'){ HM.ref = addDays(HM.ref, dir * 7); HM.sel = addDays(HM.sel, dir * 7); }
+      else { HM.ref = new Date(HM.ref.getFullYear(), HM.ref.getMonth() + dir, 1); const t0 = _dayOnly(new Date());
+        HM.sel = (t0.getFullYear() === HM.ref.getFullYear() && t0.getMonth() === HM.ref.getMonth()) ? t0 : HM.ref; }
+      hmPaint(); return;
+    }
+    case 'today': HM.ref = _dayOnly(new Date()); HM.sel = HM.ref; hmPaint(); return;
+    case 'sprev': case 'snext': {
+      const dir = act === 'sprev' ? -1 : 1, r = HM.statRef;
+      HM.statRef = HM.stat === 'week' ? addDays(r, dir * 7) : new Date(r.getFullYear(), r.getMonth() + dir, 1);
+      hmPaint(); return;
+    }
+    case 'snow': HM.statRef = _dayOnly(new Date()); hmPaint(); return;
+    case 'tick': if(it) hmTick(it); return;
+    case 'edit': if(it) openItem({ ...it, date: it.date }); return;
+    case 'move': if(it) hmMoveForm(it); return;
+    case 'del': if(it) hmDelete(it); return;
+  }
+});
+// drag a chore onto a day in the calendar to move it there
+$('hmBody').addEventListener('dragstart', e=>{
+  const row = e.target.closest && e.target.closest('.ln2-row[data-key]');
+  if(!row) return;
+  e.dataTransfer.setData('text/plain', row.dataset.key); e.dataTransfer.effectAllowed = 'move';
+  row.classList.add('is-drag'); document.body.classList.add('ln2-dragging');
+});
+$('hmBody').addEventListener('dragend', ()=>{
+  document.body.classList.remove('ln2-dragging');
+  $('hmBody').querySelectorAll('.is-drag, .is-over').forEach(x=> x.classList.remove('is-drag', 'is-over'));
+});
+$('hmBody').addEventListener('dragover', e=>{
+  const d = e.target.closest && e.target.closest('.fx-sday[data-hmday], .fx-mday[data-hmday]');
+  if(!d || !document.body.classList.contains('ln2-dragging')) return;
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+  $('hmBody').querySelectorAll('.is-over').forEach(x=> x !== d && x.classList.remove('is-over'));
+  d.classList.add('is-over');
+});
+$('hmBody').addEventListener('drop', e=>{
+  const d = e.target.closest && e.target.closest('.fx-sday[data-hmday], .fx-mday[data-hmday]');
+  if(!d) return;
+  e.preventDefault();
+  const it = hmFind(e.dataTransfer.getData('text/plain'));
+  document.body.classList.remove('ln2-dragging');
+  hmMoveTo(it, d.dataset.hmday);
 });
 
 function loadSettings(){

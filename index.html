@@ -2355,7 +2355,15 @@
   .mrow b{color:var(--foreground);text-align:right;font-variant-numeric:tabular-nums;}
 
   /* ---------- settings ---------- */
-  .set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;align-items:start;}
+  .set-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start;max-width:1180px;}
+  .set-col{display:flex;flex-direction:column;gap:16px;min-width:0;}
+  .set-col > .card{margin:0;padding:16px 18px;}
+  @media (max-width:900px){ .set-grid{grid-template-columns:minmax(0,1fr);} }
+  .set-grid .card-head{margin-bottom:6px;}
+  .set-grid .set-row{padding:8px 0;min-height:44px;}
+  .set-grid .set-row-stack{padding-top:4px;}
+  .set-lt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .set-lt small{font-size:12px;color:var(--muted-foreground);line-height:1.35;}
   .set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--panel-line);}
   .set-row:last-child{border-bottom:none;}
   .set-row label, .set-row .sl{font-size:13.5px;color:var(--foreground);font-weight:600;}
@@ -4664,6 +4672,29 @@
   .fx-active .fx-legend{margin-top:10px;}
   .fx-cycrow{margin:14px -6px -6px;padding:12px 10px;border-radius:16px;background:var(--muted);width:calc(100% + 12px);}
   .fx-cycrow .fx-mlink-ico{width:38px;height:38px;}
+  .fx-pdot{position:absolute;left:50%;bottom:3px;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--cat-home);box-shadow:0 0 0 1.5px var(--card);pointer-events:none;}
+  .fx-legend .lg-pdot{width:8px;height:8px;background:var(--cat-home);}
+  /* cycle page: compact summary on top, calendar as the main control */
+  .fx-cyc-sum{padding:16px 20px;}
+  .fx-cyc-sg{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:8px 18px;align-items:center;}
+  .fx-cyc-sg > div{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .fx-cyc-sg > div + div{padding-left:18px;border-left:1px solid rgba(var(--foreground-rgb),.12);}
+  .fx-cyc-sg small{font-size:11.5px;font-weight:600;opacity:.72;}
+  .fx-cyc-sg b{font-size:20px;font-weight:800;}
+  .fx-cyc-sg b em{font-style:normal;font-size:12.5px;font-weight:600;opacity:.75;}
+  .fx-cyc-day b{font-size:22px;}
+  .fx-cyc-day span{font-size:12.5px;opacity:.8;}
+  .fx-cyc-sum .fx-hero-f{margin-top:12px;}
+  .fx-cyc > .fx-cyc-cal{margin-top:var(--fx-gap);}
+  .fx-cyc-cal .fx-mgrid{gap:8px 6px;}
+  .fx-cyc-cal .fx-mday{max-width:46px;font-size:13.5px;}
+  @media (max-width:760px){
+    .fx-cyc-sg{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 10px;}
+    .fx-cyc-sg .fx-cyc-day{grid-column:1/-1;}
+    .fx-cyc-sg > div + div{padding-left:0;border-left:0;}
+    .fx-cyc-sg > div:nth-child(n+3){padding-left:10px;border-left:1px solid rgba(var(--foreground-rgb),.12);}
+    .fx-cyc-sg b{font-size:17px;}
+  }
   @media (max-width:760px){ .ln2-row.fx-drow{flex-wrap:nowrap;align-items:center;} .ln2-row.fx-drow > *{order:0 !important;} .ln2-row.fx-drow > .fx-acts{margin-left:0;} .ln2-row.fx-drow > .ln2-main{flex:1 1 auto;padding-left:0;} .fx-drow .fx-acts button{width:28px;} }
   @media (max-width:1024px){
     .fx-grid{grid-template-columns:minmax(0,1fr);}
@@ -4959,11 +4990,6 @@
         <h1 class="page-title">Fitness</h1>
         <span class="spacer"></span>
         <button type="button" class="fx-inj" id="fxInj" aria-haspopup="dialog"><i></i><span>Tracking on</span></button>
-        <div class="fx-quick" role="group" aria-label="Quick add">
-          <button type="button" class="btn btn-ghost btn-sm" data-fxq="workout"><i data-ico="plus"></i>Workout</button>
-          <button type="button" class="btn btn-ghost btn-sm" data-fxq="run"><i data-ico="plus"></i>Run</button>
-          <button type="button" class="btn btn-ghost btn-sm" data-fxq="meal"><i data-ico="plus"></i>Meal</button>
-        </div>
       </div>
       <nav class="fx-tabs" id="fxTabs" role="tablist" aria-label="Fitness sections">
         <button type="button" role="tab" data-fxtab="overview" class="on">Overview</button>
@@ -7453,7 +7479,7 @@ function fxOvHtml(){
       <span class="fx-nav-l">${esc((FX.calRef || FX.sel).toLocaleDateString(undefined, { month:'long' }))}</span>
       <button type="button" class="fx-arrow-btn" data-a="mon" data-n="1" aria-label="Next month">${ico('chevR')}</button></div></div>
     ${fxMonthGrid(FX.calRef || FX.sel)}
-    ${fxLegend([['done','Done'],['plan','Planned'],['miss','Missed'],['paused','Paused']])}
+    ${fxLegend([['done','Done'],['plan','Planned'],['miss','Missed'],['paused','Paused']].concat(fxShowCycle() && FX.D.cycles.length ? [['pdot','Period']] : []))}
     ${showCyc ? `<button type="button" class="fx-mlink fx-cycrow" data-a="tab" data-t="cycle"><span class="fx-mlink-ico cyc">${ico('drop')}</span>
       <div><b>${cyc.day ? 'Cycle day ' + cyc.day : 'Cycle tracking'}</b><span>${cyc.next ? 'Next period predicted ' + fxShort(parseISO(cyc.next)) : 'Log two periods for a prediction'}</span></div>
       <span class="fx-go sm">${ico('arrowUR')}</span></button>` : ''}
@@ -7471,11 +7497,13 @@ function fxMonthGrid(ref){
   const m0 = new Date(ref.getFullYear(), ref.getMonth(), 1), start = mondayOf(m0), t0 = iso(new Date()), si = iso(FX.sel);
   const end = new Date(ref.getFullYear(), ref.getMonth() + 1, 0);
   const weeks = Math.ceil(((end - start) / 86400000 + 1) / 7);
+  const per = fxShowCycle() ? fxPeriodDays(fxCycleInfo()) : null;   /* recorded period days only, never predictions */
   let h = `<div class="fx-mgrid" role="grid">` + DAY_SHORT.map(d=>`<span class="fx-mh">${d}</span>`).join('');
   for(let i = 0; i < weeks * 7; i++){
     const d = addDays(start, i), di = iso(d), other = d.getMonth() !== ref.getMonth();
     const st = other ? '' : fxDayState(FX.S.filter(s=>s.date === di), FX.C, di);
-    h += `<button type="button" class="fx-mday s-${st || 'none'}${other ? ' other' : ''}${di === t0 ? ' today' : ''}${di === si ? ' sel' : ''}" data-a="day" data-d="${di}" aria-label="${esc(d.toDateString())}${st ? ', ' + st : ''}">${d.getDate()}</button>`;
+    const p = per && !other && per.has(di);
+    h += `<button type="button" class="fx-mday s-${st || 'none'}${other ? ' other' : ''}${di === t0 ? ' today' : ''}${di === si ? ' sel' : ''}" data-a="day" data-d="${di}" aria-label="${esc(d.toDateString())}${st ? ', ' + st : ''}${p ? ', period' : ''}">${d.getDate()}${p ? '<i class="fx-pdot"></i>' : ''}</button>`;
   }
   return h + '</div>';
 }
@@ -7873,6 +7901,7 @@ function fxCycleInfo(){
   }
   return { cyc, lens, avgCycle, avgPeriod, last, day, next, late, preds };
 }
+const fxShowCycle = ()=> PREFS.fitCycleOverview !== false;
 function fxPeriodDays(info){
   const t0 = iso(new Date()), set = new Set();
   info.cyc.forEach(c=>{
@@ -7899,49 +7928,26 @@ function fxCycHtml(){
     grid += `<button type="button" class="fx-mday ${cls}${other ? ' other' : ''}${di === t0 ? ' today' : ''}" data-a="cday" data-d="${di}" aria-label="${esc(lbl)}">${d.getDate()}${lg ? '<i class="fx-ldot"></i>' : ''}</button>`;
   }
   grid += '</div>';
-  const open = info.cyc.filter(c=>!c.end_date && c.start_date <= t0).pop();
-  const recent = D.cdays.filter(c=>c.date <= t0 && ((c.symptoms || []).length || c.energy)).slice(-3).reverse();
-  const history = info.cyc.slice().reverse().map((c, idx, arr)=>{
-    const i = info.cyc.indexOf(c), nxt = info.cyc[i + 1];
-    const len = nxt ? fxDiff(nxt.start_date, c.start_date) : null;
-    const plen = c.end_date ? fxDiff(c.end_date, c.start_date) + 1 : null;
-    return `<button type="button" class="fx-tr" role="row" data-a="cycedit" data-id="${c.id}">
-      <span role="cell">${esc(parseISO(c.start_date).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }))}</span>
-      <span role="cell">${plen ? plen + ' days' : c.start_date <= t0 && !c.end_date && fxDiff(t0, c.start_date) <= 9 ? 'ongoing' : '—'}</span>
-      <span role="cell">${len ? len + ' days' : 'current'}</span></button>`;
-  }).join('');
+  const disc = info.next
+    ? (info.late ? `Expected about ${info.late} day${info.late === 1 ? '' : 's'} ago. Predictions are estimates from your past ${info.lens.length} cycle${info.lens.length === 1 ? '' : 's'}.`
+                 : `Estimated from your last ${Math.min(6, info.lens.length)} cycle${info.lens.length === 1 ? '' : 's'}. It's a prediction, not a certainty.`)
+    : 'Predictions appear once you have logged two period starts.';
   return `<div class="fx-cyc">
-    <div class="fx-cyc-top">
-      <section class="fx-card fx-hero fx-cyc-sum">
-        <div class="fx-hero-h"><b>${info.day ? 'Cycle day ' + info.day : 'Cycle tracking'}</b><span>${info.last ? 'Last period started ' + fxShort(parseISO(info.last.start_date)) : 'Log your first period to begin'}</span></div>
-        <div class="fx-hero-g">
-          <div><small>Average cycle</small><b>${info.avgCycle ? info.avgCycle + '<em> days</em>' : '—'}</b></div>
-          <div><small>Average period</small><b>${info.avgPeriod ? info.avgPeriod + '<em> days</em>' : '—'}</b></div>
-          <div><small>Next period · prediction</small><b>${info.next ? esc(fxShort(parseISO(info.next))) : '—'}</b></div>
-        </div>
-        <div class="fx-hero-f">${info.next
-          ? (info.late ? `Expected about ${info.late} day${info.late === 1 ? '' : 's'} ago. Predictions are estimates from your past ${info.lens.length} cycle${info.lens.length === 1 ? '' : 's'}.`
-                       : `Estimated from your last ${Math.min(6, info.lens.length)} cycle${info.lens.length === 1 ? '' : 's'}. It's a prediction, not a certainty.`)
-          : 'Predictions appear once you have logged two period starts.'}</div>
-        ${recent.length ? `<div class="fx-cyc-notes"><small>Recently logged</small>${recent.map(c=>`<button type="button" data-a="cday" data-d="${c.date}"><b>${esc(fxShort(parseISO(c.date)))}</b><span>${esc([(c.symptoms || []).join(', '), c.energy ? 'energy ' + FX_ENERGY[c.energy - 1].toLowerCase() : ''].filter(Boolean).join(' · '))}</span></button>`).join('')}</div>` : ''}
-        <div class="fx-hero-a">
-          ${open ? `<button type="button" class="btn btn-ghost btn-sm" data-a="perend">Period ended today</button>` : `<button type="button" class="btn btn-ghost btn-sm" data-a="perstart">Period started today</button>`}
-          <button type="button" class="btn btn-ghost btn-sm" data-a="cday" data-d="${t0}">Log today</button></div>
-      </section>
-      <section class="fx-card fx-cyc-cal">
-        <div class="fx-card-h"><h2>${esc(ref.toLocaleDateString(undefined, { month:'long', year:'numeric' }))}</h2><span class="spacer"></span>
-          <div class="fx-nav sm"><button type="button" class="fx-arrow-btn" data-a="cmon" data-n="-1" aria-label="Previous month">${ico('chevL')}</button>
-          <button type="button" class="fx-arrow-btn" data-a="cmon" data-n="1" aria-label="Next month">${ico('chevR')}</button></div></div>
-        ${grid}
-        ${fxLegend([['per','Period'],['pred','Predicted'],['log','Symptoms logged']])}
-      </section>
-    </div>
-    <section class="fx-card">
-      <div class="fx-card-h"><h2>Cycle history</h2><span class="spacer"></span><button type="button" class="btn btn-ghost btn-sm" data-a="cycadd">${ico('plus','ico-sm')}Add past period</button></div>
-      ${info.cyc.length ? `<div class="fx-table cyc" role="table"><div class="fx-tr th" role="row"><span role="columnheader">Started</span><span role="columnheader">Period</span><span role="columnheader">Cycle length</span></div>${history}</div>`
-        : fxEmpty('No cycles logged', 'Tap a day in the calendar, or add a past period.', '')}
-      <div class="fx-priv-r"><div><b>Show on the Fitness overview</b><span>Only you can see this data. Turn this off to keep it on this tab only.</span></div>
-      <button type="button" class="switch" role="switch" data-a="cycpriv" aria-checked="${PREFS.fitCycleOverview !== false}" aria-label="Show cycle on overview"></button></div>
+    <section class="fx-card fx-hero fx-cyc-sum">
+      <div class="fx-cyc-sg">
+        <div class="fx-cyc-day"><b>${info.day ? 'Cycle day ' + info.day : 'Cycle tracking'}</b><span>${info.last ? 'Last period started ' + esc(fxShort(parseISO(info.last.start_date))) : 'Tap a day in the calendar to log a period'}</span></div>
+        <div><small>Average cycle</small><b>${info.avgCycle ? info.avgCycle + '<em> days</em>' : '—'}</b></div>
+        <div><small>Average period</small><b>${info.avgPeriod ? info.avgPeriod + '<em> days</em>' : '—'}</b></div>
+        <div><small>Next period · prediction</small><b>${info.next ? esc(fxShort(parseISO(info.next))) : '—'}</b></div>
+      </div>
+      <div class="fx-hero-f">${disc}</div>
+    </section>
+    <section class="fx-card fx-cyc-cal">
+      <div class="fx-card-h"><h2>${esc(ref.toLocaleDateString(undefined, { month:'long', year:'numeric' }))}</h2><span class="spacer"></span>
+        <div class="fx-nav sm"><button type="button" class="fx-arrow-btn" data-a="cmon" data-n="-1" aria-label="Previous month">${ico('chevL')}</button>
+        <button type="button" class="fx-arrow-btn" data-a="cmon" data-n="1" aria-label="Next month">${ico('chevR')}</button></div></div>
+      ${grid}
+      ${fxLegend([['per','Period'],['pred','Predicted'],['log','Symptoms logged']])}
     </section>
   </div>`;
 }
@@ -8672,6 +8678,55 @@ async function fxPeriodEnd(di){
     toast('Period end saved'); await fxReload();
   }catch(err){ fail(err, 'Could not save'); }
 }
+/* tapping a cycle calendar day: a small menu with only the actions that fit that day */
+let FX_CM = null;
+function fxCycMenu(di, btn){
+  fxCycMenuClose();
+  let m = $('fxCycMenu');
+  if(!m){
+    m = document.createElement('div'); m.id = 'fxCycMenu'; m.className = 'at-menu'; m.setAttribute('role', 'menu'); m.hidden = true;
+    document.body.appendChild(m);
+    m.addEventListener('click', async e=>{
+      const b = e.target.closest('[data-cm]'); if(!b || !FX_CM) return;
+      e.stopPropagation();
+      const { di, c } = FX_CM, a = b.dataset.cm; fxCycMenuClose();
+      if(a === 'start') await fxPeriodStart(di);
+      else if(a === 'end') await fxPeriodEnd(di);
+      else if(a === 'edit' && c) fxOpenCycle(c);
+      else if(a === 'log') fxOpenCycleDay(di);
+    });
+    document.addEventListener('click', e=>{ if(FX_CM && !e.target.closest('#fxCycMenu') && !FX_CM.btn.contains(e.target)) fxCycMenuClose(); });
+    document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && FX_CM) fxCycMenuClose(true); });
+    window.addEventListener('scroll', ()=>{ if(FX_CM) fxCycMenuClose(); }, { passive:true });
+  }
+  const t0 = iso(new Date()), c = fxCycleAt(di);
+  const prev = FX.D.cycles.filter(x=>x.start_date < di).sort((a, b)=> b.start_date.localeCompare(a.start_date))[0];
+  const item = (a, icon, label)=> `<button type="button" role="menuitem" data-cm="${a}">${ico(icon)}<span>${label}</span></button>`;
+  let h = `<div class="at-menu-t">${esc(longDate(parseISO(di)))}</div>`;
+  if(!c && di <= t0) h += item('start', 'drop', 'Period started');
+  const canEnd = di <= t0 && (c ? di >= c.start_date && di !== c.end_date : prev && fxDiff(di, prev.start_date) <= 14);
+  if(canEnd) h += item('end', 'check', 'Period ended');
+  const ed = c || (prev && !prev.end_date && fxDiff(di, prev.start_date) <= 14 ? prev : null);
+  if(ed) h += item('edit', 'pencil', 'Edit period');
+  h += '<hr>' + item('log', 'list', 'Symptoms and energy');
+  m.innerHTML = h; m.hidden = false;
+  m.setAttribute('aria-label', 'Cycle actions for ' + longDate(parseISO(di)));
+  FX_CM = { di, c: ed, btn };
+  btn.setAttribute('aria-expanded', 'true');
+  if(!window.matchMedia('(max-width:760px)').matches){
+    const r = btn.getBoundingClientRect(), mw = m.offsetWidth, mh = m.offsetHeight;
+    let top = r.bottom + 6; if(top + mh > innerHeight - 8) top = Math.max(8, r.top - mh - 6);
+    m.style.top = top + 'px'; m.style.left = Math.max(8, Math.min(innerWidth - mw - 8, r.left + r.width / 2 - mw / 2)) + 'px';
+  } else { m.style.top = ''; m.style.left = ''; }
+  const f = m.querySelector('[data-cm]'); if(f) f.focus({ preventScroll:true });
+}
+function fxCycMenuClose(focusBack){
+  if(!FX_CM) return;
+  const m = $('fxCycMenu'); if(m) m.hidden = true;
+  FX_CM.btn.setAttribute('aria-expanded', 'false');
+  if(focusBack && document.contains(FX_CM.btn)) FX_CM.btn.focus({ preventScroll:true });
+  FX_CM = null;
+}
 function fxOpenCycleDay(di){
   const D = FX.D, lg = D.cdays.find(c=>c.date === di) || null, onPer = fxCycleAt(di);
   const sym = new Set(lg ? lg.symptoms || [] : []);
@@ -8681,8 +8736,6 @@ function fxOpenCycleDay(di){
       <div class="fx-cd-g"><b>Energy</b><div class="chip-pick" data-grp="en">${FX_ENERGY.map((s, i)=>`<button type="button" class="${energy === i + 1 ? 'on' : ''}" data-en="${i + 1}" aria-pressed="${energy === i + 1}">${s}</button>`).join('')}</div></div></div>`;
   const acts = [];
   if(lg) acts.push({ label:'Clear this day', value:'clear', danger:true });
-  if(onPer && !onPer.end_date && di > onPer.start_date) acts.push({ label:'Period ended this day', value:'end', secondary:true });
-  if(!onPer) acts.push({ label:'Period started this day', value:'start', secondary:true });
   acts.push({ label:'Save' });
   openForm({
     title: longDate(parseISO(di)), xwide:true,
@@ -8704,8 +8757,6 @@ function fxOpenCycleDay(di){
           const row = { user_id: USER.id, date: di, symptoms:[...sym], energy: energy || null };
           const r = await sb.from('fit_cycle_days').upsert(row, { onConflict:'user_id,date' }); if(r.error) throw r.error;
         } else if(lg){ const r = await sb.from('fit_cycle_days').delete().eq('id', lg.id); if(r.error) throw r.error; }
-        if(a === 'start'){ closeForm(false); await fxPeriodStart(di); return; }
-        if(a === 'end'){ closeForm(false); await fxPeriodEnd(di); return; }
         toast('Saved'); await fxReload();
       }catch(err){ fail(err, 'Could not save'); return false; }
     }
@@ -8715,7 +8766,7 @@ function fxOpenCycle(c){
   openForm({
     title: c ? 'Edit period' : 'Add a past period', wide:true,
     rows: [[fxDateField('fxCyS', 'Started', c ? c.start_date : ''), fxDateField('fxCyE', 'Ended', c ? (c.end_date || '') : '')],
-           ],
+           [{ type:'note', text:'Leave Ended empty while the period is still going.' }]],
     actions: c ? [{ label:'Delete', value:'delete', danger:true }, { label:'Save' }] : [{ label:'Add' }],
     onSubmit: async (v, a)=>{
       try{
@@ -8725,7 +8776,11 @@ function fxOpenCycle(c){
           const r = await sb.from('fit_cycles').delete().eq('id', c.id); if(r.error) throw r.error; toast('Deleted'); await fxReload(); return;
         }
         if(!v.fxCyS){ toast('Pick the start day', true); return false; }
+        if(v.fxCyS > iso(new Date())){ toast('The start can\'t be in the future', true); return false; }
         if(v.fxCyE && (v.fxCyE < v.fxCyS || fxDiff(v.fxCyE, v.fxCyS) > 14)){ toast('The end should be within two weeks after the start', true); return false; }
+        const endOf = x => x.end_date || x.start_date;
+        const clash = FX.D.cycles.find(x=> (!c || x.id !== c.id) && x.start_date <= (v.fxCyE || v.fxCyS) && endOf(x) >= v.fxCyS);
+        if(clash){ toast('That overlaps the period from ' + fxShort(parseISO(clash.start_date)), true); return false; }
         const row = { start_date: v.fxCyS, end_date: v.fxCyE || null };
         const r = c ? await sb.from('fit_cycles').update(row).eq('id', c.id) : await sb.from('fit_cycles').insert({ user_id: USER.id, ...row });
         if(r.error) throw r.error;
@@ -8795,7 +8850,7 @@ $('fxBody').addEventListener('click', async e=>{
     case 'mealmenu': fxOpenMealMenu(b.dataset.m); break;
     case 'editlog':{ const l = FX.D.log.find(x=>x.id === b.dataset.id); if(l) fxOpenLog(l); break; }
     case 'myfoods':fxOpenMyFoods(); break;
-    case 'cday':   fxOpenCycleDay(b.dataset.d); break;
+    case 'cday':   fxCycMenu(b.dataset.d, b); break;
     case 'perstart': await fxPeriodStart(iso(new Date())); break;
     case 'perend': await fxPeriodEnd(iso(new Date())); break;
     case 'cycadd': fxOpenCycle(null); break;
@@ -12120,9 +12175,7 @@ function loadSettings(){
   const sw = (id, on) => `<button type="button" class="switch" role="switch" id="${id}" aria-checked="${!!on}"></button>`;
   const days = [[0,'Same day'],[1,'1 day before'],[3,'3 days before'],[7,'1 week before'],[14,'2 weeks before']];
   $('setBody').innerHTML = `
-    <div class="card"><div class="card-head"><span class="card-icon">${ico('user')}</span><h2 class="card-title">Profile</h2></div>
-      <div class="set-row"><label for="setName">Your name</label><input type="text" id="setName" value="${esc(P.name)}" maxlength="40" /></div>
-    </div>
+    <div class="set-col">
     <div class="card" id="setAppearance"><div class="card-head"><span class="card-icon acc-blue">${ico('moon')}</span><h2 class="card-title">Appearance</h2></div>
       <div class="set-row set-row-stack"><span class="sl" id="themeLbl">Theme</span>
         <div class="theme-pick" role="radiogroup" aria-labelledby="themeLbl">
@@ -12141,15 +12194,22 @@ function loadSettings(){
       <div class="set-row"><label for="setToday">All of today's events</label>${sw('setToday', P.todayEvents)}</div>
       <div class="set-row"><label for="setOverdue">Overdue and missed tasks</label>${sw('setOverdue', P.overdue)}</div>
     </div>
+    </div>
+    <div class="set-col">
+    <div class="card"><div class="card-head"><span class="card-icon acc-blue">${ico('user')}</span><h2 class="card-title">Account and app</h2></div>
+      <div class="set-row"><label for="setName">Your name</label><input type="text" id="setName" value="${esc(P.name)}" maxlength="40" /></div>
+      <div class="set-row"><label for="setCollapsed">Start with the sidebar collapsed</label>${sw('setCollapsed', document.body.classList.contains('sb-collapsed'))}</div>
+      <div class="set-row"><span class="sl">Your data</span><button class="btn btn-ghost btn-sm" id="setBackup">Backup…</button></div>
+      <div class="set-row"><span class="sl">Account</span><button class="btn btn-ghost btn-sm" id="setSignOut">Sign out</button></div>
+    </div>
+    <div class="card"><div class="card-head"><span class="card-icon">${ico('eye')}</span><h2 class="card-title">Privacy</h2></div>
+      <div class="set-row"><div class="set-lt"><label for="setCycOv">Show cycle on the Fitness overview</label><small>Only you can see this data. Turn this off to keep cycle days on the Cycle tab only.</small></div>${sw('setCycOv', P.fitCycleOverview !== false)}</div>
+    </div>
     <div class="card"><div class="card-head"><span class="card-icon acc-sun">${ico('chart')}</span><h2 class="card-title">Progress</h2></div>
       <div class="set-row"><label for="setTrain">Count my training split as daily tasks</label>${sw('setTrain', P.countTraining)}</div>
       <div class="set-row"><label for="setGoal">Savings goal</label><input type="number" id="setGoal" min="0" step="1" value="${P.savingsGoal || ''}" placeholder="e.g. 5000" /></div>
       <div class="set-row"><label for="setBudget">Monthly spending budget</label><input type="number" id="setBudget" min="0" step="1" value="${P.monthlyBudget || ''}" placeholder="optional" /></div>
     </div>
-    <div class="card"><div class="card-head"><span class="card-icon acc-blue">${ico('grid')}</span><h2 class="card-title">App</h2></div>
-      <div class="set-row"><label for="setCollapsed">Start with the sidebar collapsed</label>${sw('setCollapsed', document.body.classList.contains('sb-collapsed'))}</div>
-      <div class="set-row"><span class="sl">Your data</span><button class="btn btn-ghost btn-sm" id="setBackup">Backup…</button></div>
-      <div class="set-row"><span class="sl">Account</span><button class="btn btn-ghost btn-sm" id="setSignOut">Sign out</button></div>
     </div>`;
   enhanceSelects($('setBody'));
   $('setBody').querySelectorAll('.switch').forEach(s=> s.addEventListener('click', ()=>{
@@ -12174,8 +12234,10 @@ $('setSave').addEventListener('click', async ()=>{
       name: $('setName').value.trim() || 'Katarina',
       bdayDays: Number($('setBday').value), eventDays: Number($('setEvent').value), deadlineDays: Number($('setDeadline').value),
       todayEvents: on('setToday'), overdue: on('setOverdue'), countTraining: on('setTrain'),
-      savingsGoal: Math.max(0, Number($('setGoal').value) || 0), monthlyBudget: Math.max(0, Number($('setBudget').value) || 0)
+      savingsGoal: Math.max(0, Number($('setGoal').value) || 0), monthlyBudget: Math.max(0, Number($('setBudget').value) || 0),
+      fitCycleOverview: on('setCycOv')
     });
+    if(typeof fxPaint === 'function' && FX.C) fxPaint();
     toast('Settings saved');
     refreshBadge();
   }catch(err){ fail(err, 'Could not save settings'); }

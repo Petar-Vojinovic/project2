@@ -9821,6 +9821,76 @@ function tally(plan, from, to){
   return { planned, done };
 }
 
+/* ---------- overdue & missed (Ime 2026-11-21) ----------
+   Every scheduled occurrence counts on its own: each day of a daily task, each week's
+   day of a weekly one, each month's day of a monthly one. An occurrence is overdue once
+   its deadline passes (its end or start time on the day, otherwise the end of its day).
+   It is "still open" while it can still be ticked: a one-time task, today's item, or a
+   repeat that carries until its next occurrence comes round. After that it is missed.
+   Ticking it late (for its own date) makes it done. Missed tasks and repeats are also
+   kept in missed_occurrences, so editing, pausing or deleting a task later never wipes
+   the history; each occurrence has one row (okey), so it is counted once. */
+function deadlinePassed(it, d, now){
+  const today = _dayOnly(now);
+  if(d < today) return true;
+  if(d > today) return false;
+  const r = it.raw || {}, t = r.end_time || r.due_time || r.start_time;
+  return !!t && String(t).slice(0, 5) < hhmm(now);
+}
+function missedStats(plan, from, to, snaps){
+  const now = new Date(), today = _dayOnly(now), t0 = iso(today);
+  const last = to < today ? to : today;
+  const carried = new Set(todayRecurring({ rules: plan.rules, completions: plan.comps }, now).carried
+    .filter(c=> !c.done).map(c=> 'r:' + c.rule.id + '|' + iso(c.date)));
+  const out = { n:0, open:0, byCat:{}, extra:0, extraByCat:{} }, seen = new Set();
+  const add = (o, c) => { o[c] = (o[c] || 0) + 1; };
+  for(let d = _dayOnly(from); d <= last; d = addDays(d, 1)){
+    planDay(plan, d).forEach(it=>{
+      seen.add(it.key);
+      if(it.done || !deadlinePassed(it, d, now)) return;
+      out.n++; add(out.byCat, it.cat);
+      if(it.type === 'task' || (it.type === 'rec' && (iso(d) === t0 || carried.has(it.key)))) out.open++;
+    });
+  }
+  // recorded misses whose task or repeat no longer shows them (edited, paused or deleted since)
+  (snaps || []).forEach(s=>{
+    if(s.date < iso(from) || s.date > iso(last) || s.date >= t0 || seen.has(s.okey)) return;
+    const c = CATS[s.category] ? s.category : 'personal';
+    out.n++; out.extra++; add(out.byCat, c); add(out.extraByCat, c);
+  });
+  return out;
+}
+// write new misses (past days only) and drop rows that were ticked late or removed on purpose
+let _missSync = false;
+async function syncMissed(plan, from, snaps){
+  if(_missSync || !USER) return;
+  _missSync = true;
+  try{
+    const today = _dayOnly(new Date()), have = new Map((snaps || []).map(s=> [s.okey, s]));
+    const add = [], drop = new Set();
+    for(let d = _dayOnly(from); d < today; d = addDays(d, 1)) planDay(plan, d).forEach(it=>{
+      if(it.type !== 'task' && it.type !== 'rec') return;
+      if(it.done){ if(have.has(it.key)) drop.add(have.get(it.key).id); return; }
+      if(!have.has(it.key)) add.push({ user_id: USER.id, okey: it.key, kind: it.type, recurring_id: it.type === 'rec' ? it.id : null,
+        task_id: it.type === 'task' ? it.id : null, date: iso(d), title: it.title, category: it.cat });
+    });
+    plan.tasks.forEach(t=>{ const s = have.get('t:' + t.id); if(s && t.completed) drop.add(s.id); });
+    const rules = new Map(plan.rules.map(r=> [r.id, r]));
+    (snaps || []).forEach(s=>{ const r = s.kind === 'rec' && rules.get(s.recurring_id); if(r && isSkipped(r, parseISO(s.date))) drop.add(s.id); });
+    for(let i = 0; i < add.length; i += 500){
+      const { data, error } = await sb.from('missed_occurrences').upsert(add.slice(i, i + 500), { onConflict:'user_id,okey', ignoreDuplicates:true }).select();
+      if(error) throw error;
+      if(PROG && PROG.snaps) PROG.snaps.push(...(data || []));
+    }
+    if(drop.size){
+      const { error } = await sb.from('missed_occurrences').delete().in('id', [...drop]);
+      if(error) throw error;
+      if(PROG && PROG.snaps) PROG.snaps = PROG.snaps.filter(s=> !drop.has(s.id));
+    }
+  }catch(err){ console.warn('missed occurrences not saved', err); }
+  finally{ _missSync = false; }
+}
+
 /* ---------- task rows (one component for every list) ---------- */
 function taskRowHtml(it){
   const c = CATS[it.cat] || CATS.personal;
@@ -10808,7 +10878,7 @@ async function loadProgress(){
   const to = hmEnd > monthEnd ? hmEnd : monthEnd;
   try{
     const fromTs = from.toISOString();
-    const [plan, doneTasks, comps, meals, budget, budRec, openTasks, lplans] = await Promise.all([
+    const [plan, doneTasks, comps, meals, budget, budRec, openTasks, lplans, snaps] = await Promise.all([
       fetchPlan(iso(from), iso(to)),
       sb.from('tasks').select('*').eq('completed', true).gte('completed_at', fromTs),
       sb.from('recurring_completions').select('*').gte('created_at', fromTs),
@@ -10816,16 +10886,19 @@ async function loadProgress(){
       sb.from('budget_entries').select('*'),
       sb.from('budget_recurring').select('*'),
       sb.from('tasks').select('*').eq('completed', false),
-      sb.from('learn_plans').select('id,name,archived,kind').eq('kind', 'learning').order('position').order('created_at')
+      sb.from('learn_plans').select('id,name,archived,kind').eq('kind', 'learning').order('position').order('created_at'),
+      sb.from('missed_occurrences').select('*').gte('date', iso(from))
     ]);
     [doneTasks, comps, meals, budget, budRec, openTasks].forEach(r=>{ if(r.error) throw r.error; });
 
     const { acts, actByDay } = buildActs(plan, doneTasks.data || [], comps.data || []);
 
     PROG = { plan, acts, actByDay, meals: meals.data || [], budget: budget.data || [], budRec: budRec.data || [],
-             openTasks: openTasks.data || [], lplans: ((lplans && lplans.data) || []).filter(x=> !x.archived), from, to };
+             openTasks: openTasks.data || [], lplans: ((lplans && lplans.data) || []).filter(x=> !x.archived), from, to,
+             snaps: (snaps && !snaps.error && snaps.data) || [] };
     computeStreaks();
     paintProgress();
+    syncMissed(plan, from, PROG.snaps.slice());
   }catch(err){ showError($('progKpis'), err, loadProgress); }
 }
 
@@ -10874,9 +10947,11 @@ function periodRange(p){
   return { from: mondayOf(now), to: addDays(mondayOf(now), 6), label:'this week' };
 }
 
-function catTally(from, to){
+function catTally(from, to, extraByCat){
   const out = {}; CAT_ORDER.forEach(c=> out[c] = { planned:0, done:0 });
   for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{ const o = out[it.cat] || out.personal; o.planned++; if(it.done) o.done++; });
+  // misses kept from tasks that were changed or removed since still count as planned
+  Object.entries(extraByCat || {}).forEach(([c, n])=>{ (out[c] || out.personal).planned += n; });
   return out;
 }
 
@@ -10884,17 +10959,18 @@ function paintProgress(){
   if(!PROG) return;
   document.querySelectorAll('#progSeg [data-period]').forEach(b=>{ const on = b.dataset.period === progPeriod; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
   const R = periodRange(progPeriod), today = _dayOnly(new Date()), t0 = iso(today);
-  const all = tally(PROG.plan, R.from, R.to);
-  const ct = catTally(R.from, R.to);
+  const MS = missedStats(PROG.plan, R.from, R.to, PROG.snaps);
+  const all = tally(PROG.plan, R.from, R.to); all.planned += MS.extra;
+  const ct = catTally(R.from, R.to, MS.extraByCat);
+  const missOf = c => MS.byCat[c] || 0;
   let activeDays = 0, daysSoFar = 0;
   for(let d = _dayOnly(R.from); d <= R.to && d <= today; d = addDays(d, 1)){ daysSoFar++; if((PROG.actByDay.get(iso(d)) || []).length) activeDays++; }
-  const overdue = PROG.openTasks.filter(t=>t.due_date && t.due_date < t0).length;
 
   $('progKpis').innerHTML = `
     <div class="card kpi"><span class="card-icon acc-blue">${ico('check')}</span><div><b>${all.done}<small style="font-size:14px;color:var(--on-panel-2)"> / ${all.planned}</small></b><span>completed ${R.label}</span></div></div>
     <div class="card kpi"><span class="card-icon acc-sky">${ico('target')}</span><div><b>${pct(all.done, all.planned)}%</b><span>completion rate</span></div></div>
     <div class="card kpi"><span class="card-icon acc-amber">${ico('flame')}</span><div><b>${PROG.streak} day${PROG.streak === 1 ? '' : 's'}</b><span>current streak · best ${PROG.longest}</span></div></div>
-    <div class="card kpi"><span class="card-icon acc-rose">${ico('alert')}</span><div><b>${overdue}</b><span>overdue right now</span></div></div>`;
+    <div class="card kpi"><span class="card-icon acc-rose">${ico('alert')}</span><div><b>${MS.n}</b><span>overdue ${R.label}${MS.n ? ` · ${MS.n - MS.open} missed, ${MS.open} still open` : ''}</span></div></div>`;
 
   /* --- by area: each with the numbers that matter for it --- */
   const openOf = c => PROG.openTasks.filter(t=>taskCat(t) === c);
@@ -10909,7 +10985,6 @@ function paintProgress(){
   const sess = PROG.plan.sess.filter(s=>inR(s.date) && s.status === 'completed' && s.kind !== 'rest' && !fxPausedIn(PROG.plan.fx.inj, s.date));
   const km = sess.reduce((a,s)=>a + (Number(s.distance_km) || 0), 0);
   const mealsR = PROG.meals.filter(m=>inR(m.date));
-  const homeMissed = (()=>{ let n = 0; for(let d = _dayOnly(R.from); d < today && d <= R.to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{ if(it.cat === 'home' && !it.done) n++; }); return n; })();
   const M = moneyStats();
   const sideProjects = openOf('side').filter(t=>t.kind === 'long-term').length;
   const sideDeadlines = openOf('side').filter(t=>t.due_date && t.due_date >= t0 && t.due_date <= iso(addDays(today, 14))).length;
@@ -10924,21 +10999,22 @@ function paintProgress(){
 
   $('progCats').innerHTML =
     card('side', big(ct.side.done, ct.side.planned, 'planned activities') + bar(ct.side.done, ct.side.planned) +
-      `<div class="catp-rows"><div>Active projects <b>${sideProjects}</b></div><div>Deadlines in 14 days <b>${sideDeadlines}</b></div><div>Next deadline ${nd('side')}</div></div>`) +
+      `<div class="catp-rows"><div>Active projects <b>${sideProjects}</b></div><div>Overdue / missed <b>${missOf('side')}</b></div><div>Deadlines in 14 days <b>${sideDeadlines}</b></div><div>Next deadline ${nd('side')}</div></div>`) +
     card('training', big(ct.training.done, ct.training.planned, 'sessions & tasks') + bar(ct.training.done, ct.training.planned) +
       `<div class="catp-rows"><div>Workouts completed <b>${sess.length}</b></div><div>Distance run <b>${km ? km.toFixed(1) + ' km' : '—'}</b></div>
-       <div>Days with food logged <b>${new Set(mealsR.map(m=>m.date)).size}</b></div></div>`) +
+       <div>Overdue / missed <b>${missOf('training')}</b></div><div>Days with food logged <b>${new Set(mealsR.map(m=>m.date)).size}</b></div></div>`) +
     card('home', big(ct.home.done, ct.home.planned, 'chores & tasks') + bar(ct.home.done, ct.home.planned) +
-      `<div class="catp-rows"><div>Missed so far <b>${homeMissed}</b></div><div>Open tasks <b>${openOf('home').length}</b></div></div>`) +
+      `<div class="catp-rows"><div>Overdue / missed <b>${missOf('home')}</b></div><div>Open tasks <b>${openOf('home').length}</b></div></div>`) +
     card('money', (PREFS.savingsGoal
         ? `<div class="catp-big"><b>${pct(M.savedTotal, PREFS.savingsGoal)}%</b><span>of savings goal</span></div>${bar(M.savedTotal, PREFS.savingsGoal)}`
         : `<div class="catp-big"><b>${money(M.savedTotal)}</b><span>saved in total</span></div>`) +
       `<div class="catp-rows"><div>Spent this month <b>${money(M.cur.spent)}</b></div>
-       <div>Budget used <b>${M.limit ? pct(M.cur.spent, M.limit) + '%' : '—'}</b></div><div>Money tasks open <b>${openOf('money').length}</b></div></div>`) +
+       <div>Budget used <b>${M.limit ? pct(M.cur.spent, M.limit) + '%' : '—'}</b></div><div>Money tasks open <b>${openOf('money').length}</b></div>
+       <div>Overdue / missed <b>${missOf('money')}</b></div></div>`) +
     card('learning', big(ct.learning.done, ct.learning.planned, 'sessions & tasks') + bar(ct.learning.done, ct.learning.planned) +
       `<div class="catp-rows"><div>Study time <b>${lHours(lDone)}${lPlan ? ' of ' + lHours(lPlan) : ''}</b></div>
        ${lPlanRows.map(x=> `<div>${esc(x.p.name.length > 22 ? x.p.name.slice(0, 21) + '…' : x.p.name)} <b>${x.d}/${x.n}</b></div>`).join('')}
-       <div>Open study tasks <b>${openOf('learning').length}</b></div></div>`);
+       <div>Overdue / missed <b>${missOf('learning')}</b></div><div>Open study tasks <b>${openOf('learning').length}</b></div></div>`);
 
   paintHeat();
   paintWeeks();

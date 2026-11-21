@@ -2326,6 +2326,109 @@
   .day-detail{margin-top:14px;border-top:1px solid var(--panel-line);padding-top:12px;font-size:13px;}
   .day-detail h4{margin:0 0 8px;font-size:13px;color:var(--foreground);}
   .day-detail li{color:var(--on-panel-2);margin:4px 0;}
+  /* ---------- Progress analytics (2026-11-21) ---------- */
+  #page-progress .kpi-btn{border:0;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%;}
+  #page-progress .kpi-btn:hover{box-shadow:var(--lift-2), inset 0 0 0 1px var(--danger-mid) !important;}
+  #page-progress .kpi-btn.on{box-shadow:var(--lift-2), inset 0 0 0 2px var(--danger-mid) !important;}
+  #page-progress .kpi-btn .kpi-go{margin-left:auto;align-self:center;color:var(--muted-foreground);flex-shrink:0;}
+  /* by area: no half-empty rows (5 cards = one row, 3 + 2, 2 + 2 + 1 wide, or one column) */
+  #page-progress .catp-grid{grid-template-columns:repeat(6,minmax(0,1fr));}
+  #page-progress .catp-grid > .catp{grid-column:span 2;min-width:0;}
+  #page-progress .catp-grid > .catp:nth-child(n+4){grid-column:span 3;}
+  @media (min-width:1300px){
+    #page-progress .catp-grid{grid-template-columns:repeat(5,minmax(0,1fr));}
+    #page-progress .catp-grid > .catp, #page-progress .catp-grid > .catp:nth-child(n+4){grid-column:auto;}
+  }
+  @media (max-width:900px){
+    #page-progress .catp-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    #page-progress .catp-grid > .catp, #page-progress .catp-grid > .catp:nth-child(n+4){grid-column:auto;}
+    #page-progress .catp-grid > .catp:last-child{grid-column:1 / -1;}
+  }
+  @media (max-width:560px){
+    #page-progress .catp-grid{grid-template-columns:1fr;}
+  }
+  #page-progress .catp-rows div{gap:10px;}
+  #page-progress .catp-rows div b{white-space:nowrap;}
+  /* activity calendar + its panel, side by side */
+  .prog-act{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:stretch;margin-top:8px;}
+  .prog-act > div{display:flex;flex-direction:column;min-width:0;}
+  .prog-act > div > .card{flex:1;}
+  .prog-act .section-h{margin:24px 0 12px;}
+  #progHeat{display:flex;flex-direction:column;justify-content:center;}
+  #progHeat .hm-head, #progHeat .hm-grid{width:100%;max-width:440px;}
+  .hm-day.sel{outline:2px solid var(--foreground);outline-offset:2px;}
+  .prog-panel.is-overdue{box-shadow:var(--lift-2), inset 0 0 0 1.5px var(--danger-mid) !important;}
+  #progPanelSeg button{font-size:12px;padding:6px 12px;}
+  .pp-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
+  .pp-head h3{margin:0;font-size:17px;font-weight:800;color:var(--foreground);}
+  .pp-sub{margin:2px 0 0;font-size:12.5px;color:var(--on-panel-2);font-weight:600;}
+  .pp-big{margin-left:auto;font-size:28px;font-weight:800;color:var(--danger);font-variant-numeric:tabular-nums;line-height:1;}
+  .pp-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+  .pp-sum > div{background:rgba(var(--foreground-rgb),0.035);border-radius:var(--r-in);padding:10px 12px;min-width:0;}
+  .pp-sum small{display:block;font-size:11.5px;font-weight:700;color:var(--on-panel-2);}
+  .pp-sum b{display:block;font-size:20px;font-weight:800;color:var(--foreground);font-variant-numeric:tabular-nums;margin-top:2px;}
+  .pp-sum b em{font-style:normal;font-size:13px;color:var(--on-panel-2);}
+  .pp-sum .is-miss b{color:var(--danger);}
+  .pp-h{margin:16px 0 8px;font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--on-panel-2);}
+  .pp-areas{display:flex;flex-direction:column;gap:8px;}
+  .pp-arow{display:grid;grid-template-columns:150px minmax(0,1fr) 150px;align-items:center;gap:12px;min-width:0;}
+  .pf-row{display:grid;grid-template-columns:150px minmax(0,1fr) 230px;align-items:center;gap:12px;min-width:0;}
+  #page-progress .kpi-more{font-style:normal;}
+  .pp-an, .pf-n{min-width:0;overflow:hidden;}
+  .pp-an .chip, .pf-n .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;}
+  .pp-av{display:flex;align-items:baseline;gap:6px;justify-content:flex-end;white-space:nowrap;}
+  .pp-av b{font-size:14px;font-weight:800;color:var(--foreground);font-variant-numeric:tabular-nums;}
+  .pp-av small{font-size:11.5px;color:var(--on-panel-2);font-weight:600;}
+  .pp-bar{display:flex;height:8px;border-radius:6px;overflow:hidden;background:rgba(var(--foreground-rgb),0.07);min-width:40px;}
+  .pp-bar i{display:block;height:100%;}
+  .pp-bar i.d{background:var(--ring);}
+  .pp-bar i.m{background:var(--danger-mid);}
+  .pp-group{margin-top:12px;border-top:1px solid var(--border);padding-top:10px;}
+  .pp-group summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-size:13px;color:var(--foreground);}
+  .pp-group summary::-webkit-details-marker{display:none;}
+  .pp-group summary::after{content:'';margin-left:4px;width:7px;height:7px;border-right:2px solid var(--on-panel-2);border-bottom:2px solid var(--on-panel-2);transform:rotate(45deg);margin-top:-3px;}
+  .pp-group[open] summary::after{transform:rotate(-135deg);margin-top:3px;}
+  .pp-n{margin-left:auto;font-size:12px;font-weight:800;color:var(--danger);font-variant-numeric:tabular-nums;}
+  .pp-items{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
+  .pp-items li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:var(--danger-soft);font-size:13px;min-width:0;}
+  .pp-items li b{flex:1 1 140px;min-width:0;color:var(--foreground);font-weight:700;overflow-wrap:anywhere;}
+  .pp-items li > span:not(.chip){font-size:12px;color:var(--on-panel-2);font-weight:600;white-space:nowrap;}
+  .pp-tag{font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap;}
+  .pp-tag.miss{color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger-mid);}
+  .pp-tag.open{color:var(--foreground);background:var(--card);box-shadow:inset 0 0 0 1px var(--border);}
+  .pp-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding:24px 8px;color:var(--on-panel-2);font-size:13px;flex:1;}
+  .pp-empty b{color:var(--foreground);font-size:14px;}
+  .pp-empty svg{max-width:150px;height:auto;}
+  #progPanel{display:flex;flex-direction:column;}
+  @media (min-width:901px){ .pp-scroll{max-height:560px;overflow-y:auto;margin-right:-6px;padding-right:6px;} }
+  /* weekly / monthly performance */
+  .prog-perf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:stretch;}
+  .prog-perf > div{display:flex;flex-direction:column;min-width:0;}
+  .prog-perf > div > .card{flex:1;display:flex;flex-direction:column;gap:10px;}
+  .prog-perf .section-h{margin:24px 0 12px;}
+  .pf-row.pf-all{padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .pf-row.pf-all .pf-n{font-weight:800;font-size:13px;color:var(--foreground);}
+  .pf-v{font-size:12px;color:var(--on-panel-2);font-weight:600;white-space:nowrap;text-align:right;}
+  .pf-v b{color:var(--foreground);font-weight:800;font-variant-numeric:tabular-nums;}
+  .pf-v b.m{color:var(--danger);}
+  .pf-none{opacity:.75;}
+  .pf-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:auto;padding-top:4px;font-size:11.5px;color:var(--on-panel-2);font-weight:600;}
+  .pf-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+  .pf-legend i.d{background:var(--ring);} .pf-legend i.m{background:var(--danger-mid);} .pf-legend i.p{background:rgba(var(--foreground-rgb),0.12);}
+  .pf-nav{display:flex;align-items:center;gap:8px;}
+  .pf-nav span{font-size:12.5px;font-weight:700;color:var(--on-panel-2);min-width:96px;text-align:center;}
+  .pf-nav button:disabled, .cal-nav button:disabled{opacity:.35;cursor:default;}
+  @media (max-width:900px){
+    .prog-act, .prog-perf{grid-template-columns:1fr;gap:0;}
+  }
+  @media (max-width:560px){
+    #page-progress .kpi-more{display:none;}          /* the panel below shows the split */
+    .pf-nav span{min-width:0;}
+    .pp-sum{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .pp-arow, .pf-row{grid-template-columns:minmax(0,1fr) auto;row-gap:6px;}
+    .pp-arow .pp-bar, .pf-row .pp-bar{grid-column:1 / -1;grid-row:2;}
+    .pf-v{white-space:normal;}
+  }
   .chart{display:flex;align-items:flex-end;gap:8px;height:190px;padding-top:18px;border-bottom:1px solid var(--panel-line);}
   .chart .col{flex:1;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;height:100%;position:relative;cursor:default;}
   .chart .col .stack{display:flex;flex-direction:column-reverse;border-radius:5px 5px 0 0;overflow:hidden;min-height:0;}
@@ -5100,22 +5203,35 @@
       <div class="section-h"><h2>By area</h2></div>
       <div class="catp-grid" id="progCats"></div>
 
-      <div class="two-col" style="margin-top:32px;">
+      <div class="prog-act" id="progAct">
         <div>
-          <div class="section-h" style="margin-top:0;"><h2>Activity</h2><span class="spacer"></span>
+          <div class="section-h"><h2>Activity</h2><span class="spacer"></span>
             <div class="cal-nav"><button id="hmPrev" aria-label="Previous month">‹</button><span class="cal-label" id="hmLabel">—</span><button id="hmNext" aria-label="Next month">›</button></div>
           </div>
           <div class="card" id="progHeat"></div>
         </div>
-        <div>
-          <div class="section-h" style="margin-top:0;"><h2>Last 12 weeks</h2></div>
-          <div class="card" id="progWeeks"></div>
+        <div id="progPanelWrap">
+          <div class="section-h"><h2>Statistics</h2><span class="spacer"></span>
+            <div class="seg" id="progPanelSeg" role="group" aria-label="Statistics view">
+              <button type="button" data-pmode="day" class="on" aria-pressed="true">Day</button>
+              <button type="button" data-pmode="overdue" aria-pressed="false">Overdue</button>
+            </div></div>
+          <div class="card prog-panel" id="progPanel" aria-live="polite"></div>
         </div>
       </div>
 
-      <div class="section-h"><h2>Budget &amp; savings</h2><span class="spacer"></span>
-        <button class="btn btn-ghost btn-sm" data-goto="budget">Open Money &amp; Budgeting</button></div>
-      <div class="card" id="progMoney"></div>
+      <div class="prog-perf">
+        <div>
+          <div class="section-h"><h2>Weekly performance</h2><span class="spacer"></span>
+            <div class="cal-nav pf-nav"><button id="pfWeekPrev" aria-label="Previous week">‹</button><span id="pfWeekL">This week</span><button id="pfWeekNext" aria-label="Next week">›</button></div></div>
+          <div class="card" id="progWeekPerf"></div>
+        </div>
+        <div>
+          <div class="section-h"><h2>Monthly performance</h2><span class="spacer"></span>
+            <div class="cal-nav pf-nav"><button id="pfMonthPrev" aria-label="Previous month">‹</button><span id="pfMonthL">—</span><button id="pfMonthNext" aria-label="Next month">›</button></div></div>
+          <div class="card" id="progMonthPerf"></div>
+        </div>
+      </div>
     </section>
 
     <!-- ---------- SETTINGS ---------- -->
@@ -9842,14 +9958,16 @@ function missedStats(plan, from, to, snaps){
   const last = to < today ? to : today;
   const carried = new Set(todayRecurring({ rules: plan.rules, completions: plan.comps }, now).carried
     .filter(c=> !c.done).map(c=> 'r:' + c.rule.id + '|' + iso(c.date)));
-  const out = { n:0, open:0, byCat:{}, extra:0, extraByCat:{} }, seen = new Set();
+  const out = { n:0, open:0, byCat:{}, extra:0, extraByCat:{}, items:[] }, seen = new Set();
   const add = (o, c) => { o[c] = (o[c] || 0) + 1; };
   for(let d = _dayOnly(from); d <= last; d = addDays(d, 1)){
     planDay(plan, d).forEach(it=>{
       seen.add(it.key);
       if(it.done || !deadlinePassed(it, d, now)) return;
       out.n++; add(out.byCat, it.cat);
-      if(it.type === 'task' || (it.type === 'rec' && (iso(d) === t0 || carried.has(it.key)))) out.open++;
+      const open = it.type === 'task' || (it.type === 'rec' && (iso(d) === t0 || carried.has(it.key)));
+      if(open) out.open++;
+      out.items.push({ key: it.key, title: it.title, cat: it.cat, date: iso(d), open });
     });
   }
   // recorded misses whose task or repeat no longer shows them (edited, paused or deleted since)
@@ -9857,6 +9975,7 @@ function missedStats(plan, from, to, snaps){
     if(s.date < iso(from) || s.date > iso(last) || s.date >= t0 || seen.has(s.okey)) return;
     const c = CATS[s.category] ? s.category : 'personal';
     out.n++; out.extra++; add(out.byCat, c); add(out.extraByCat, c);
+    out.items.push({ key: s.okey, title: s.title, cat: c, date: s.date, open:false, kept:true });
   });
   return out;
 }
@@ -10858,13 +10977,12 @@ document.querySelectorAll('[data-nf]').forEach(b=> b.addEventListener('click', (
    =================================================================== */
 let progPeriod = 'week';
 let hmMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-let hmSel = null;
 let PROG = null;
 const HISTORY_DAYS = 180;
 
 document.querySelectorAll('#progSeg [data-period]').forEach(b=> b.addEventListener('click', ()=>{ progPeriod = b.dataset.period; paintProgress(); }));
-$('hmPrev').addEventListener('click', ()=>{ hmMonth = new Date(hmMonth.getFullYear(), hmMonth.getMonth() - 1, 1); hmSel = null; loadProgress(); });
-$('hmNext').addEventListener('click', ()=>{ hmMonth = new Date(hmMonth.getFullYear(), hmMonth.getMonth() + 1, 1); hmSel = null; loadProgress(); });
+$('hmPrev').addEventListener('click', ()=>{ hmMonth = new Date(hmMonth.getFullYear(), hmMonth.getMonth() - 1, 1); loadProgress(); });
+$('hmNext').addEventListener('click', ()=>{ hmMonth = new Date(hmMonth.getFullYear(), hmMonth.getMonth() + 1, 1); loadProgress(); });
 
 async function loadProgress(){
   if(!USER) return;
@@ -10970,7 +11088,7 @@ function paintProgress(){
     <div class="card kpi"><span class="card-icon acc-blue">${ico('check')}</span><div><b>${all.done}<small style="font-size:14px;color:var(--on-panel-2)"> / ${all.planned}</small></b><span>completed ${R.label}</span></div></div>
     <div class="card kpi"><span class="card-icon acc-sky">${ico('target')}</span><div><b>${pct(all.done, all.planned)}%</b><span>completion rate</span></div></div>
     <div class="card kpi"><span class="card-icon acc-amber">${ico('flame')}</span><div><b>${PROG.streak} day${PROG.streak === 1 ? '' : 's'}</b><span>current streak · best ${PROG.longest}</span></div></div>
-    <div class="card kpi"><span class="card-icon acc-rose">${ico('alert')}</span><div><b>${MS.n}</b><span>overdue ${R.label}${MS.n ? ` · ${MS.n - MS.open} missed, ${MS.open} still open` : ''}</span></div></div>`;
+    <button type="button" class="card kpi kpi-btn${progPanel.mode === 'overdue' ? ' on' : ''}" id="progOverdueBtn" aria-pressed="${progPanel.mode === 'overdue'}" aria-controls="progPanel" title="See the overdue tasks"><span class="card-icon acc-rose">${ico('alert')}</span><div><b>${MS.n}</b><span>overdue ${R.label}${MS.n ? `<em class="kpi-more"> · ${MS.n - MS.open} missed, ${MS.open} still open</em>` : ''}</span></div><span class="kpi-go">${ico('chevR', 'ico-sm')}</span></button>`;
 
   /* --- by area: each with the numbers that matter for it --- */
   const openOf = c => PROG.openTasks.filter(t=>taskCat(t) === c);
@@ -11017,104 +11135,149 @@ function paintProgress(){
        <div>Overdue / missed <b>${missOf('learning')}</b></div><div>Open study tasks <b>${openOf('learning').length}</b></div></div>`);
 
   paintHeat();
-  paintWeeks();
-  paintMoney(M);
+  paintPanel();
+  paintPerf();
 }
 
+/* ---------- Progress analytics (Ime 2026-11-21) ----------
+   One rule for every number: an item is done, missed (its deadline passed, see
+   deadlinePassed) or pending (deadline still ahead). Misses kept in
+   missed_occurrences for tasks that were changed or removed since count as missed. */
+const PROG_AREAS = [['side', 'Hustle'], ['training', 'Training'], ['home', 'Home Tasks'], ['learning', 'Learning'], ['money', 'Money & Budgeting'], ['personal', 'Personal']];
+const progAreaName = c => (PROG_AREAS.find(a=> a[0] === c) || [c, (CATS[c] || CATS.personal).label])[1];
+let progPanel = { mode:'day', day:null };
+let perfWeekRef = null, perfMonthRef = null;
+
+function rangeStats(from, to){
+  const ms = missedStats(PROG.plan, from, to, PROG.snaps);
+  const missKeys = new Set(ms.items.map(i=> i.key)), byCat = {};
+  const T = { planned:0, done:0, missed:0, pending:0 };
+  const bump = (c, k) => { const o = byCat[c] || (byCat[c] = { planned:0, done:0, missed:0, pending:0 }); o.planned++; o[k]++; T.planned++; T[k]++; };
+  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{
+    bump(CATS[it.cat] ? it.cat : 'personal', it.done ? 'done' : missKeys.has(it.key) ? 'missed' : 'pending');
+  });
+  ms.items.filter(i=> i.kept).forEach(i=> bump(i.cat, 'missed'));
+  return { ...T, byCat, ms };
+}
+
+function progDayName(d){
+  const today = _dayOnly(new Date()), diff = Math.round((d - today) / 864e5);
+  return diff === 0 ? 'Today' : diff === -1 ? 'Yesterday' : diff === 1 ? 'Tomorrow' : d.toLocaleDateString(undefined, { weekday:'long' });
+}
+const progDM = d => d.toLocaleDateString(undefined, { day:'numeric', month:'short' });
+const progShort = di => parseISO(di).toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' });
+
 function paintHeat(){
-  const box = $('progHeat'), today = _dayOnly(new Date()), t0 = iso(today);
+  const box = $('progHeat'), today = _dayOnly(new Date()), t0 = iso(today), sel = progPanel.mode === 'day' ? progPanel.day : null;
   const y = hmMonth.getFullYear(), m = hmMonth.getMonth(), days = new Date(y, m + 1, 0).getDate();
   $('hmLabel').textContent = MONTHS_FULL[m] + ' ' + y;
   $('hmNext').disabled = hmMonth >= new Date(today.getFullYear(), today.getMonth(), 1);
-  const lead = (new Date(y, m, 1).getDay() + 6) % 7;
-  let active = 0, plannedDays = 0;
-  const cells = [];
+  const lead = (new Date(y, m, 1).getDay() + 6) % 7, cells = [];
   for(let i = 0; i < lead; i++) cells.push('<span class="hm-day blank"></span>');
   for(let dn = 1; dn <= days; dn++){
     const d = new Date(y, m, dn), di = iso(d);
     const n = (PROG.actByDay.get(di) || []).length;
     const planned = d <= today ? planDay(PROG.plan, d).length : 0;
-    if(d <= today){ if(n) active++; if(planned || n) plannedDays++; }
     const lvl = n >= 4 ? 'l3' : n >= 2 ? 'l2' : n >= 1 ? 'l1' : '';
-    const cls = [lvl, d > today ? 'future' : '', !n && planned && di !== t0 && d <= today ? 'missed' : '', di === t0 ? 'today' : '', hmSel === di ? 'sel' : ''].join(' ');
-    cells.push(`<button class="hm-day ${cls}" data-day="${di}" ${d > today ? 'disabled' : ''}
-      aria-label="${d.toDateString()}: ${n} done${planned ? ', ' + planned + ' planned' : ''}">${dn}</button>`);
+    const miss = !n && planned && di !== t0 && d <= today;
+    // the colours are explained here instead of a permanent legend
+    const tip = `${d.toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' })}: ${d > today ? 'upcoming' : n ? plural(n, 'thing') + ' done' : planned ? 'planned, nothing done' : 'nothing done'}`;
+    const cls = [lvl, d > today ? 'future' : '', miss ? 'missed' : '', di === t0 ? 'today' : '', sel === di ? 'sel' : ''].join(' ');
+    cells.push(`<button type="button" class="hm-day ${cls}" data-day="${di}" title="${esc(tip)}" aria-label="${esc(tip)}" aria-pressed="${sel === di}">${dn}</button>`);
   }
-  let detail = '';
-  if(hmSel){
-    const d = parseISO(hmSel), done = PROG.actByDay.get(hmSel) || [];
-    const open = planDay(PROG.plan, d).filter(x=>!x.done);
-    detail = `<div class="day-detail"><h4>${d.toLocaleDateString(undefined,{ weekday:'long', day:'numeric', month:'long' })}</h4>
-      ${done.length ? '<ul style="margin:0;padding-left:18px;">' + done.map(a=>`<li>✓ ${esc(a.title)} <span class="chip ${CATS[a.cat].acc}"><i></i>${CATS[a.cat].label}</span></li>`).join('') + '</ul>' : '<div style="color:var(--on-panel-2)">Nothing completed.</div>'}
-      ${open.length ? '<div style="margin-top:8px;color:var(--on-panel-2)">Not done: ' + open.map(x=>esc(x.title)).join(', ') + '</div>' : ''}</div>`;
-  }
-  box.innerHTML = `<div class="hm-head">${['M','T','W','T','F','S','S'].map(x=>`<span>${x}</span>`).join('')}</div>
-    <div class="hm-grid">${cells.join('')}</div>
-    <div class="hm-legend"><span><i style="background:var(--muted)"></i>None</span><span><i style="background:rgba(var(--primary-rgb),.6)"></i>1</span>
-      <span><i style="background:var(--primary)"></i>2–3</span><span><i style="background:var(--ring)"></i>4+</span>
-      <span><i style="box-shadow:inset 0 0 0 1px var(--danger-mid)"></i>Planned, nothing done</span></div>
-    <div class="streaks">
-      <div><b>${PROG.streak}</b><span>Current streak</span></div>
-      <div><b>${PROG.longest}</b><span>Longest streak</span></div>
-      <div><b>${active}</b><span>Active days · ${pct(active, plannedDays)}% consistent</span></div>
-    </div>
-    <div class="hm-legend">A streak is days in a row with at least one thing done. Days with nothing planned don't break it.</div>
-    ${detail}`;
-  box.querySelectorAll('[data-day]').forEach(b=> b.addEventListener('click', ()=>{ hmSel = hmSel === b.dataset.day ? null : b.dataset.day; paintHeat(); }));
+  box.innerHTML = `<div class="hm-head">${['M','T','W','T','F','S','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="hm-grid">${cells.join('')}</div>`;
 }
 
-function paintWeeks(){
-  const box = $('progWeeks'), now = new Date(), mon = mondayOf(now);
-  const weeks = Array.from({ length:12 }, (_, i)=> addDays(mon, (i - 11) * 7));
-  const cats = CAT_ORDER;
-  const data = weeks.map(w=>{
-    const end = addDays(w, 6), byCat = {}; cats.forEach(c=> byCat[c] = 0);
-    for(let d = w; d <= end; d = addDays(d, 1)) (PROG.actByDay.get(iso(d)) || []).forEach(a=> byCat[a.cat in byCat ? a.cat : 'personal']++);
-    const t = tally(PROG.plan, w, end > now ? _dayOnly(now) : end);
-    return { w, byCat, total: Object.values(byCat).reduce((a,b)=>a + b, 0), planned: t.planned, donePlanned: t.done };
-  });
-  const max = Math.max(1, ...data.map(x=>x.total));
-  const used = cats.filter(c=>data.some(x=>x.byCat[c]));
-  const cmp = (a, b, label, sub) => {
-    const d = a - b;
-    return `<div><h4>${label}</h4><b>${a}</b>${b || a ? `<span class="delta ${d >= 0 ? 'up' : 'down'}">${d >= 0 ? '▲' : '▼'} ${Math.abs(d)}</span>` : ''}
-      <div style="font-size:11.5px;color:var(--on-panel-2);margin-top:2px;">${sub}</div></div>`;
+const ppBar = s => s.planned ? `<span class="pp-bar" aria-hidden="true"><i class="d" style="width:${s.done / s.planned * 100}%"></i><i class="m" style="width:${s.missed / s.planned * 100}%"></i></span>` : '<span class="pp-bar" aria-hidden="true"></span>';
+const ppTag = it => it.open ? '<em class="pp-tag open">still open</em>' : '<em class="pp-tag miss">missed</em>';
+
+function paintPanel(){
+  const box = $('progPanel'), seg = $('progPanelSeg');
+  if(!box || !PROG) return;
+  const od = progPanel.mode === 'overdue';
+  seg.querySelectorAll('[data-pmode]').forEach(b=>{ const on = b.dataset.pmode === progPanel.mode; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  box.classList.toggle('is-overdue', od);
+  const kb = $('progOverdueBtn'); if(kb){ kb.classList.toggle('on', od); kb.setAttribute('aria-pressed', od); }
+  if(od){
+    const R = periodRange(progPeriod), ms = missedStats(PROG.plan, R.from, R.to, PROG.snaps);
+    const groups = PROG_AREAS.map(([c, name])=> ({ c, name, items: ms.items.filter(i=> (CATS[i.cat] ? i.cat : 'personal') === c).sort((a, b)=> b.date.localeCompare(a.date) || a.title.localeCompare(b.title)) })).filter(g=> g.items.length);
+    box.innerHTML = `<div class="pp-head"><div><h3>Overdue ${esc(R.label)}</h3>
+        <p class="pp-sub">${ms.n ? `${ms.n - ms.open} missed · ${ms.open} still open` : 'Nothing overdue'}</p></div><span class="pp-big">${ms.n}</span></div>
+      ${groups.length ? '<div class="pp-scroll">' + groups.map(g=> `<details class="pp-group" open><summary><span class="chip ${(CATS[g.c] || CATS.personal).acc}"><i></i>${esc(g.name)}</span><span class="pp-n">${g.items.length}</span></summary>
+          <ul class="pp-items">${g.items.map(i=> `<li><b>${esc(i.title || 'Task')}</b><span>${esc(progShort(i.date))}</span>${ppTag(i)}</li>`).join('')}</ul></details>`).join('') + '</div>'
+        : `<div class="pp-empty">${typeof doodleSvg === 'function' ? doodleSvg('done') : ''}<b>Nothing overdue ${esc(R.label)}</b><span>Everything due so far was done.</span></div>`}`;
+    return;
+  }
+  const di = progPanel.day || iso(new Date()), d = parseISO(di), S = rangeStats(d, d);
+  const head = `<div class="pp-head"><div><h3>${esc(progDayName(d))}</h3><p class="pp-sub">${esc(d.toLocaleDateString(undefined, { day:'numeric', month:'long', year:'numeric' }))}</p></div></div>`;
+  if(!S.planned){
+    box.innerHTML = head + `<div class="pp-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>Nothing was planned${d > _dayOnly(new Date()) ? ' yet' : ''}</b><span>Pick another day in the calendar.</span></div>`;
+    return;
+  }
+  const areas = PROG_AREAS.map(([c, name])=> ({ c, name, s: S.byCat[c] })).filter(a=> a.s);
+  const missed = S.ms.items.slice().sort((a, b)=> a.title.localeCompare(b.title));
+  box.innerHTML = head + `<div class="pp-sum">
+      <div><small>Completed</small><b>${S.done}<em>/${S.planned}</em></b></div>
+      <div><small>Completion</small><b>${pct(S.done, S.planned)}%</b></div>
+      <div class="${S.missed ? 'is-miss' : ''}"><small>Missed</small><b>${S.missed}</b></div>
+      <div><small>Pending</small><b>${S.pending}</b></div></div>
+    <h4 class="pp-h">By area</h4>
+    <div class="pp-areas">${areas.map(a=> `<div class="pp-arow"><span class="pp-an"><span class="chip ${(CATS[a.c] || CATS.personal).acc}"><i></i>${esc(a.name)}</span></span>${ppBar(a.s)}
+        <span class="pp-av"><b>${pct(a.s.done, a.s.planned)}%</b><small>${a.s.done}/${a.s.planned}${a.s.missed ? ` · ${a.s.missed} missed` : ''}</small></span></div>`).join('')}</div>
+    ${missed.length ? `<details class="pp-group pp-missed" open><summary><b>Missed on this day</b><span class="pp-n">${missed.length}</span></summary>
+      <ul class="pp-items">${missed.map(i=> `<li><b>${esc(i.title || 'Task')}</b><span class="chip ${(CATS[i.cat] || CATS.personal).acc}"><i></i>${esc(progAreaName(CATS[i.cat] ? i.cat : 'personal'))}</span>${ppTag(i)}</li>`).join('')}</ul></details>` : ''}`;
+}
+
+function perfHtml(from, to){
+  const S = rangeStats(from, to);
+  const row = (name, s, cls, chip) => {
+    const p = k => s && s.planned ? Math.round(s[k] / s.planned * 100) : 0;
+    return `<div class="pf-row${cls ? ' ' + cls : ''}"><span class="pf-n">${chip || esc(name)}</span>${s && s.planned ? ppBar(s) : '<span class="pp-bar" aria-hidden="true"></span>'}
+      <span class="pf-v">${s && s.planned ? `<b>${p('done')}%</b> done · <b class="m">${p('missed')}%</b> missed${s.pending ? ` · ${p('pending')}% to do` : ''}` : '<span class="pf-none">Nothing planned</span>'}</span></div>`;
   };
-  const thisW = data[11], lastW = data[10];
-  const mNow = new Date(now.getFullYear(), now.getMonth(), 1), mPrev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const countActs = (f, t) => PROG.acts.filter(a=>a.day >= iso(f) && a.day <= iso(t)).length;
-  const curM = countActs(mNow, now), prevM = countActs(mPrev, new Date(now.getFullYear(), now.getMonth(), 0));
-  const rateM = (()=>{ const a = tally(PROG.plan, mNow, _dayOnly(now)); const b = tally(PROG.plan, mPrev, new Date(now.getFullYear(), now.getMonth(), 0)); return [pct(a.done, a.planned), pct(b.done, b.planned)]; })();
-
-  box.innerHTML = `<div class="legend">${(used.length ? used : ['side','home','training']).map(c=>`<span class="${CATS[c].acc}"><i></i>${CATS[c].label}</span>`).join('')}</div>
-    <div class="chart" role="img" aria-label="Completed items per week, last 12 weeks">
-      ${data.map((x, i)=>`<div class="col${i === 11 ? ' cur' : ''}" data-wk="${i}">
-        ${x.total ? `<span class="num" style="bottom:${x.total / max * 100}%">${x.total}</span>` : ''}
-        <div class="stack" style="height:${x.total / max * 100}%">${cats.filter(c=>x.byCat[c]).map(c=>`<i class="${CATS[c].acc}" style="flex:${x.byCat[c]}"></i>`).join('')}</div>
-      </div>`).join('')}
-    </div>
-    <div class="chart-x">${data.map((x, i)=>`<span class="${i === 11 ? 'cur' : ''}">${i === 11 ? 'Now' : x.w.getDate() + ' ' + MONTHS_SH[x.w.getMonth()]}</span>`).join('')}</div>
-    <div class="cmp">
-      ${cmp(thisW.total, lastW.total, 'This week vs last', `${pct(thisW.donePlanned, thisW.planned)}% of plan · last week ${pct(lastW.donePlanned, lastW.planned)}%`)}
-      ${cmp(curM, prevM, MONTHS_FULL[now.getMonth()] + ' vs ' + MONTHS_FULL[mPrev.getMonth()], `${rateM[0]}% of plan · last month ${rateM[1]}%`)}
-    </div>`;
-  box.querySelectorAll('[data-wk]').forEach(col=>{
-    const x = data[Number(col.dataset.wk)];
-    const show = e=>{
-      let tip = $('chartTip');
-      if(!tip){ tip = document.createElement('div'); tip.id = 'chartTip'; tip.className = 'tip'; document.body.appendChild(tip); }
-      tip.innerHTML = `<b>${x.w.getDate()} ${MONTHS_SH[x.w.getMonth()]} – ${addDays(x.w, 6).getDate()} ${MONTHS_SH[addDays(x.w, 6).getMonth()]}</b>` +
-        cats.filter(c=>x.byCat[c]).map(c=>`<div><span>${CATS[c].label}</span><span>${x.byCat[c]}</span></div>`).join('') +
-        `<div style="margin-top:4px;border-top:1px solid var(--border);padding-top:4px;"><span>Plan done</span><span>${x.donePlanned}/${x.planned}</span></div>`;
-      tip.style.display = 'block';
-      const r = col.getBoundingClientRect();
-      tip.style.left = Math.min(window.innerWidth - 170, Math.max(8, r.left + r.width / 2 - 80)) + 'px';
-      tip.style.top = Math.max(8, r.top - tip.offsetHeight - 8) + 'px';
-    };
-    col.addEventListener('mouseenter', show);
-    col.addEventListener('mouseleave', ()=>{ const t = $('chartTip'); if(t) t.style.display = 'none'; });
-  });
+  const shown = PROG_AREAS.filter(([c])=> c !== 'personal' || S.byCat.personal);
+  return row('All areas', S, 'pf-all') + shown.map(([c, name])=> row(name, S.byCat[c], '', `<span class="chip ${(CATS[c] || CATS.personal).acc}"><i></i>${esc(name)}</span>`)).join('') +
+    `<div class="pf-legend"><span><i class="d"></i>Done</span><span><i class="m"></i>Missed</span><span><i class="p"></i>Still to do</span></div>`;
 }
+function paintPerf(){
+  const today = _dayOnly(new Date());
+  perfWeekRef = perfWeekRef || mondayOf(today);
+  perfMonthRef = perfMonthRef || new Date(today.getFullYear(), today.getMonth(), 1);
+  const wEnd = addDays(perfWeekRef, 6), mEnd = new Date(perfMonthRef.getFullYear(), perfMonthRef.getMonth() + 1, 0);
+  $('pfWeekL').textContent = sameDay(perfWeekRef, mondayOf(today)) ? 'This week' : `${progDM(perfWeekRef)} – ${progDM(wEnd)}`;
+  $('pfMonthL').textContent = MONTHS_FULL[perfMonthRef.getMonth()] + (perfMonthRef.getFullYear() !== today.getFullYear() ? ' ' + perfMonthRef.getFullYear() : '');
+  $('pfWeekNext').disabled = perfWeekRef >= mondayOf(today);
+  $('pfMonthNext').disabled = perfMonthRef >= new Date(today.getFullYear(), today.getMonth(), 1);
+  $('pfWeekPrev').disabled = addDays(perfWeekRef, -7) < mondayOf(PROG.from);
+  $('pfMonthPrev').disabled = new Date(perfMonthRef.getFullYear(), perfMonthRef.getMonth() - 1, 1) < new Date(PROG.from.getFullYear(), PROG.from.getMonth(), 1);
+  $('progWeekPerf').innerHTML = perfHtml(perfWeekRef, wEnd);
+  $('progMonthPerf').innerHTML = perfHtml(perfMonthRef, mEnd);
+}
+
+// calendar day -> day overview; Overdue card -> overdue overview
+$('progHeat').addEventListener('click', e=>{
+  const b = e.target.closest('[data-day]'); if(!b || !PROG) return;
+  progPanel = { mode:'day', day: b.dataset.day };
+  paintHeat(); paintPanel();
+  const p = $('progPanelWrap');
+  if(p.getBoundingClientRect().top > window.innerHeight - 140) p.scrollIntoView({ behavior:'smooth', block:'start' });
+});
+$('progPanelSeg').addEventListener('click', e=>{
+  const b = e.target.closest('[data-pmode]'); if(!b || !PROG) return;
+  progPanel = { mode: b.dataset.pmode, day: progPanel.day };
+  paintHeat(); paintPanel();
+});
+$('progKpis').addEventListener('click', e=>{
+  if(!e.target.closest('#progOverdueBtn') || !PROG) return;
+  progPanel = { mode:'overdue', day: progPanel.day };
+  paintHeat(); paintPanel();
+  // on wide screens the panel sits next to the calendar: show the whole section; on phones go to the panel itself
+  (window.innerWidth <= 900 ? $('progPanelWrap') : $('progAct')).scrollIntoView({ behavior:'smooth', block:'start' });
+});
+[['pfWeekPrev', -1, 'w'], ['pfWeekNext', 1, 'w'], ['pfMonthPrev', -1, 'm'], ['pfMonthNext', 1, 'm']].forEach(([id, dir, k])=> $(id).addEventListener('click', ()=>{
+  if(k === 'w') perfWeekRef = addDays(perfWeekRef, dir * 7); else perfMonthRef = new Date(perfMonthRef.getFullYear(), perfMonthRef.getMonth() + dir, 1);
+  paintPerf();
+}));
 
 function moneyStats(){
   const now = new Date();
@@ -11131,42 +11294,6 @@ function moneyStats(){
   });
   const cur = sums(curP), prev = sums(prevP);
   return { cur, prev, savedTotal, limit: Number(PREFS.monthlyBudget) || cur.income, limitIsBudget: !!Number(PREFS.monthlyBudget) };
-}
-
-function paintMoney(M){
-  const box = $('progMoney'), goal = Number(PREFS.savingsGoal) || 0;
-  const delta = (a, b, goodUp) => { const d = a - b; if(!a && !b) return ''; const good = goodUp ? d >= 0 : d <= 0;
-    return `<span class="delta ${good ? 'up' : 'down'}">${d >= 0 ? '▲' : '▼'} ${money(Math.abs(d))} vs last month</span>`; };
-  const parts = [['mandatory','Mandatory','acc-amber'], ['subscription','Subscriptions','acc-blue'], ['other','Other spending','acc-sky'], ['savings','Savings','acc-sun']];
-  const maxPart = Math.max(1, ...parts.map(p=>M.cur[p[0]]));
-  const nothing = !M.cur.income && !M.cur.spent && !M.savedTotal;
-  box.innerHTML = nothing
-    ? `<div class="empty"><b>No money data yet</b>Add your income and spending in Money &amp; Budgeting, and set a savings goal in Settings.
-        <br><button class="btn btn-ghost btn-sm" data-goto="budget">Open Money &amp; Budgeting</button></div>`
-    : `<div class="two-col">
-      <div>
-        <div class="card-head"><span class="card-icon acc-sun">${ico('target')}</span><h3 class="card-title">Savings goal</h3></div>
-        ${goal ? `<div class="money-top"><span class="big">${money(M.savedTotal)}</span><span style="color:var(--on-panel-2)">of ${money(goal)} · ${pct(M.savedTotal, goal)}%</span></div>
-          <div class="bar acc-sun" style="margin-top:10px;"><i style="width:${Math.min(100, pct(M.savedTotal, goal))}%"></i></div>`
-          : `<div class="money-top"><span class="big">${money(M.savedTotal)}</span><span style="color:var(--on-panel-2)">saved so far</span></div>
-          <button class="btn btn-ghost btn-sm" data-goto="settings" style="margin-top:10px;">Set a savings goal</button>`}
-        <div style="margin-top:10px;font-size:12.5px;color:var(--on-panel-2)">This month: <b style="color:var(--foreground)">${money(M.cur.savings)}</b> ${delta(M.cur.savings, M.prev.savings, true)}</div>
-
-        <div class="card-head" style="margin-top:22px;"><span class="card-icon acc-green">${ico('wallet')}</span><h3 class="card-title">Budget this month</h3></div>
-        ${M.limit ? `<div class="money-top"><span class="big">${pct(M.cur.spent, M.limit)}%</span><span style="color:var(--on-panel-2)">${money(M.cur.spent)} spent of ${money(M.limit)} ${M.limitIsBudget ? 'budget' : 'income'}</span></div>
-          <div class="bar ${M.cur.spent > M.limit ? 'acc-rose' : 'acc-green'}" style="margin-top:10px;"><i style="width:${Math.min(100, pct(M.cur.spent, M.limit))}%"></i></div>`
-          : '<div style="color:var(--on-panel-2);font-size:13px;">Add income or a monthly budget to see how much you have used.</div>'}
-        <div style="margin-top:10px;font-size:12.5px;color:var(--on-panel-2)">Spent: <b style="color:var(--foreground)">${money(M.cur.spent)}</b> ${delta(M.cur.spent, M.prev.spent, false)}</div>
-      </div>
-      <div>
-        <div class="card-head"><span class="card-icon acc-blue">${ico('chart')}</span><h3 class="card-title">Where it went — ${MONTHS_FULL[new Date().getMonth()]}</h3></div>
-        <div class="money-rows">${parts.map(([k, label, acc])=>`<div class="mrow ${acc}"><span>${label}</span>
-          <div class="bar"><i style="width:${M.cur[k] / maxPart * 100}%"></i></div><b>${money(M.cur[k])}</b></div>`).join('')}</div>
-        <div class="cmp">
-          <div><h4>Income</h4><b>${money(M.cur.income)}</b><div style="font-size:11.5px;color:var(--on-panel-2);margin-top:2px;">last month ${money(M.prev.income)}</div></div>
-          <div><h4>Left over</h4><b>${money(M.cur.income - M.cur.spent - M.cur.savings)}</b><div style="font-size:11.5px;color:var(--on-panel-2);margin-top:2px;">last month ${money(M.prev.income - M.prev.spent - M.prev.savings)}</div></div>
-        </div>
-      </div></div>`;
 }
 
 /* ===================================================================

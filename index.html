@@ -2328,8 +2328,12 @@
   .day-detail li{color:var(--on-panel-2);margin:4px 0;}
   /* ---------- Progress (2026-11-21, simplified 2026-11-23) ---------- */
   #page-progress .kpi-btn{border:0;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%;}
-  #page-progress .kpi-btn:hover{box-shadow:var(--lift-2), inset 0 0 0 1px var(--danger-mid) !important;}
-  #page-progress .kpi-btn.on{box-shadow:var(--lift-2), inset 0 0 0 2px var(--danger-mid) !important;}
+  /* clickable stats cards (Ime 2026-11-23): no outline on click or when selected; the icon gives a small press instead.
+     Keyboard users still get the focus ring (:focus-visible), mouse and touch don't. */
+  :is(#page-progress .kpi-btn, #page-progress .catp, .pw) :is(.card-icon, .pw-go){transition:transform 180ms cubic-bezier(.2,.7,.3,1);}
+  :is(#page-progress .kpi-btn, #page-progress .catp, .pw):is(:active, .is-pressed) :is(.card-icon, .pw-go){transform:translateY(2px) scale(.96);}
+  :is(#page-progress .kpi-btn, #page-progress .catp, .pw):focus:not(:focus-visible){outline:none;}
+  @media (prefers-reduced-motion:reduce){ :is(#page-progress .kpi-btn, #page-progress .catp, .pw) :is(.card-icon, .pw-go){transition:none;} }
   #page-progress .kpi-btn .kpi-go{margin-left:auto;align-self:center;color:var(--muted-foreground);flex-shrink:0;}
   #page-progress .kpi-of{font-size:14px;font-weight:700;color:var(--on-panel-2);margin-left:6px;}
   /* by area: no half-empty rows (5 cards = one row, 3 + 2, 2 + 2 + 1 wide, or one column) */
@@ -2360,7 +2364,6 @@
   #progHeat{display:flex;flex-direction:column;justify-content:center;}
   #progHeat .hm-head, #progHeat .hm-grid{width:100%;max-width:440px;}
   .hm-day.sel{outline:2px solid var(--foreground);outline-offset:2px;}
-  .prog-panel.is-overdue{box-shadow:var(--lift-2), inset 0 0 0 1.5px var(--danger-mid) !important;}
   #progPanelSeg button{font-size:12px;padding:6px 12px;}
   .pp-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
   .pp-head h3{margin:0;font-size:17px;font-weight:800;color:var(--foreground);}
@@ -11304,6 +11307,13 @@ function paintSuccessChart(R, S){
     <div class="pc-legend sr-legend"><span><i class="sw-o"></i>On time</span><span><i class="sw-l"></i>Late</span></div>`;
 }
 
+// a tap is often shorter than the press animation: hold the pressed look for a moment
+document.addEventListener('pointerdown', e=>{
+  const c = e.target.closest('#page-progress .kpi-btn, #page-progress .catp, .pw'); if(!c) return;
+  c.classList.add('is-pressed');
+  const t0 = performance.now(), up = ()=>{ setTimeout(()=> c.classList.remove('is-pressed'), Math.max(0, 120 - (performance.now() - t0))); };
+  c.addEventListener('pointerup', up, { once:true }); c.addEventListener('pointercancel', up, { once:true }); c.addEventListener('pointerleave', up, { once:true });
+});
 // calendar day -> day overview; Late / Missed tiles -> overdue overview
 $('progHeat').addEventListener('click', e=>{
   const b = e.target.closest('[data-day]'); if(!b || !PROG) return;

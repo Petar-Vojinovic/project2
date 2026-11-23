@@ -2413,10 +2413,7 @@
   .cal-nav button:disabled{opacity:.35;cursor:default;}
   /* chart A (activity by area) and chart B (success rate) */
   .pc-card{padding:18px 20px;}
-  .pc-period{font-size:12.5px;font-weight:700;color:var(--on-panel-2);}
-  .pc-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;font-weight:700;color:var(--on-panel-2);}
-  .pc-legend span{display:inline-flex;align-items:center;gap:6px;}
-  .pc-legend i{width:10px;height:10px;border-radius:3px;}
+  .pc-legend{display:flex;gap:6px;flex-wrap:wrap;}
   .ca-plot{position:relative;height:200px;margin:28px 0 0 24px;border-bottom:1px solid var(--border);}
   .ca-grid span{position:absolute;left:0;right:0;border-top:1px dashed rgba(var(--foreground-rgb),0.08);}
   .ca-grid em{position:absolute;right:100%;margin-right:8px;transform:translateY(-50%);font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted-foreground);font-variant-numeric:tabular-nums;}
@@ -2424,31 +2421,14 @@
   .ca-col{flex:1;display:flex;align-items:flex-end;justify-content:center;min-width:0;outline:none;border-radius:6px;}
   .ca-col:hover, .ca-col:focus-visible{background:rgba(var(--foreground-rgb),0.035);}
   .ca-bar{position:relative;width:100%;max-width:30px;display:flex;flex-direction:column-reverse;gap:2px;}
-  .ca-bar i{display:block;min-height:2px;}
+  .ca-bar i{display:block;min-height:2px;background:var(--acc);}
+  :root[data-theme="dark"] .ca-bar i{background:rgba(var(--acc-rgb),.78);}     /* the same area colour, toned like the dark theme's chips and icons */
   .ca-bar i:last-of-type{border-radius:4px 4px 0 0;}
   .ca-tot{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:4px;font-size:11.5px;font-weight:800;color:var(--on-panel-2);font-variant-numeric:tabular-nums;}
   .ca-col.cur .ca-tot{color:var(--foreground);}
   .ca-x{display:flex;gap:6px;margin:8px 0 0 24px;}
   .ca-x span{flex:1;min-width:0;display:flex;justify-content:center;font-size:10.5px;font-weight:600;color:var(--on-panel-2);white-space:nowrap;}
   .ca-x span.cur{color:var(--foreground);font-weight:800;}
-  .sr-cols{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:0;}
-  .sr-col{display:flex;flex-direction:column;min-width:0;padding:0 10px;border-left:1px solid var(--border);outline:none;}
-  .sr-col:focus-visible{background:rgba(var(--foreground-rgb),0.035);}
-  .sr-name{font-size:13px;font-weight:700;color:var(--foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .sr-plot{height:186px;display:flex;flex-direction:column;justify-content:flex-end;border-bottom:1px solid var(--border);}
-  .sr-pct{font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--foreground);font-variant-numeric:tabular-nums;margin-bottom:6px;}
-  .sr-bar{display:flex;flex-direction:column;gap:2px;}
-  .sr-bar i{display:block;}
-  .sr-bar i:first-child{border-radius:4px 4px 0 0;}
-  .sr-bar i.o{background:var(--c);}
-  .sr-bar i.l{background:repeating-linear-gradient(135deg, rgba(var(--c-rgb),0.85) 0 2px, rgba(var(--c-rgb),0.22) 2px 6px);}
-  .sr-cap{margin-top:8px;font-size:11.5px;font-weight:600;color:var(--on-panel-2);}
-  .sr-late{color:var(--warning);}
-  .sr-later{margin:14px 0 0;font-size:12px;font-weight:600;color:var(--on-panel-2);}
-  #progChartB .pp-empty + .sr-later{text-align:center;margin-top:0;}
-  .sr-legend{margin-top:14px;}
-  .sr-legend .sw-o{background:rgba(var(--foreground-rgb),0.45);}
-  .sr-legend .sw-l{background:repeating-linear-gradient(135deg, rgba(var(--foreground-rgb),0.5) 0 2px, rgba(var(--foreground-rgb),0.12) 2px 5px);}
   #page-progress [data-tip]{cursor:default;}
   .fx-tip{white-space:pre-line;}
   @media (max-width:900px){
@@ -2464,10 +2444,6 @@
     .ca-bars, .ca-x{gap:3px;}
     .ca-x span:nth-child(odd), .ca-x span:nth-child(10){visibility:hidden;}
     .ca-tot{font-size:10px;}
-    .sr-cols{grid-template-columns:repeat(var(--nm),minmax(0,1fr));row-gap:22px;}
-    .sr-col{padding:0 8px;}
-    .sr-plot{height:162px;}
-    .sr-pct{font-size:26px;}
   }
   .chart{display:flex;align-items:flex-end;gap:8px;height:190px;padding-top:18px;border-bottom:1px solid var(--panel-line);}
   .chart .col{flex:1;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;height:100%;position:relative;cursor:default;}
@@ -5283,9 +5259,6 @@
 
       <div class="section-h"><h2>Activity by area</h2></div>
       <div class="card pc-card" id="progChartA"></div>
-
-      <div class="section-h"><h2>Success rate</h2><span class="spacer"></span><span class="pc-period" id="progChartBL">This week</span></div>
-      <div class="card pc-card" id="progChartB"></div>
     </section>
 
     <!-- ---------- SETTINGS ---------- -->
@@ -11213,7 +11186,6 @@ function paintProgress(){
   paintHeat();
   paintPanel();
   paintActivityChart();
-  paintSuccessChart(R, S);
 }
 
 function progDayName(d){
@@ -11294,38 +11266,16 @@ function paintActivityChart(){
   const raw = max / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
   const step = Math.max(1, (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p), top = Math.ceil(max / step) * step;
   const ticks = []; for(let v = step; v <= top; v += step) ticks.push(v);
-  const dot = c => `<i style="background:var(--cat-${c})"></i>`;
-  box.innerHTML = `<div class="pc-legend">${used.map(c=> `<span>${dot(c)}${esc(progAreaShort(c))}</span>`).join('')}</div>
+  // colours come from the area definitions (CATS[c].acc), the same ones the area chips and cards use
+  box.innerHTML = `<div class="pc-legend">${used.map(c=> `<span class="chip ${CATS[c].acc}"><i></i>${esc(progAreaShort(c))}</span>`).join('')}</div>
     <div class="ca-plot"><div class="ca-grid" aria-hidden="true">${ticks.map(v=> `<span style="bottom:${v / top * 100}%"><em>${v}</em></span>`).join('')}</div>
     <div class="ca-bars">${weeks.map((w, i)=>{
       const label = i === W - 1 ? 'This week' : progDM(w.from) + ' – ' + progDM(addDays(w.from, 6));
       const tip = `${label}: ${w.n} done` + (w.n ? '\n' + used.filter(c=> w.byCat[c]).map(c=> progAreaShort(c) + ' ' + w.byCat[c]).join(' · ') : '');
       return `<div class="ca-col${i === W - 1 ? ' cur' : ''}" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip.replace('\n', ', '))}">
-        <div class="ca-bar" style="height:${w.n / top * 100}%">${w.n ? `<b class="ca-tot">${w.n}</b>` : ''}${used.filter(c=> w.byCat[c]).map(c=> `<i style="flex:${w.byCat[c]} 1 0;background:var(--cat-${c})"></i>`).join('')}</div></div>`;
+        <div class="ca-bar" style="height:${w.n / top * 100}%">${w.n ? `<b class="ca-tot">${w.n}</b>` : ''}${used.filter(c=> w.byCat[c]).map(c=> `<i class="${CATS[c].acc}" style="flex:${w.byCat[c]} 1 0"></i>`).join('')}</div></div>`;
     }).join('')}</div></div>
     <div class="ca-x">${weeks.map((w, i)=> `<span${i === W - 1 ? ' class="cur"' : ''}>${i === W - 1 ? 'This week' : esc(progDM(w.from))}</span>`).join('')}</div>`;
-}
-
-/* Chart B: on-time rate per area for the chosen period; late ticks shown apart, never as success */
-function paintSuccessChart(R, S){
-  const box = $('progChartB'); if(!box) return;
-  $('progChartBL').textContent = R.label.charAt(0).toUpperCase() + R.label.slice(1);
-  const all = PROG_AREAS.map(([c])=> ({ c, s: S.byCat[c] })).filter(a=> a.s);
-  // an area with nothing due yet has no rate: it gets one line below instead of an empty column
-  const areas = all.filter(a=> a.s.due), later = all.filter(a=> !a.s.due);
-  const laterHtml = later.length ? `<p class="sr-later">Not due yet: ${later.map(({ c, s })=> `${esc(progAreaShort(c))} ${s.pending}`).join(' · ')}</p>` : '';
-  if(!areas.length){ box.innerHTML = ppEmpty('calm', (all.length ? 'Nothing due yet ' : 'Nothing scheduled ') + R.label) + laterHtml; return; }
-  const H = 120;
-  box.innerHTML = `<div class="sr-cols" style="--n:${areas.length};--nm:${Math.min(areas.length, 3)}">${areas.map(({ c, s })=>{
-      const p = onTimePct(s), ok = s.due ? Math.round(s.onTime / s.due * H) : 0, late = s.due ? Math.round(s.late / s.due * H) : 0;
-      const tip = `${progAreaShort(c)}: ${s.onTime} on time · ${s.late} late · ${s.missed} missed · ${s.pending} pending`;
-      return `<div class="sr-col" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}" style="--c:var(--cat-${c});--c-rgb:var(--cat-${c}-rgb)">
-        <div class="sr-name">${esc(progAreaShort(c))}</div>
-        <div class="sr-plot"><b class="sr-pct">${p === null ? '—' : p + '%'}</b>
-          <div class="sr-bar">${late ? `<i class="l" style="height:${late}px"></i>` : ''}${ok ? `<i class="o" style="height:${ok}px"></i>` : ''}</div></div>
-        <div class="sr-cap">${s.onTime}/${s.due} on time${s.late ? ` · <span class="sr-late">${s.late} late</span>` : ''}</div></div>`;
-    }).join('')}</div>${laterHtml}
-    <div class="pc-legend sr-legend"><span><i class="sw-o"></i>On time</span><span><i class="sw-l"></i>Late</span></div>`;
 }
 
 // a tap is often shorter than the press animation: hold the pressed look for a moment

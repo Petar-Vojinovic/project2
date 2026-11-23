@@ -2326,11 +2326,12 @@
   .day-detail{margin-top:14px;border-top:1px solid var(--panel-line);padding-top:12px;font-size:13px;}
   .day-detail h4{margin:0 0 8px;font-size:13px;color:var(--foreground);}
   .day-detail li{color:var(--on-panel-2);margin:4px 0;}
-  /* ---------- Progress analytics (2026-11-21) ---------- */
+  /* ---------- Progress (2026-11-21, simplified 2026-11-23) ---------- */
   #page-progress .kpi-btn{border:0;text-align:left;font:inherit;color:inherit;cursor:pointer;width:100%;}
   #page-progress .kpi-btn:hover{box-shadow:var(--lift-2), inset 0 0 0 1px var(--danger-mid) !important;}
   #page-progress .kpi-btn.on{box-shadow:var(--lift-2), inset 0 0 0 2px var(--danger-mid) !important;}
   #page-progress .kpi-btn .kpi-go{margin-left:auto;align-self:center;color:var(--muted-foreground);flex-shrink:0;}
+  #page-progress .kpi-of{font-size:14px;font-weight:700;color:var(--on-panel-2);margin-left:6px;}
   /* by area: no half-empty rows (5 cards = one row, 3 + 2, 2 + 2 + 1 wide, or one column) */
   #page-progress .catp-grid{grid-template-columns:repeat(6,minmax(0,1fr));}
   #page-progress .catp-grid > .catp{grid-column:span 2;min-width:0;}
@@ -2347,13 +2348,15 @@
   @media (max-width:560px){
     #page-progress .catp-grid{grid-template-columns:1fr;}
   }
-  #page-progress .catp-rows div{gap:10px;}
-  #page-progress .catp-rows div b{white-space:nowrap;}
+  #page-progress .catp-big{margin-bottom:0;}
+  #page-progress .catp-rows{margin-top:auto;padding-top:10px;}
+  #page-progress .catp-rows div{gap:10px;white-space:nowrap;}
+  #page-progress .catp-rows div b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
   /* activity calendar + its panel, side by side */
   .prog-act{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:stretch;margin-top:8px;}
   .prog-act > div{display:flex;flex-direction:column;min-width:0;}
   .prog-act > div > .card{flex:1;}
-  .prog-act .section-h{margin:24px 0 12px;}
+  .prog-act .section-h, #page-progress .section-h{margin:24px 0 12px;}
   #progHeat{display:flex;flex-direction:column;justify-content:center;}
   #progHeat .hm-head, #progHeat .hm-grid{width:100%;max-width:440px;}
   .hm-day.sel{outline:2px solid var(--foreground);outline-offset:2px;}
@@ -2363,71 +2366,105 @@
   .pp-head h3{margin:0;font-size:17px;font-weight:800;color:var(--foreground);}
   .pp-sub{margin:2px 0 0;font-size:12.5px;color:var(--on-panel-2);font-weight:600;}
   .pp-big{margin-left:auto;font-size:28px;font-weight:800;color:var(--danger);font-variant-numeric:tabular-nums;line-height:1;}
-  .pp-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+  .pp-sum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px;}
   .pp-sum > div{background:rgba(var(--foreground-rgb),0.035);border-radius:var(--r-in);padding:10px 12px;min-width:0;}
-  .pp-sum small{display:block;font-size:11.5px;font-weight:700;color:var(--on-panel-2);}
+  .pp-sum small{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--on-panel-2);}
+  .pp-sum small::before{content:'';width:8px;height:8px;border-radius:3px;flex-shrink:0;background:rgba(var(--foreground-rgb),0.14);}
+  .pp-sum .pp-s-onTime small::before{background:var(--ring);}
+  .pp-sum .pp-s-late small::before{background:var(--warning-mid);}
+  .pp-sum .pp-s-missed small::before{background:var(--danger-mid);}
   .pp-sum b{display:block;font-size:20px;font-weight:800;color:var(--foreground);font-variant-numeric:tabular-nums;margin-top:2px;}
-  .pp-sum b em{font-style:normal;font-size:13px;color:var(--on-panel-2);}
-  .pp-sum .is-miss b{color:var(--danger);}
-  .pp-h{margin:16px 0 8px;font-size:11.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--on-panel-2);}
+  .pp-sum .pp-s-missed.has b{color:var(--danger);}
+  .pp-sum .pp-s-late.has b{color:var(--warning);}
   .pp-areas{display:flex;flex-direction:column;gap:8px;}
-  .pp-arow{display:grid;grid-template-columns:150px minmax(0,1fr) 150px;align-items:center;gap:12px;min-width:0;}
-  .pf-row{display:grid;grid-template-columns:150px minmax(0,1fr) 230px;align-items:center;gap:12px;min-width:0;}
-  #page-progress .kpi-more{font-style:normal;}
-  .pp-an, .pf-n{min-width:0;overflow:hidden;}
-  .pp-an .chip, .pf-n .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;}
-  .pp-av{display:flex;align-items:baseline;gap:6px;justify-content:flex-end;white-space:nowrap;}
-  .pp-av b{font-size:14px;font-weight:800;color:var(--foreground);font-variant-numeric:tabular-nums;}
-  .pp-av small{font-size:11.5px;color:var(--on-panel-2);font-weight:600;}
-  .pp-bar{display:flex;height:8px;border-radius:6px;overflow:hidden;background:rgba(var(--foreground-rgb),0.07);min-width:40px;}
+  .pp-arow{display:grid;grid-template-columns:150px minmax(0,1fr) 56px;align-items:center;gap:12px;min-width:0;}
+  .pp-an{min-width:0;overflow:hidden;}
+  .pp-an .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;}
+  .pp-av{display:flex;justify-content:flex-end;white-space:nowrap;}
+  .pp-av b{font-size:13px;font-weight:800;color:var(--foreground);font-variant-numeric:tabular-nums;}
+  .pp-bar{display:flex;gap:2px;height:8px;border-radius:6px;overflow:hidden;background:rgba(var(--foreground-rgb),0.07);min-width:40px;}
   .pp-bar i{display:block;height:100%;}
-  .pp-bar i.d{background:var(--ring);}
-  .pp-bar i.m{background:var(--danger-mid);}
+  .pp-bar i.onTime{background:var(--ring);}
+  .pp-bar i.late{background:var(--warning-mid);}
+  .pp-bar i.missed{background:var(--danger-mid);}
   .pp-group{margin-top:12px;border-top:1px solid var(--border);padding-top:10px;}
   .pp-group summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-size:13px;color:var(--foreground);}
   .pp-group summary::-webkit-details-marker{display:none;}
   .pp-group summary::after{content:'';margin-left:4px;width:7px;height:7px;border-right:2px solid var(--on-panel-2);border-bottom:2px solid var(--on-panel-2);transform:rotate(45deg);margin-top:-3px;}
   .pp-group[open] summary::after{transform:rotate(-135deg);margin-top:3px;}
   .pp-n{margin-left:auto;font-size:12px;font-weight:800;color:var(--danger);font-variant-numeric:tabular-nums;}
+  .pp-caught .pp-n{color:var(--warning);}
   .pp-items{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;}
   .pp-items li{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:12px;background:var(--danger-soft);font-size:13px;min-width:0;}
+  .pp-items li.late{background:var(--warning-soft);}
   .pp-items li b{flex:1 1 140px;min-width:0;color:var(--foreground);font-weight:700;overflow-wrap:anywhere;}
   .pp-items li > span:not(.chip){font-size:12px;color:var(--on-panel-2);font-weight:600;white-space:nowrap;}
   .pp-tag{font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;white-space:nowrap;}
   .pp-tag.miss{color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger-mid);}
-  .pp-tag.open{color:var(--foreground);background:var(--card);box-shadow:inset 0 0 0 1px var(--border);}
+  .pp-tag.late{color:var(--warning);box-shadow:inset 0 0 0 1px var(--warning-mid);}
   .pp-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding:24px 8px;color:var(--on-panel-2);font-size:13px;flex:1;}
   .pp-empty b{color:var(--foreground);font-size:14px;}
   .pp-empty svg{max-width:150px;height:auto;}
   #progPanel{display:flex;flex-direction:column;}
   @media (min-width:901px){ .pp-scroll{max-height:560px;overflow-y:auto;margin-right:-6px;padding-right:6px;} }
-  /* weekly / monthly performance */
-  .prog-perf{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:stretch;}
-  .prog-perf > div{display:flex;flex-direction:column;min-width:0;}
-  .prog-perf > div > .card{flex:1;display:flex;flex-direction:column;gap:10px;}
-  .prog-perf .section-h{margin:24px 0 12px;}
-  .pf-row.pf-all{padding-bottom:10px;border-bottom:1px solid var(--border);}
-  .pf-row.pf-all .pf-n{font-weight:800;font-size:13px;color:var(--foreground);}
-  .pf-v{font-size:12px;color:var(--on-panel-2);font-weight:600;white-space:nowrap;text-align:right;}
-  .pf-v b{color:var(--foreground);font-weight:800;font-variant-numeric:tabular-nums;}
-  .pf-v b.m{color:var(--danger);}
-  .pf-none{opacity:.75;}
-  .pf-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:auto;padding-top:4px;font-size:11.5px;color:var(--on-panel-2);font-weight:600;}
-  .pf-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
-  .pf-legend i.d{background:var(--ring);} .pf-legend i.m{background:var(--danger-mid);} .pf-legend i.p{background:rgba(var(--foreground-rgb),0.12);}
-  .pf-nav{display:flex;align-items:center;gap:8px;}
-  .pf-nav span{font-size:12.5px;font-weight:700;color:var(--on-panel-2);min-width:96px;text-align:center;}
-  .pf-nav button:disabled, .cal-nav button:disabled{opacity:.35;cursor:default;}
+  .cal-nav button:disabled{opacity:.35;cursor:default;}
+  /* chart A (activity by area) and chart B (success rate) */
+  .pc-card{padding:18px 20px;}
+  .pc-period{font-size:12.5px;font-weight:700;color:var(--on-panel-2);}
+  .pc-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;font-weight:700;color:var(--on-panel-2);}
+  .pc-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .pc-legend i{width:10px;height:10px;border-radius:3px;}
+  .ca-plot{position:relative;height:200px;margin:28px 0 0 24px;border-bottom:1px solid var(--border);}
+  .ca-grid span{position:absolute;left:0;right:0;border-top:1px dashed rgba(var(--foreground-rgb),0.08);}
+  .ca-grid em{position:absolute;right:100%;margin-right:8px;transform:translateY(-50%);font-style:normal;font-size:10.5px;font-weight:600;color:var(--muted-foreground);font-variant-numeric:tabular-nums;}
+  .ca-bars{position:absolute;inset:0;display:flex;gap:6px;}
+  .ca-col{flex:1;display:flex;align-items:flex-end;justify-content:center;min-width:0;outline:none;border-radius:6px;}
+  .ca-col:hover, .ca-col:focus-visible{background:rgba(var(--foreground-rgb),0.035);}
+  .ca-bar{position:relative;width:100%;max-width:30px;display:flex;flex-direction:column-reverse;gap:2px;}
+  .ca-bar i{display:block;min-height:2px;}
+  .ca-bar i:last-of-type{border-radius:4px 4px 0 0;}
+  .ca-tot{position:absolute;left:50%;bottom:100%;transform:translateX(-50%);margin-bottom:4px;font-size:11.5px;font-weight:800;color:var(--on-panel-2);font-variant-numeric:tabular-nums;}
+  .ca-col.cur .ca-tot{color:var(--foreground);}
+  .ca-x{display:flex;gap:6px;margin:8px 0 0 24px;}
+  .ca-x span{flex:1;min-width:0;display:flex;justify-content:center;font-size:10.5px;font-weight:600;color:var(--on-panel-2);white-space:nowrap;}
+  .ca-x span.cur{color:var(--foreground);font-weight:800;}
+  .sr-cols{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:0;}
+  .sr-col{display:flex;flex-direction:column;min-width:0;padding:0 10px;border-left:1px solid var(--border);outline:none;}
+  .sr-col:focus-visible{background:rgba(var(--foreground-rgb),0.035);}
+  .sr-name{font-size:13px;font-weight:700;color:var(--foreground);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sr-plot{height:186px;display:flex;flex-direction:column;justify-content:flex-end;border-bottom:1px solid var(--border);}
+  .sr-pct{font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--foreground);font-variant-numeric:tabular-nums;margin-bottom:6px;}
+  .sr-bar{display:flex;flex-direction:column;gap:2px;}
+  .sr-bar i{display:block;}
+  .sr-bar i:first-child{border-radius:4px 4px 0 0;}
+  .sr-bar i.o{background:var(--c);}
+  .sr-bar i.l{background:repeating-linear-gradient(135deg, rgba(var(--c-rgb),0.85) 0 2px, rgba(var(--c-rgb),0.22) 2px 6px);}
+  .sr-cap{margin-top:8px;font-size:11.5px;font-weight:600;color:var(--on-panel-2);}
+  .sr-late{color:var(--warning);}
+  .sr-later{margin:14px 0 0;font-size:12px;font-weight:600;color:var(--on-panel-2);}
+  #progChartB .pp-empty + .sr-later{text-align:center;margin-top:0;}
+  .sr-legend{margin-top:14px;}
+  .sr-legend .sw-o{background:rgba(var(--foreground-rgb),0.45);}
+  .sr-legend .sw-l{background:repeating-linear-gradient(135deg, rgba(var(--foreground-rgb),0.5) 0 2px, rgba(var(--foreground-rgb),0.12) 2px 5px);}
+  #page-progress [data-tip]{cursor:default;}
+  .fx-tip{white-space:pre-line;}
   @media (max-width:900px){
-    .prog-act, .prog-perf{grid-template-columns:1fr;gap:0;}
+    .prog-act{grid-template-columns:1fr;gap:0;}
+    .ca-x span.cur{justify-content:flex-end;}
+    .ca-x span:nth-child(11){visibility:hidden;}
   }
   @media (max-width:560px){
-    #page-progress .kpi-more{display:none;}          /* the panel below shows the split */
-    .pf-nav span{min-width:0;}
     .pp-sum{grid-template-columns:repeat(2,minmax(0,1fr));}
-    .pp-arow, .pf-row{grid-template-columns:minmax(0,1fr) auto;row-gap:6px;}
-    .pp-arow .pp-bar, .pf-row .pp-bar{grid-column:1 / -1;grid-row:2;}
-    .pf-v{white-space:normal;}
+    .pp-arow{grid-template-columns:minmax(0,1fr) auto;row-gap:6px;}
+    .pp-arow .pp-bar{grid-column:1 / -1;grid-row:2;}
+    .pc-card{padding:16px 14px;}
+    .ca-bars, .ca-x{gap:3px;}
+    .ca-x span:nth-child(odd), .ca-x span:nth-child(10){visibility:hidden;}
+    .ca-tot{font-size:10px;}
+    .sr-cols{grid-template-columns:repeat(var(--nm),minmax(0,1fr));row-gap:22px;}
+    .sr-col{padding:0 8px;}
+    .sr-plot{height:162px;}
+    .sr-pct{font-size:26px;}
   }
   .chart{display:flex;align-items:flex-end;gap:8px;height:190px;padding-top:18px;border-bottom:1px solid var(--panel-line);}
   .chart .col{flex:1;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;height:100%;position:relative;cursor:default;}
@@ -5220,18 +5257,11 @@
         </div>
       </div>
 
-      <div class="prog-perf">
-        <div>
-          <div class="section-h"><h2>Weekly performance</h2><span class="spacer"></span>
-            <div class="cal-nav pf-nav"><button id="pfWeekPrev" aria-label="Previous week">‹</button><span id="pfWeekL">This week</span><button id="pfWeekNext" aria-label="Next week">›</button></div></div>
-          <div class="card" id="progWeekPerf"></div>
-        </div>
-        <div>
-          <div class="section-h"><h2>Monthly performance</h2><span class="spacer"></span>
-            <div class="cal-nav pf-nav"><button id="pfMonthPrev" aria-label="Previous month">‹</button><span id="pfMonthL">—</span><button id="pfMonthNext" aria-label="Next month">›</button></div></div>
-          <div class="card" id="progMonthPerf"></div>
-        </div>
-      </div>
+      <div class="section-h"><h2>Activity by area</h2></div>
+      <div class="card pc-card" id="progChartA"></div>
+
+      <div class="section-h"><h2>Success rate</h2><span class="spacer"></span><span class="pc-period" id="progChartBL">This week</span></div>
+      <div class="card pc-card" id="progChartB"></div>
     </section>
 
     <!-- ---------- SETTINGS ---------- -->
@@ -9004,7 +9034,7 @@ $('fxBody').addEventListener('keydown', e=>{
     tip.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
   };
   const hide = ()=>{ tip.hidden = true; };
-  ['page-training', 'page-learning', 'page-home', 'page-side'].forEach(id=>{
+  ['page-training', 'page-learning', 'page-home', 'page-side', 'page-progress'].forEach(id=>{
     const host = $(id);
     host.addEventListener('mouseover', e=>{ const el = e.target.closest('[data-tip]'); if(el) show(el); });
     host.addEventListener('mouseout', e=>{ if(e.target.closest('[data-tip]')) hide(); });
@@ -9902,9 +9932,10 @@ async function fetchPlan(fromISO, toISO){
   if(bad) throw bad.error;
   const [tasks, rules, comps] = res.map(r=>r.data || []);
   const doneRec = new Set(comps.map(c=>c.recurring_id + '|' + c.date));
+  const compBy = new Map(comps.map(c=> [c.recurring_id + '|' + c.date, c]));
   // workouts and runs: real rows plus this range's repeating weekly plan
   const sess = fxExpand(fx, fromISO, toISO);
-  return { tasks, rules, comps, fx, sess, doneRec };
+  return { tasks, rules, comps, fx, sess, doneRec, compBy };
 }
 
 // every planned item for one day, in one shape
@@ -9912,12 +9943,13 @@ function planDay(plan, d){
   const day = iso(d), out = [];
   plan.tasks.filter(t=>t.due_date === day).forEach(t=>out.push({
     key:'t:' + t.id, type:'task', id:t.id, title:t.title, cat:taskCat(t), done:!!t.completed,
-    priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t
+    priority:t.priority, time:t.due_time ? t.due_time.slice(0,5) : '', raw:t, doneAt: t.completed ? t.completed_at : null
   }));
   plan.rules.filter(r=>occursOn(r, d)).forEach(r=>out.push({
     key:'r:' + r.id + '|' + day, type:'rec', id:r.id, date:day, title:r.title,
     cat: CATS[r.category] ? r.category : 'home', done: plan.doneRec.has(r.id + '|' + day),
-    time: r.start_time ? r.start_time.slice(0,5) : '', raw:r
+    time: r.start_time ? r.start_time.slice(0,5) : '', raw:r,
+    doneAt: plan.compBy && plan.compBy.has(r.id + '|' + day) ? plan.compBy.get(r.id + '|' + day).created_at : null
   }));
   // Injury Mode: a paused day has no training planned, so nothing can be missed
   if(PREFS.countTraining && !fxPausedIn(plan.fx.inj, day)){
@@ -9937,63 +9969,45 @@ function tally(plan, from, to){
   return { planned, done };
 }
 
-/* ---------- overdue & missed (Ime 2026-11-21) ----------
+/* ---------- on time, late, missed, pending (Ime 2026-11-23) ----------
    Every scheduled occurrence counts on its own: each day of a daily task, each week's
-   day of a weekly one, each month's day of a monthly one. An occurrence is overdue once
-   its deadline passes (its end or start time on the day, otherwise the end of its day).
-   It is "still open" while it can still be ticked: a one-time task, today's item, or a
-   repeat that carries until its next occurrence comes round. After that it is missed.
-   Ticking it late (for its own date) makes it done. Missed tasks and repeats are also
-   kept in missed_occurrences, so editing, pausing or deleting a task later never wipes
-   the history; each occurrence has one row (okey), so it is counted once. */
-function deadlinePassed(it, d, now){
-  const today = _dayOnly(now);
-  if(d < today) return true;
-  if(d > today) return false;
-  const r = it.raw || {}, t = r.end_time || r.due_time || r.start_time;
-  return !!t && String(t).slice(0, 5) < hhmm(now);
+   day of a weekly one, each month's day of a monthly one, a one-time task on its date.
+   It ends in one of four states and nothing is ever ticked automatically:
+   - on time: ticked on its own day (or before 4 am the next morning, for late evenings)
+   - late:    ticked after that; the occurrence keeps its date, the tick keeps its own day
+   - missed:  its day is over and it was never ticked
+   - pending: its day has not ended yet
+   Missed tasks and repeats are also kept in missed_occurrences, so editing, pausing or
+   deleting a task later never wipes the history; each occurrence has one row (okey). */
+const LATE_GRACE_H = 4;
+function graceEnd(di){ const d = addDays(parseISO(di), 1); d.setHours(LATE_GRACE_H, 0, 0, 0); return d; }
+function occState(it, di, now){
+  if(it.done) return it.doneAt && new Date(it.doneAt) >= graceEnd(di) ? 'late' : 'onTime';
+  return di < iso(now || new Date()) ? 'missed' : 'pending';
 }
-function missedStats(plan, from, to, snaps){
-  const now = new Date(), today = _dayOnly(now), t0 = iso(today);
-  const last = to < today ? to : today;
-  const carried = new Set(todayRecurring({ rules: plan.rules, completions: plan.comps }, now).carried
-    .filter(c=> !c.done).map(c=> 'r:' + c.rule.id + '|' + iso(c.date)));
-  const out = { n:0, open:0, byCat:{}, extra:0, extraByCat:{}, items:[] }, seen = new Set();
-  const add = (o, c) => { o[c] = (o[c] || 0) + 1; };
-  for(let d = _dayOnly(from); d <= last; d = addDays(d, 1)){
-    planDay(plan, d).forEach(it=>{
-      seen.add(it.key);
-      if(it.done || !deadlinePassed(it, d, now)) return;
-      out.n++; add(out.byCat, it.cat);
-      const open = it.type === 'task' || (it.type === 'rec' && (iso(d) === t0 || carried.has(it.key)));
-      if(open) out.open++;
-      out.items.push({ key: it.key, title: it.title, cat: it.cat, date: iso(d), open });
-    });
-  }
-  // recorded misses whose task or repeat no longer shows them (edited, paused or deleted since)
-  (snaps || []).forEach(s=>{
-    if(s.date < iso(from) || s.date > iso(last) || s.date >= t0 || seen.has(s.okey)) return;
-    const c = CATS[s.category] ? s.category : 'personal';
-    out.n++; out.extra++; add(out.byCat, c); add(out.extraByCat, c);
-    out.items.push({ key: s.okey, title: s.title, cat: c, date: s.date, open:false, kept:true });
-  });
-  return out;
+// the day a tick counts as activity: its own day when on time, otherwise the day it really happened
+function occDoneDay(it, di){
+  if(!it.doneAt) return di;
+  const at = new Date(it.doneAt);
+  return at >= addDays(parseISO(di), 1) && at < graceEnd(di) ? di : iso(at);
 }
-// write new misses (past days only) and drop rows that were ticked late or removed on purpose
+// write new misses (past days only) and drop rows that were ticked on time or skipped on purpose;
+// a late tick keeps its row: the occurrence was still missed on its day
 let _missSync = false;
 async function syncMissed(plan, from, snaps){
   if(_missSync || !USER) return;
   _missSync = true;
   try{
-    const today = _dayOnly(new Date()), have = new Map((snaps || []).map(s=> [s.okey, s]));
+    const now = new Date(), today = _dayOnly(now), have = new Map((snaps || []).map(s=> [s.okey, s]));
     const add = [], drop = new Set();
     for(let d = _dayOnly(from); d < today; d = addDays(d, 1)) planDay(plan, d).forEach(it=>{
       if(it.type !== 'task' && it.type !== 'rec') return;
-      if(it.done){ if(have.has(it.key)) drop.add(have.get(it.key).id); return; }
-      if(!have.has(it.key)) add.push({ user_id: USER.id, okey: it.key, kind: it.type, recurring_id: it.type === 'rec' ? it.id : null,
+      const st = occState(it, iso(d), now);
+      if(st === 'onTime'){ if(have.has(it.key)) drop.add(have.get(it.key).id); return; }
+      if(st !== 'missed' || have.has(it.key)) return;
+      add.push({ user_id: USER.id, okey: it.key, kind: it.type, recurring_id: it.type === 'rec' ? it.id : null,
         task_id: it.type === 'task' ? it.id : null, date: iso(d), title: it.title, category: it.cat });
     });
-    plan.tasks.forEach(t=>{ const s = have.get('t:' + t.id); if(s && t.completed) drop.add(s.id); });
     const rules = new Map(plan.rules.map(r=> [r.id, r]));
     (snaps || []).forEach(s=>{ const r = s.kind === 'rec' && rules.get(s.recurring_id); if(r && isSkipped(r, parseISO(s.date))) drop.add(s.id); });
     for(let i = 0; i < add.length; i += 500){
@@ -10996,36 +11010,35 @@ async function loadProgress(){
   const to = hmEnd > monthEnd ? hmEnd : monthEnd;
   try{
     const fromTs = from.toISOString();
-    const [plan, doneTasks, comps, meals, budget, budRec, openTasks, lplans, snaps] = await Promise.all([
+    const [plan, doneTasks, comps, budget, budRec, openTasks, snaps] = await Promise.all([
       fetchPlan(iso(from), iso(to)),
       sb.from('tasks').select('*').eq('completed', true).gte('completed_at', fromTs),
       sb.from('recurring_completions').select('*').gte('created_at', fromTs),
-      sb.from('fit_food_log').select('date').gte('date', iso(from)),
       sb.from('budget_entries').select('*'),
       sb.from('budget_recurring').select('*'),
       sb.from('tasks').select('*').eq('completed', false),
-      sb.from('learn_plans').select('id,name,archived,kind').eq('kind', 'learning').order('position').order('created_at'),
       sb.from('missed_occurrences').select('*').gte('date', iso(from))
     ]);
-    [doneTasks, comps, meals, budget, budRec, openTasks].forEach(r=>{ if(r.error) throw r.error; });
+    [doneTasks, comps, budget, budRec, openTasks].forEach(r=>{ if(r.error) throw r.error; });
 
-    const { acts, actByDay } = buildActs(plan, doneTasks.data || [], comps.data || []);
+    // the streak keeps its own rule (a repeat counts for its own day), see streakCalc
+    const { actByDay } = buildActs(plan, doneTasks.data || [], comps.data || []);
 
-    PROG = { plan, acts, actByDay, meals: meals.data || [], budget: budget.data || [], budRec: budRec.data || [],
-             openTasks: openTasks.data || [], lplans: ((lplans && lplans.data) || []).filter(x=> !x.archived), from, to,
+    PROG = { plan, actByDay, budget: budget.data || [], budRec: budRec.data || [],
+             openTasks: openTasks.data || [], doneTasks: doneTasks.data || [], comps: comps.data || [], from, to,
              snaps: (snaps && !snaps.error && snaps.data) || [] };
+    buildOcc();
     computeStreaks();
     paintProgress();
     syncMissed(plan, from, PROG.snaps.slice());
   }catch(err){ showError($('progKpis'), err, loadProgress); }
 }
 
-// completions by the day they actually happened
+// completions for the streak: a repeat counts for the day it was meant for (Ime 2026-11-18)
 function buildActs(plan, doneTasks, comps){
   const rulesById = new Map(plan.rules.map(r=>[r.id, r]));
   const acts = [];
   doneTasks.forEach(t=> acts.push({ day: iso(new Date(t.completed_at)), title:t.title, cat:taskCat(t) }));
-  // a repeating task counts for the day it was meant for, even when ticked late (e.g. just after midnight)
   comps.forEach(c=>{ const r = rulesById.get(c.recurring_id); if(r) acts.push({ day: c.date || iso(new Date(c.created_at)), title:r.title, cat: CATS[r.category] ? r.category : 'home' }); });
   plan.sess.filter(s=>s.status === 'completed' && s.kind !== 'rest' && !fxPausedIn(plan.fx.inj, s.date)).forEach(s=> acts.push({ day: s.date, title: s.title || 'Training', cat:'training' }));
   const actByDay = new Map();
@@ -11065,99 +11078,118 @@ function periodRange(p){
   return { from: mondayOf(now), to: addDays(mondayOf(now), 6), label:'this week' };
 }
 
-function catTally(from, to, extraByCat){
-  const out = {}; CAT_ORDER.forEach(c=> out[c] = { planned:0, done:0 });
-  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{ const o = out[it.cat] || out.personal; o.planned++; if(it.done) o.done++; });
-  // misses kept from tasks that were changed or removed since still count as planned
-  Object.entries(extraByCat || {}).forEach(([c, n])=>{ (out[c] || out.personal).planned += n; });
-  return out;
+/* ---------- Progress (Ime 2026-11-23) ----------
+   One list of occurrences feeds every number on the page: the On time / Late / Missed
+   tiles, the calendar, the day and overdue views and both charts.
+   PROG.occ:       date -> its scheduled occurrences, each with its state (see occState)
+   PROG.doneByDay: date -> everything ticked that day (a late tick counts on the day it
+                   really happened, never on the day it was meant for) */
+const PROG_AREAS = [['side', 'Hustle'], ['training', 'Training'], ['home', 'Home Tasks'], ['learning', 'Learning'], ['money', 'Money & Budgeting'], ['personal', 'Personal']];
+const progCat = c => CAT_ORDER.includes(c) ? c : 'personal';
+const progAreaName = c => (PROG_AREAS.find(a=> a[0] === c) || [c, (CATS[c] || CATS.personal).label])[1];
+const progAreaShort = c => (CATS[c] || CATS.personal).label;
+let progPanel = { mode:'day', day:null };
+
+function buildOcc(){
+  const P = PROG, now = new Date(), t0 = iso(now), occ = new Map(), done = new Map(), seen = new Set();
+  const put = o => { if(!done.has(o.doneDay)) done.set(o.doneDay, []); done.get(o.doneDay).push(o); };
+  for(let d = _dayOnly(P.from); d <= P.to; d = addDays(d, 1)){
+    const di = iso(d);
+    occ.set(di, planDay(P.plan, d).map(it=>{
+      seen.add(it.key);
+      const o = { key: it.key, type: it.type, title: it.title || 'Task', cat: progCat(it.cat), date: di, state: occState(it, di, now), doneAt: it.doneAt || null };
+      if(it.done){ o.doneDay = it.type === 'train' ? di : occDoneDay(it, di); put(o); }
+      return o;
+    }));
+  }
+  // misses kept from tasks that were changed, paused or deleted since
+  const rules = new Map(P.plan.rules.map(r=> [r.id, r]));
+  P.snaps.forEach(s=>{
+    if(seen.has(s.okey) || s.date >= t0 || !occ.has(s.date)) return;
+    const r = s.kind === 'rec' && rules.get(s.recurring_id);
+    if(r && isSkipped(r, parseISO(s.date))) return;
+    seen.add(s.okey);
+    const c = s.kind === 'rec' && P.plan.compBy.get(s.recurring_id + '|' + s.date);
+    const o = { key: s.okey, type: s.kind, title: s.title || 'Task', cat: progCat(s.category), date: s.date, kept: true,
+      state: c ? occState({ done:true, doneAt: c.created_at }, s.date, now) : 'missed', doneAt: c ? c.created_at : null };
+    if(c){ o.doneDay = occDoneDay(o, s.date); put(o); }
+    occ.get(s.date).push(o);
+  });
+  // ticks that belong to no occurrence in range: tasks without a date, older dates, training when it isn't counted
+  P.doneTasks.forEach(t=>{ if(!seen.has('t:' + t.id) && t.completed_at) put({ key:'t:' + t.id, title: t.title, cat: progCat(taskCat(t)), state:'onTime', doneDay: iso(new Date(t.completed_at)) }); });
+  P.comps.forEach(c=>{
+    const k = 'r:' + c.recurring_id + '|' + c.date, r = rules.get(c.recurring_id);
+    if(seen.has(k) || !r) return;
+    const o = { key:k, title: r.title, cat: progCat(r.category), date: c.date, doneAt: c.created_at, state: occState({ done:true, doneAt: c.created_at }, c.date, now) };
+    o.doneDay = occDoneDay(o, c.date); put(o);
+  });
+  P.plan.sess.filter(s=> s.status === 'completed' && s.kind !== 'rest' && !seen.has('s:' + s.id) && !fxPausedIn(P.plan.fx.inj, s.date))
+    .forEach(s=> put({ key:'s:' + s.id, title: s.title || 'Training', cat:'training', date: s.date, state:'onTime', doneDay: s.date }));
+  P.occ = occ; P.doneByDay = done;
+}
+
+function rangeStats(from, to){
+  const T = { sched:0, onTime:0, late:0, missed:0, pending:0, byCat:{}, items:[] };
+  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) (PROG.occ.get(iso(d)) || []).forEach(o=>{
+    const b = T.byCat[o.cat] || (T.byCat[o.cat] = { sched:0, onTime:0, late:0, missed:0, pending:0 });
+    T.sched++; T[o.state]++; b.sched++; b[o.state]++;
+    if(o.state === 'missed' || o.state === 'late') T.items.push(o);
+  });
+  // only what is already due can be on time or not: pending items stay out of the rate
+  T.due = T.sched - T.pending; Object.values(T.byCat).forEach(b=> b.due = b.sched - b.pending);
+  return T;
+}
+const onTimePct = s => s && s.due ? Math.round(s.onTime / s.due * 100) : null;
+function doneIn(from, to){
+  const out = {}; let n = 0;
+  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) (PROG.doneByDay.get(iso(d)) || []).forEach(o=>{ out[o.cat] = (out[o.cat] || 0) + 1; n++; });
+  return { byCat: out, n };
 }
 
 function paintProgress(){
   if(!PROG) return;
   document.querySelectorAll('#progSeg [data-period]').forEach(b=>{ const on = b.dataset.period === progPeriod; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
   const R = periodRange(progPeriod), today = _dayOnly(new Date()), t0 = iso(today);
-  const MS = missedStats(PROG.plan, R.from, R.to, PROG.snaps);
-  const all = tally(PROG.plan, R.from, R.to); all.planned += MS.extra;
-  const ct = catTally(R.from, R.to, MS.extraByCat);
-  const missOf = c => MS.byCat[c] || 0;
-  let activeDays = 0, daysSoFar = 0;
-  for(let d = _dayOnly(R.from); d <= R.to && d <= today; d = addDays(d, 1)){ daysSoFar++; if((PROG.actByDay.get(iso(d)) || []).length) activeDays++; }
+  const S = rangeStats(R.from, R.to), rate = onTimePct(S), od = progPanel.mode === 'overdue';
 
   $('progKpis').innerHTML = `
-    <div class="card kpi"><span class="card-icon acc-blue">${ico('check')}</span><div><b>${all.done}<small style="font-size:14px;color:var(--on-panel-2)"> / ${all.planned}</small></b><span>completed ${R.label}</span></div></div>
-    <div class="card kpi"><span class="card-icon acc-sky">${ico('target')}</span><div><b>${pct(all.done, all.planned)}%</b><span>completion rate</span></div></div>
-    <div class="card kpi"><span class="card-icon acc-amber">${ico('flame')}</span><div><b>${PROG.streak} day${PROG.streak === 1 ? '' : 's'}</b><span>current streak · best ${PROG.longest}</span></div></div>
-    <button type="button" class="card kpi kpi-btn${progPanel.mode === 'overdue' ? ' on' : ''}" id="progOverdueBtn" aria-pressed="${progPanel.mode === 'overdue'}" aria-controls="progPanel" title="See the overdue tasks"><span class="card-icon acc-rose">${ico('alert')}</span><div><b>${MS.n}</b><span>overdue ${R.label}${MS.n ? `<em class="kpi-more"> · ${MS.n - MS.open} missed, ${MS.open} still open</em>` : ''}</span></div><span class="kpi-go">${ico('chevR', 'ico-sm')}</span></button>`;
+    <div class="card kpi"><span class="card-icon acc-blue">${ico('check')}</span><div><b>${rate === null ? '—' : rate + '%'}<small class="kpi-of">${S.onTime}/${S.due}</small></b><span>On time</span></div></div>
+    <button type="button" class="card kpi kpi-btn${od ? ' on' : ''}" data-od aria-pressed="${od}" aria-controls="progPanel" title="See late and missed tasks"><span class="card-icon acc-sun">${ico('clock')}</span><div><b>${S.late}</b><span>Late</span></div><span class="kpi-go">${ico('chevR', 'ico-sm')}</span></button>
+    <button type="button" class="card kpi kpi-btn${od ? ' on' : ''}" id="progOverdueBtn" data-od aria-pressed="${od}" aria-controls="progPanel" title="See late and missed tasks"><span class="card-icon acc-rose">${ico('alert')}</span><div><b>${S.missed}</b><span>Missed</span></div><span class="kpi-go">${ico('chevR', 'ico-sm')}</span></button>
+    <div class="card kpi"><span class="card-icon acc-amber">${ico('flame')}</span><div><b>${PROG.streak}<small class="kpi-of">${PROG.streak === 1 ? 'day' : 'days'}</small></b><span>Streak</span></div></div>`;
 
-  /* --- by area: each with the numbers that matter for it --- */
+  /* --- by area: what got done, plus the one number that matters for each area --- */
+  const D = doneIn(R.from, R.to).byCat, inR = d => d >= iso(R.from) && d <= iso(R.to);
   const openOf = c => PROG.openTasks.filter(t=>taskCat(t) === c);
-  const nextDeadline = c => openOf(c).filter(t=>t.due_date && t.due_date >= t0).sort((a,b)=>a.due_date.localeCompare(b.due_date))[0];
-  const inR = d => d >= iso(R.from) && d <= iso(R.to);
-  const bar = (a, b) => `<div class="bar"><i style="width:${pct(a, b)}%"></i></div>`;
-  const big = (a, b, unit) => `<div class="catp-big"><b>${a}/${b}</b><span>${unit} · ${pct(a, b)}%</span></div>`;
-  const nd = c => { const t = nextDeadline(c); return t ? `<b>${esc(t.title.length > 22 ? t.title.slice(0, 21) + '…' : t.title)} · ${esc(relDay(parseISO(t.due_date)))}</b>` : '<b>—</b>'; };
-  const card = (c, inner) => `<button class="card catp ${CATS[c].acc}" data-goto="${CATS[c].page}" style="border:none;text-align:left;font:inherit;cursor:pointer;">
-    <div class="card-head"><span class="card-icon">${ico(CATS[c].icon)}</span><h3 class="card-title">${CATS[c].page === 'budget' ? 'Money & Budgeting' : CATS[c].page === 'home' ? 'Home Tasks' : CATS[c].label}</h3></div>${inner}</button>`;
-
-  const sess = PROG.plan.sess.filter(s=>inR(s.date) && s.status === 'completed' && s.kind !== 'rest' && !fxPausedIn(PROG.plan.fx.inj, s.date));
-  const km = sess.reduce((a,s)=>a + (Number(s.distance_km) || 0), 0);
-  const mealsR = PROG.meals.filter(m=>inR(m.date));
-  const M = moneyStats();
-  const sideProjects = openOf('side').filter(t=>t.kind === 'long-term').length;
-  const sideDeadlines = openOf('side').filter(t=>t.due_date && t.due_date >= t0 && t.due_date <= iso(addDays(today, 14))).length;
-  // learning: study time from sessions with a start and end, per plan from the same items
-  const learnItems = [];
-  for(let d = _dayOnly(R.from); d <= R.to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{ if(it.cat === 'learning') learnItems.push(it); });
-  const lMin = it => { const r = it.raw || {}, a = r.due_time || r.start_time, b = r.end_time; if(!a || !b) return 0;
-    const m = x => { const [h, mm] = String(x).split(':').map(Number); return h * 60 + mm; }; return Math.max(0, m(b) - m(a)); };
+  const short = (s, n) => s.length > n ? s.slice(0, n - 1) + '…' : s;
+  const nextDl = openOf('side').filter(t=>t.due_date && t.due_date >= t0).sort((a,b)=>a.due_date.localeCompare(b.due_date))[0];
+  const card = (c, big, unit, row) => `<button class="card catp ${CATS[c].acc}" data-goto="${CATS[c].page}" style="border:none;text-align:left;font:inherit;cursor:pointer;">
+    <div class="card-head"><span class="card-icon">${ico(CATS[c].icon)}</span><h3 class="card-title">${esc(progAreaName(c))}</h3></div>
+    <div class="catp-big"><b>${big}</b><span>${unit}</span></div>${row ? `<div class="catp-rows"><div>${row}</div></div>` : ''}</button>`;
+  const km = PROG.plan.sess.filter(s=>inR(s.date) && s.status === 'completed' && s.kind !== 'rest' && !fxPausedIn(PROG.plan.fx.inj, s.date)).reduce((a,s)=>a + (Number(s.distance_km) || 0), 0);
+  // learning: study time from sessions with a start and end
+  let lDone = 0, lPlan = 0;
+  for(let d = _dayOnly(R.from); d <= R.to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{
+    if(it.cat !== 'learning') return;
+    const r = it.raw || {}, a = r.due_time || r.start_time, b = r.end_time; if(!a || !b) return;
+    const m = x => { const [h, mm] = String(x).split(':').map(Number); return h * 60 + mm; }, min = Math.max(0, m(b) - m(a));
+    lPlan += min; if(it.done) lDone += min;
+  });
   const lHours = min => { const h = Math.floor(min / 60), m = min % 60; return min ? (h ? h + ' h' + (m ? ' ' + m + ' min' : '') : m + ' min') : '0 h'; };
-  const lDone = learnItems.filter(it=> it.done).reduce((a, it)=> a + lMin(it), 0), lPlan = learnItems.reduce((a, it)=> a + lMin(it), 0);
-  const lPlanRows = PROG.lplans.map(p=>{ const its = learnItems.filter(it=> it.raw && it.raw.learn_plan_id === p.id); return { p, n: its.length, d: its.filter(it=> it.done).length }; }).filter(x=> x.n).slice(0, 3);
-
+  const M = moneyStats();
   $('progCats').innerHTML =
-    card('side', big(ct.side.done, ct.side.planned, 'planned activities') + bar(ct.side.done, ct.side.planned) +
-      `<div class="catp-rows"><div>Active projects <b>${sideProjects}</b></div><div>Overdue / missed <b>${missOf('side')}</b></div><div>Deadlines in 14 days <b>${sideDeadlines}</b></div><div>Next deadline ${nd('side')}</div></div>`) +
-    card('training', big(ct.training.done, ct.training.planned, 'sessions & tasks') + bar(ct.training.done, ct.training.planned) +
-      `<div class="catp-rows"><div>Workouts completed <b>${sess.length}</b></div><div>Distance run <b>${km ? km.toFixed(1) + ' km' : '—'}</b></div>
-       <div>Overdue / missed <b>${missOf('training')}</b></div><div>Days with food logged <b>${new Set(mealsR.map(m=>m.date)).size}</b></div></div>`) +
-    card('home', big(ct.home.done, ct.home.planned, 'chores & tasks') + bar(ct.home.done, ct.home.planned) +
-      `<div class="catp-rows"><div>Overdue / missed <b>${missOf('home')}</b></div><div>Open tasks <b>${openOf('home').length}</b></div></div>`) +
-    card('money', (PREFS.savingsGoal
-        ? `<div class="catp-big"><b>${pct(M.savedTotal, PREFS.savingsGoal)}%</b><span>of savings goal</span></div>${bar(M.savedTotal, PREFS.savingsGoal)}`
-        : `<div class="catp-big"><b>${money(M.savedTotal)}</b><span>saved in total</span></div>`) +
-      `<div class="catp-rows"><div>Spent this month <b>${money(M.cur.spent)}</b></div>
-       <div>Budget used <b>${M.limit ? pct(M.cur.spent, M.limit) + '%' : '—'}</b></div><div>Money tasks open <b>${openOf('money').length}</b></div>
-       <div>Overdue / missed <b>${missOf('money')}</b></div></div>`) +
-    card('learning', big(ct.learning.done, ct.learning.planned, 'sessions & tasks') + bar(ct.learning.done, ct.learning.planned) +
-      `<div class="catp-rows"><div>Study time <b>${lHours(lDone)}${lPlan ? ' of ' + lHours(lPlan) : ''}</b></div>
-       ${lPlanRows.map(x=> `<div>${esc(x.p.name.length > 22 ? x.p.name.slice(0, 21) + '…' : x.p.name)} <b>${x.d}/${x.n}</b></div>`).join('')}
-       <div>Overdue / missed <b>${missOf('learning')}</b></div><div>Open study tasks <b>${openOf('learning').length}</b></div></div>`);
+    card('side', D.side || 0, 'done', `Next deadline <b>${nextDl ? esc(short(nextDl.title, 20)) + ' · ' + esc(relDay(parseISO(nextDl.due_date))) : '—'}</b>`) +
+    card('training', D.training || 0, 'done', `Distance run <b>${km ? km.toFixed(1) + ' km' : '—'}</b>`) +
+    card('home', D.home || 0, 'done', `Open tasks <b>${openOf('home').length}</b>`) +
+    (PREFS.savingsGoal
+      ? card('money', pct(M.savedTotal, PREFS.savingsGoal) + '%', 'of savings goal', `Budget used <b>${M.limit ? pct(M.cur.spent, M.limit) + '%' : '—'}</b>`)
+      : card('money', money(M.savedTotal), 'saved', `Budget used <b>${M.limit ? pct(M.cur.spent, M.limit) + '%' : '—'}</b>`)) +
+    card('learning', D.learning || 0, 'done', `Study time <b>${lHours(lDone)}${lPlan ? ' of ' + lHours(lPlan) : ''}</b>`);
 
   paintHeat();
   paintPanel();
-  paintPerf();
-}
-
-/* ---------- Progress analytics (Ime 2026-11-21) ----------
-   One rule for every number: an item is done, missed (its deadline passed, see
-   deadlinePassed) or pending (deadline still ahead). Misses kept in
-   missed_occurrences for tasks that were changed or removed since count as missed. */
-const PROG_AREAS = [['side', 'Hustle'], ['training', 'Training'], ['home', 'Home Tasks'], ['learning', 'Learning'], ['money', 'Money & Budgeting'], ['personal', 'Personal']];
-const progAreaName = c => (PROG_AREAS.find(a=> a[0] === c) || [c, (CATS[c] || CATS.personal).label])[1];
-let progPanel = { mode:'day', day:null };
-let perfWeekRef = null, perfMonthRef = null;
-
-function rangeStats(from, to){
-  const ms = missedStats(PROG.plan, from, to, PROG.snaps);
-  const missKeys = new Set(ms.items.map(i=> i.key)), byCat = {};
-  const T = { planned:0, done:0, missed:0, pending:0 };
-  const bump = (c, k) => { const o = byCat[c] || (byCat[c] = { planned:0, done:0, missed:0, pending:0 }); o.planned++; o[k]++; T.planned++; T[k]++; };
-  for(let d = _dayOnly(from); d <= to; d = addDays(d, 1)) planDay(PROG.plan, d).forEach(it=>{
-    bump(CATS[it.cat] ? it.cat : 'personal', it.done ? 'done' : missKeys.has(it.key) ? 'missed' : 'pending');
-  });
-  ms.items.filter(i=> i.kept).forEach(i=> bump(i.cat, 'missed'));
-  return { ...T, byCat, ms };
+  paintActivityChart();
+  paintSuccessChart(R, S);
 }
 
 function progDayName(d){
@@ -11176,20 +11208,21 @@ function paintHeat(){
   for(let i = 0; i < lead; i++) cells.push('<span class="hm-day blank"></span>');
   for(let dn = 1; dn <= days; dn++){
     const d = new Date(y, m, dn), di = iso(d);
-    const n = (PROG.actByDay.get(di) || []).length;
-    const planned = d <= today ? planDay(PROG.plan, d).length : 0;
+    const n = (PROG.doneByDay.get(di) || []).length;
+    const miss = (PROG.occ.get(di) || []).filter(o=> o.state === 'missed').length;
     const lvl = n >= 4 ? 'l3' : n >= 2 ? 'l2' : n >= 1 ? 'l1' : '';
-    const miss = !n && planned && di !== t0 && d <= today;
-    // the colours are explained here instead of a permanent legend
-    const tip = `${d.toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' })}: ${d > today ? 'upcoming' : n ? plural(n, 'thing') + ' done' : planned ? 'planned, nothing done' : 'nothing done'}`;
-    const cls = [lvl, d > today ? 'future' : '', miss ? 'missed' : '', di === t0 ? 'today' : '', sel === di ? 'sel' : ''].join(' ');
+    const parts = d > today ? ['upcoming'] : [n ? n + ' done' : 'nothing done'].concat(miss ? [miss + ' missed'] : []);
+    const tip = `${d.toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' })}: ${parts.join(' · ')}`;
+    const cls = [lvl, d > today ? 'future' : '', miss && !n ? 'missed' : '', di === t0 ? 'today' : '', sel === di ? 'sel' : ''].join(' ');
     cells.push(`<button type="button" class="hm-day ${cls}" data-day="${di}" title="${esc(tip)}" aria-label="${esc(tip)}" aria-pressed="${sel === di}">${dn}</button>`);
   }
   box.innerHTML = `<div class="hm-head">${['M','T','W','T','F','S','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="hm-grid">${cells.join('')}</div>`;
 }
 
-const ppBar = s => s.planned ? `<span class="pp-bar" aria-hidden="true"><i class="d" style="width:${s.done / s.planned * 100}%"></i><i class="m" style="width:${s.missed / s.planned * 100}%"></i></span>` : '<span class="pp-bar" aria-hidden="true"></span>';
-const ppTag = it => it.open ? '<em class="pp-tag open">still open</em>' : '<em class="pp-tag miss">missed</em>';
+const ppBar = s => `<span class="pp-bar" aria-hidden="true">${s && s.sched ? ['onTime', 'late', 'missed'].map(k=> s[k] ? `<i class="${k}" style="width:${s[k] / s.sched * 100}%"></i>` : '').join('') : ''}</span>`;
+const ppTag = o => o.state === 'late' ? `<em class="pp-tag late">done late · ${esc(progDM(parseISO(o.doneDay)))}</em>` : '<em class="pp-tag miss">missed</em>';
+const ppChip = c => `<span class="chip ${(CATS[c] || CATS.personal).acc}"><i></i>${esc(progAreaName(c))}</span>`;
+const ppEmpty = (kind, text) => `<div class="pp-empty">${typeof doodleSvg === 'function' ? doodleSvg(kind) : ''}<b>${esc(text)}</b></div>`;
 
 function paintPanel(){
   const box = $('progPanel'), seg = $('progPanelSeg');
@@ -11197,64 +11230,81 @@ function paintPanel(){
   const od = progPanel.mode === 'overdue';
   seg.querySelectorAll('[data-pmode]').forEach(b=>{ const on = b.dataset.pmode === progPanel.mode; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
   box.classList.toggle('is-overdue', od);
-  const kb = $('progOverdueBtn'); if(kb){ kb.classList.toggle('on', od); kb.setAttribute('aria-pressed', od); }
+  document.querySelectorAll('#progKpis [data-od]').forEach(kb=>{ kb.classList.toggle('on', od); kb.setAttribute('aria-pressed', od); });
+  const byDateTitle = (a, b)=> b.date.localeCompare(a.date) || a.title.localeCompare(b.title);
   if(od){
-    const R = periodRange(progPeriod), ms = missedStats(PROG.plan, R.from, R.to, PROG.snaps);
-    const groups = PROG_AREAS.map(([c, name])=> ({ c, name, items: ms.items.filter(i=> (CATS[i.cat] ? i.cat : 'personal') === c).sort((a, b)=> b.date.localeCompare(a.date) || a.title.localeCompare(b.title)) })).filter(g=> g.items.length);
-    box.innerHTML = `<div class="pp-head"><div><h3>Overdue ${esc(R.label)}</h3>
-        <p class="pp-sub">${ms.n ? `${ms.n - ms.open} missed · ${ms.open} still open` : 'Nothing overdue'}</p></div><span class="pp-big">${ms.n}</span></div>
-      ${groups.length ? '<div class="pp-scroll">' + groups.map(g=> `<details class="pp-group" open><summary><span class="chip ${(CATS[g.c] || CATS.personal).acc}"><i></i>${esc(g.name)}</span><span class="pp-n">${g.items.length}</span></summary>
-          <ul class="pp-items">${g.items.map(i=> `<li><b>${esc(i.title || 'Task')}</b><span>${esc(progShort(i.date))}</span>${ppTag(i)}</li>`).join('')}</ul></details>`).join('') + '</div>'
-        : `<div class="pp-empty">${typeof doodleSvg === 'function' ? doodleSvg('done') : ''}<b>Nothing overdue ${esc(R.label)}</b><span>Everything due so far was done.</span></div>`}`;
+    const R = periodRange(progPeriod), S = rangeStats(R.from, R.to), n = S.missed + S.late;
+    const groups = PROG_AREAS.map(([c, name])=> ({ c, name, items: S.items.filter(i=> i.cat === c).sort(byDateTitle) })).filter(g=> g.items.length);
+    box.innerHTML = `<div class="pp-head"><div><h3>Overdue ${esc(R.label)}</h3>${n ? `<p class="pp-sub">${S.missed} missed · ${S.late} late</p>` : ''}</div>${n ? `<span class="pp-big">${n}</span>` : ''}</div>
+      ${groups.length ? '<div class="pp-scroll">' + groups.map(g=> `<details class="pp-group" open><summary>${ppChip(g.c)}<span class="pp-n">${g.items.length}</span></summary>
+          <ul class="pp-items">${g.items.map(i=> `<li class="${i.state}"><b>${esc(i.title)}</b><span>${esc(progShort(i.date))}</span>${ppTag(i)}</li>`).join('')}</ul></details>`).join('') + '</div>'
+        : ppEmpty('done', 'Nothing overdue ' + R.label)}`;
     return;
   }
   const di = progPanel.day || iso(new Date()), d = parseISO(di), S = rangeStats(d, d);
+  // ticks made on this day for earlier days: activity of this day, but not this day's plan
+  const caught = (PROG.doneByDay.get(di) || []).filter(o=> o.state === 'late' && o.date && o.date < di).sort(byDateTitle);
   const head = `<div class="pp-head"><div><h3>${esc(progDayName(d))}</h3><p class="pp-sub">${esc(d.toLocaleDateString(undefined, { day:'numeric', month:'long', year:'numeric' }))}</p></div></div>`;
-  if(!S.planned){
-    box.innerHTML = head + `<div class="pp-empty">${typeof doodleSvg === 'function' ? doodleSvg('calm') : ''}<b>Nothing was planned${d > _dayOnly(new Date()) ? ' yet' : ''}</b><span>Pick another day in the calendar.</span></div>`;
-    return;
+  if(!S.sched && !caught.length){ box.innerHTML = head + ppEmpty('calm', 'Nothing planned' + (d > _dayOnly(new Date()) ? ' yet' : '')); return; }
+  const areas = PROG_AREAS.map(([c])=> ({ c, s: S.byCat[c] })).filter(a=> a.s);
+  const stat = (k, label) => `<div class="pp-s-${k}${S[k] ? ' has' : ''}"><small>${label}</small><b>${S[k]}</b></div>`;
+  box.innerHTML = head + (S.sched ? `<div class="pp-sum">${stat('onTime', 'On time')}${stat('late', 'Late')}${stat('missed', 'Missed')}${stat('pending', 'Pending')}</div>
+    <div class="pp-areas">${areas.map(a=> `<div class="pp-arow"><span class="pp-an">${ppChip(a.c)}</span>${ppBar(a.s)}<span class="pp-av"><b>${a.s.onTime}/${a.s.sched}</b></span></div>`).join('')}</div>` : '') +
+    (S.items.length ? `<details class="pp-group" open><summary><b>Not done on time</b><span class="pp-n">${S.items.length}</span></summary>
+      <ul class="pp-items">${S.items.sort(byDateTitle).map(i=> `<li class="${i.state}"><b>${esc(i.title)}</b>${ppChip(i.cat)}${ppTag(i)}</li>`).join('')}</ul></details>` : '') +
+    (caught.length ? `<details class="pp-group pp-caught" open><summary><b>Done late on this day</b><span class="pp-n">${caught.length}</span></summary>
+      <ul class="pp-items">${caught.map(i=> `<li class="late"><b>${esc(i.title)}</b>${ppChip(i.cat)}<em class="pp-tag late">from ${esc(progShort(i.date))}</em></li>`).join('')}</ul></details>` : '');
+}
+
+/* Chart A: everything ticked per week, stacked by area (late ticks count in the week they were done) */
+function paintActivityChart(){
+  const box = $('progChartA'); if(!box) return;
+  const W = 12, cur = mondayOf(new Date()), weeks = [];
+  for(let i = W - 1; i >= 0; i--){
+    const from = addDays(cur, -7 * i), D = doneIn(from, addDays(from, 6));
+    weeks.push({ from, n: D.n, byCat: D.byCat });
   }
-  const areas = PROG_AREAS.map(([c, name])=> ({ c, name, s: S.byCat[c] })).filter(a=> a.s);
-  const missed = S.ms.items.slice().sort((a, b)=> a.title.localeCompare(b.title));
-  box.innerHTML = head + `<div class="pp-sum">
-      <div><small>Completed</small><b>${S.done}<em>/${S.planned}</em></b></div>
-      <div><small>Completion</small><b>${pct(S.done, S.planned)}%</b></div>
-      <div class="${S.missed ? 'is-miss' : ''}"><small>Missed</small><b>${S.missed}</b></div>
-      <div><small>Pending</small><b>${S.pending}</b></div></div>
-    <h4 class="pp-h">By area</h4>
-    <div class="pp-areas">${areas.map(a=> `<div class="pp-arow"><span class="pp-an"><span class="chip ${(CATS[a.c] || CATS.personal).acc}"><i></i>${esc(a.name)}</span></span>${ppBar(a.s)}
-        <span class="pp-av"><b>${pct(a.s.done, a.s.planned)}%</b><small>${a.s.done}/${a.s.planned}${a.s.missed ? ` · ${a.s.missed} missed` : ''}</small></span></div>`).join('')}</div>
-    ${missed.length ? `<details class="pp-group pp-missed" open><summary><b>Missed on this day</b><span class="pp-n">${missed.length}</span></summary>
-      <ul class="pp-items">${missed.map(i=> `<li><b>${esc(i.title || 'Task')}</b><span class="chip ${(CATS[i.cat] || CATS.personal).acc}"><i></i>${esc(progAreaName(CATS[i.cat] ? i.cat : 'personal'))}</span>${ppTag(i)}</li>`).join('')}</ul></details>` : ''}`;
+  const used = CAT_ORDER.filter(c=> weeks.some(w=> w.byCat[c]));
+  if(!used.length){ box.innerHTML = ppEmpty('calm', 'Nothing done in the last 12 weeks'); return; }
+  const max = Math.max(...weeks.map(w=> w.n));
+  const raw = max / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+  const step = Math.max(1, (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p), top = Math.ceil(max / step) * step;
+  const ticks = []; for(let v = step; v <= top; v += step) ticks.push(v);
+  const dot = c => `<i style="background:var(--cat-${c})"></i>`;
+  box.innerHTML = `<div class="pc-legend">${used.map(c=> `<span>${dot(c)}${esc(progAreaShort(c))}</span>`).join('')}</div>
+    <div class="ca-plot"><div class="ca-grid" aria-hidden="true">${ticks.map(v=> `<span style="bottom:${v / top * 100}%"><em>${v}</em></span>`).join('')}</div>
+    <div class="ca-bars">${weeks.map((w, i)=>{
+      const label = i === W - 1 ? 'This week' : progDM(w.from) + ' – ' + progDM(addDays(w.from, 6));
+      const tip = `${label}: ${w.n} done` + (w.n ? '\n' + used.filter(c=> w.byCat[c]).map(c=> progAreaShort(c) + ' ' + w.byCat[c]).join(' · ') : '');
+      return `<div class="ca-col${i === W - 1 ? ' cur' : ''}" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip.replace('\n', ', '))}">
+        <div class="ca-bar" style="height:${w.n / top * 100}%">${w.n ? `<b class="ca-tot">${w.n}</b>` : ''}${used.filter(c=> w.byCat[c]).map(c=> `<i style="flex:${w.byCat[c]} 1 0;background:var(--cat-${c})"></i>`).join('')}</div></div>`;
+    }).join('')}</div></div>
+    <div class="ca-x">${weeks.map((w, i)=> `<span${i === W - 1 ? ' class="cur"' : ''}>${i === W - 1 ? 'This week' : esc(progDM(w.from))}</span>`).join('')}</div>`;
 }
 
-function perfHtml(from, to){
-  const S = rangeStats(from, to);
-  const row = (name, s, cls, chip) => {
-    const p = k => s && s.planned ? Math.round(s[k] / s.planned * 100) : 0;
-    return `<div class="pf-row${cls ? ' ' + cls : ''}"><span class="pf-n">${chip || esc(name)}</span>${s && s.planned ? ppBar(s) : '<span class="pp-bar" aria-hidden="true"></span>'}
-      <span class="pf-v">${s && s.planned ? `<b>${p('done')}%</b> done · <b class="m">${p('missed')}%</b> missed${s.pending ? ` · ${p('pending')}% to do` : ''}` : '<span class="pf-none">Nothing planned</span>'}</span></div>`;
-  };
-  const shown = PROG_AREAS.filter(([c])=> c !== 'personal' || S.byCat.personal);
-  return row('All areas', S, 'pf-all') + shown.map(([c, name])=> row(name, S.byCat[c], '', `<span class="chip ${(CATS[c] || CATS.personal).acc}"><i></i>${esc(name)}</span>`)).join('') +
-    `<div class="pf-legend"><span><i class="d"></i>Done</span><span><i class="m"></i>Missed</span><span><i class="p"></i>Still to do</span></div>`;
-}
-function paintPerf(){
-  const today = _dayOnly(new Date());
-  perfWeekRef = perfWeekRef || mondayOf(today);
-  perfMonthRef = perfMonthRef || new Date(today.getFullYear(), today.getMonth(), 1);
-  const wEnd = addDays(perfWeekRef, 6), mEnd = new Date(perfMonthRef.getFullYear(), perfMonthRef.getMonth() + 1, 0);
-  $('pfWeekL').textContent = sameDay(perfWeekRef, mondayOf(today)) ? 'This week' : `${progDM(perfWeekRef)} – ${progDM(wEnd)}`;
-  $('pfMonthL').textContent = MONTHS_FULL[perfMonthRef.getMonth()] + (perfMonthRef.getFullYear() !== today.getFullYear() ? ' ' + perfMonthRef.getFullYear() : '');
-  $('pfWeekNext').disabled = perfWeekRef >= mondayOf(today);
-  $('pfMonthNext').disabled = perfMonthRef >= new Date(today.getFullYear(), today.getMonth(), 1);
-  $('pfWeekPrev').disabled = addDays(perfWeekRef, -7) < mondayOf(PROG.from);
-  $('pfMonthPrev').disabled = new Date(perfMonthRef.getFullYear(), perfMonthRef.getMonth() - 1, 1) < new Date(PROG.from.getFullYear(), PROG.from.getMonth(), 1);
-  $('progWeekPerf').innerHTML = perfHtml(perfWeekRef, wEnd);
-  $('progMonthPerf').innerHTML = perfHtml(perfMonthRef, mEnd);
+/* Chart B: on-time rate per area for the chosen period; late ticks shown apart, never as success */
+function paintSuccessChart(R, S){
+  const box = $('progChartB'); if(!box) return;
+  $('progChartBL').textContent = R.label.charAt(0).toUpperCase() + R.label.slice(1);
+  const all = PROG_AREAS.map(([c])=> ({ c, s: S.byCat[c] })).filter(a=> a.s);
+  // an area with nothing due yet has no rate: it gets one line below instead of an empty column
+  const areas = all.filter(a=> a.s.due), later = all.filter(a=> !a.s.due);
+  const laterHtml = later.length ? `<p class="sr-later">Not due yet: ${later.map(({ c, s })=> `${esc(progAreaShort(c))} ${s.pending}`).join(' · ')}</p>` : '';
+  if(!areas.length){ box.innerHTML = ppEmpty('calm', (all.length ? 'Nothing due yet ' : 'Nothing scheduled ') + R.label) + laterHtml; return; }
+  const H = 120;
+  box.innerHTML = `<div class="sr-cols" style="--n:${areas.length};--nm:${Math.min(areas.length, 3)}">${areas.map(({ c, s })=>{
+      const p = onTimePct(s), ok = s.due ? Math.round(s.onTime / s.due * H) : 0, late = s.due ? Math.round(s.late / s.due * H) : 0;
+      const tip = `${progAreaShort(c)}: ${s.onTime} on time · ${s.late} late · ${s.missed} missed · ${s.pending} pending`;
+      return `<div class="sr-col" tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}" style="--c:var(--cat-${c});--c-rgb:var(--cat-${c}-rgb)">
+        <div class="sr-name">${esc(progAreaShort(c))}</div>
+        <div class="sr-plot"><b class="sr-pct">${p === null ? '—' : p + '%'}</b>
+          <div class="sr-bar">${late ? `<i class="l" style="height:${late}px"></i>` : ''}${ok ? `<i class="o" style="height:${ok}px"></i>` : ''}</div></div>
+        <div class="sr-cap">${s.onTime}/${s.due} on time${s.late ? ` · <span class="sr-late">${s.late} late</span>` : ''}</div></div>`;
+    }).join('')}</div>${laterHtml}
+    <div class="pc-legend sr-legend"><span><i class="sw-o"></i>On time</span><span><i class="sw-l"></i>Late</span></div>`;
 }
 
-// calendar day -> day overview; Overdue card -> overdue overview
+// calendar day -> day overview; Late / Missed tiles -> overdue overview
 $('progHeat').addEventListener('click', e=>{
   const b = e.target.closest('[data-day]'); if(!b || !PROG) return;
   progPanel = { mode:'day', day: b.dataset.day };
@@ -11268,16 +11318,12 @@ $('progPanelSeg').addEventListener('click', e=>{
   paintHeat(); paintPanel();
 });
 $('progKpis').addEventListener('click', e=>{
-  if(!e.target.closest('#progOverdueBtn') || !PROG) return;
+  if(!e.target.closest('[data-od]') || !PROG) return;
   progPanel = { mode:'overdue', day: progPanel.day };
   paintHeat(); paintPanel();
   // on wide screens the panel sits next to the calendar: show the whole section; on phones go to the panel itself
   (window.innerWidth <= 900 ? $('progPanelWrap') : $('progAct')).scrollIntoView({ behavior:'smooth', block:'start' });
 });
-[['pfWeekPrev', -1, 'w'], ['pfWeekNext', 1, 'w'], ['pfMonthPrev', -1, 'm'], ['pfMonthNext', 1, 'm']].forEach(([id, dir, k])=> $(id).addEventListener('click', ()=>{
-  if(k === 'w') perfWeekRef = addDays(perfWeekRef, dir * 7); else perfMonthRef = new Date(perfMonthRef.getFullYear(), perfMonthRef.getMonth() + dir, 1);
-  paintPerf();
-}));
 
 function moneyStats(){
   const now = new Date();
